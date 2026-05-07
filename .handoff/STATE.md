@@ -2,6 +2,7 @@
 
 **Last updated:** 2026-05-08 by Claude Code (Day 2 — Firebase migration in progress)
 **Next action owner:** Arham (Firebase Console setup), then Claude Code (auth UI screens)
+**Protocol note:** 2026-05-07 Codex added standing agent instructions in `AGENTS.md`, `.agents/CODEX.md`, `CLAUDE.md`, and `.claude/CLAUDE.md`.
 
 ---
 
@@ -22,6 +23,7 @@
 - **NEW (Day 2):** `src/contexts/AuthContext.tsx` rewritten to use Firebase Auth + Firestore. API surface preserved (consumer screens unchanged). Type-check passes for the new code path.
 - **NEW (Day 2):** `src/types/profile.ts` defines Firestore-shaped Profile (re-exported from `database.ts` for backwards-compat).
 - **NEW (Day 2):** `src/lib/authErrors.ts` normalizes Firebase + Google Sign-In errors into project `AuthError` shape.
+- **NEW:** Agent operating instructions added: `AGENTS.md` for Codex, `.agents/CODEX.md` as Codex lane pointer, `CLAUDE.md` as root Claude pointer, and `.claude/CLAUDE.md` for Claude Code. All future sessions should start from `.handoff/STATE.md` and end by updating handoff files.
 
 ## What's broken / stubbed
 

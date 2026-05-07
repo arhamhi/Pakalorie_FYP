@@ -93,3 +93,12 @@ Format: `## YYYY-MM-DD — <decision title>` then the decision, the rationale, a
 **Why:** Preserves the v2 API contract so any existing consumer screens that reference these methods don't fail to compile. Throwing instead of silently returning makes the gap obvious if a screen tries to use them.
 
 **Rejected:** Deleting the methods entirely — would force a sweep of every consumer screen for P1 Mid which is out of scope.
+---
+
+## 2026-05-07 - Repo-level agent operating instructions
+
+**Decision:** Add standing instructions for both coding agents: `AGENTS.md` for Codex, `.agents/CODEX.md` as the explicit Codex lane pointer, `CLAUDE.md` as the root Claude pointer, and `.claude/CLAUDE.md` for Claude Code.
+
+**Why:** Pakalorie FYP is now a two-agent workflow. Every fresh session must start from `.handoff/STATE.md`, use the correct queue file, respect ownership boundaries, and update handoff files before ending. This prevents Claude and Codex from drifting or solving the same problem twice.
+
+**Rejected:** Keeping the workflow only in chat memory. Chat context is fragile across sessions; repo-level instructions make the operating rhythm durable.
