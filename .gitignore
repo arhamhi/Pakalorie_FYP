@@ -11,3 +11,7 @@ ios/Pods/
 android/.gradle/
 android/app/build/
 .handoff/scratch/
+
+# Firebase config — not secrets, but private to the FYP project
+google-services.json
+GoogleService-Info.plist
