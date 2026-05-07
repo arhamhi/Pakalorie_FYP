@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Pakalorie",
-    "slug": "pakalorie",
+    "slug": "pakalorie-fyp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -11,11 +11,12 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#121212"
+      "backgroundColor": "#FFFFFF"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.redolanse.pakalorie",
+      "bundleIdentifier": "com.redolanse.pakaloriefyp",
+      "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
         "NSCameraUsageDescription": "Khane ki photos capture karne ke liye camera access chahiye.",
         "NSLocationWhenInUseUsageDescription": "Paas ke healthy restaurants suggest karne ke liye location chahiye.",
@@ -27,7 +28,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#1BAD66"
       },
-      "package": "com.redolanse.pakalorie",
+      "package": "com.redolanse.pakaloriefyp",
+      "googleServicesFile": "./google-services.json",
       "permissions": [
         "CAMERA",
         "ACCESS_FINE_LOCATION",
@@ -46,6 +48,20 @@
       "expo-camera",
       "expo-image-picker",
       "expo-location",
+      "expo-dev-client",
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ],
+      [
+        "@react-native-google-signin/google-signin"
+      ],
       [
         "expo-notifications",
         {
@@ -56,6 +72,9 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "googleSignInWebClientId": ""
     }
   }
 }

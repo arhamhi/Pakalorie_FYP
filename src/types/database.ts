@@ -325,4 +325,6 @@ export type CompositeTypes<
 export type FoodLog = Tables<'food_logs'>;
 export type HydrationLog = Tables<'hydration_logs'>;
 export type WeightLog = Tables<'weight_logs'>;
-export type Profile = Tables<'profiles'>;
+// Profile now lives in ./profile.ts (Firestore shape, post-Supabase migration).
+// Re-exported here so existing v2 screens continue to import it from this file.
+export type { Profile } from './profile';

@@ -54,10 +54,42 @@ Format: `## YYYY-MM-DD — <decision title>` then the decision, the rationale, a
 
 ---
 
-## 2026-05-07 — Repo name: `FYP-Pakalorie` (not `pakalorie`)
+## 2026-05-07 — Repo name: `Pakalorie_FYP`
 
-**Decision:** GitHub repo named `FYP-Pakalorie` to keep the university submission visually distinct from the personal `Pakalorie_v2` codebase.
+**Decision:** GitHub repo named `Pakalorie_FYP` (matches the Stitch design project name). Pushed to https://github.com/arhamhi/Pakalorie_FYP (private).
 
-**Why:** Multiple Pakalorie folders already exist on disk and across other accounts. Prefixing with `FYP-` makes it grep-friendly and unambiguous when supervisor asks for a link.
+**Why:** Keeps repo name aligned with the Stitch project so cross-references are obvious. Underscore separator distinguishes from any pakalorie folder Arham has lying around.
 
-**Rejected:** `pakalorie`, `pakalorie-fyp` (lowercase reads as "version") — the user explicitly wanted clear separation.
+**Rejected:** `FYP-Pakalorie` (initial idea — replaced for naming consistency with Stitch); `pakalorie` (collision risk).
+
+---
+
+## 2026-05-08 — Firebase via @react-native-firebase (native), not JS SDK
+
+**Decision:** Use `@react-native-firebase/{app,auth,firestore}` (native modules) over the JS `firebase` SDK. Google Sign-In via `@react-native-google-signin/google-signin`. Required `expo-dev-client` + EAS dev build — Expo Go path is dropped.
+
+**Why:** FYP demo runs on a real Android device via EAS dev build anyway. Native Firebase SDK gives proper auth persistence, native Google Sign-In flow (no AuthSession redirect dance), and matches what supervisors expect when they look at the code. JS SDK on RN has known issues with auth persistence and forces the OAuth redirect flow.
+
+**Rejected:** Firebase JS SDK (`firebase` npm package) — cleaner Expo Go story but breaks our requirement for native Google Sign-In and triggers persistence warnings on RN.
+
+**Cost:** Lose the ability to test in Expo Go from now on. All future testing requires `expo run:android` or an EAS dev build install.
+
+---
+
+## 2026-05-08 — Profile type relocated to src/types/profile.ts
+
+**Decision:** Created `src/types/profile.ts` with a Firestore-shaped Profile interface. `src/types/database.ts` now re-exports it (backwards-compat with v2 screens that import from there).
+
+**Why:** Supabase-generated `Tables<'profiles'>` was tied to the old schema. New fields (`onboarding_complete`, `accent_preference`, `is_premium`) needed adding without touching the auto-generated Supabase types file.
+
+**Rejected:** Editing `database.ts` directly — that file is auto-generated; manual edits would be overwritten if anyone ever ran the Supabase type generator again.
+
+---
+
+## 2026-05-08 — Apple Sign-In + Phone OTP stubbed, not removed
+
+**Decision:** AuthContext keeps `signInWithApple`, `signInWithPhone`, `verifyOtp` in its public API but they throw `not-implemented` errors. Methods will be filled in for P1 Final / P2.
+
+**Why:** Preserves the v2 API contract so any existing consumer screens that reference these methods don't fail to compile. Throwing instead of silently returning makes the gap obvious if a screen tries to use them.
+
+**Rejected:** Deleting the methods entirely — would force a sweep of every consumer screen for P1 Mid which is out of scope.
