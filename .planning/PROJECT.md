@@ -2,7 +2,8 @@
 name: Pakalorie FYP
 code: PKL-FYP
 created: 2026-05-07
-last_updated: 2026-05-07
+last_updated: 2026-05-08
+github: https://github.com/arhamhi/Pakalorie_FYP
 ---
 
 # Pakalorie — Final Year Project
@@ -59,9 +60,10 @@ Decision rationale lives in `../.handoff/DECISIONS.md`.
 ## Active Requirements (P1 Mid)
 
 See `REQUIREMENTS.md` for the canonical list. Summary:
-- AUTH-01..04 — registration, login, Google OAuth, password reset
-- UI-01..05 — capture flow, results card, save, design tokens, fonts
-- API-01..05 — 4 endpoints + healthz, schema, seed, deploy
+- AUTH-01..07 — signup, login, Google OAuth, password reset, signout, Firestore user doc, auth-gated routing
+- UI-01..10 — capture flow, results card, save, confidence/alternatives, design tokens, fonts, default accent, disclaimer
+- API-01..09 — service deploy, schema, seed, 4 endpoints, server-side keys, mobile wiring
+- DEMO-01..05 — EAS install, live demo flow, backup video, README, verification
 
 ## Out of Scope (this milestone)
 

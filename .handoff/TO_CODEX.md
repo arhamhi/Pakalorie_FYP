@@ -8,17 +8,20 @@ Read `STATE.md` first. After each session, update `STATE.md`, append to `DECISIO
 ## Active queue
 
 ### CDX-001 — Firestore migration plan (Week 1, Day 6-7)
-**Goal:** Map v2's Supabase tables to Firestore collections. Don't write code yet — produce a migration spec.
+**Goal:** Map v2's remaining Supabase tables to Firestore collections. Don't write code yet — produce a migration spec.
+
+**Note (2026-05-08):** Profile (the `users/{uid}` doc) has already been migrated by Claude in Day 2's AuthContext rewrite. Source of truth for the new Profile shape is `src/types/profile.ts`. CDX-001 covers the OTHER collections only.
 
 Deliverable: `backend/docs/firestore-schema.md` covering:
-- Collection structure for: `profiles`, `food_logs`, `hydration_logs`, `favorites`, `chat_sessions`, `weight_logs`.
+- Collection structure for: `food_logs`, `hydration_logs`, `favorites`, `chat_sessions`, `weight_logs`. (Skip `profiles` — already done.)
 - Firestore security rules (per-user access via `request.auth.uid`).
 - Indexes needed (composite on `user_id + created_at` for log queries).
-- Data shape decisions (subcollections vs. flat collections + `userId` field).
+- Data shape decisions (subcollections under `users/{uid}/...` vs. flat collections + `userId` field) — recommend subcollections by default; document the trade-off.
+- Migration script outline (no code yet) for moving any existing v2 Supabase data into Firestore on first sign-in (or accept a clean break — Claude to decide).
 
-Source schema: see `src/lib/supabase.ts` and `src/types/`. Also reference `Pakalorie_v2/TRD_Pakalorie.md` §3.
+Source schema: see `src/lib/supabase.ts` and `src/types/database.ts`. Also reference `Pakalorie_v2/TRD_Pakalorie.md` §3 for original column-level intent.
 
-Acceptance: Claude approves the spec, then Codex writes the rules + indexes.
+Acceptance: Claude approves the spec in `TO_CLAUDE.md`, then Codex writes the rules + indexes (separate task CDX-001b).
 
 ---
 
