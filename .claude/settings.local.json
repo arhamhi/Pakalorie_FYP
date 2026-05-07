@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir /s \"C:\\\\Users\\\\Arham\\\\OneDrive\\\\Desktop\\\\AI Work\\\\Pakalorie_v2\\\\app\\\\src\\\\types\")"
+    ]
+  }
+}
