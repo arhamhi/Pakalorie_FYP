@@ -71,6 +71,15 @@ Before ending any meaningful session:
 - Fonts: Geist Sans for UI/body/headings, Instrument Serif for hero numerics.
 - Demo target: real Android phone via dev build.
 
+## Icons
+
+- Library: `phosphor-react-native` (MIT, free) + `react-native-svg` (already installed).
+- Default weight: `duotone` for nav/feature icons, `fill` for badges/CTAs, `regular` for inline form glyphs (back chevron, eye toggle).
+- Default size: 24 for list items, 28 for tab bar, 20 for inline.
+- Accent color: `#1BAD66` (resolved via `useTheme().accent`, never hardcoded for non-brand surfaces).
+- Import the `*Icon` named exports (e.g. `CaretLeftIcon`, `EyeIcon`) — bare names like `CaretLeft` are deprecated in v3.
+- Never use `lucide-react` or `@expo/vector-icons` in new code. v2 legacy screens still reference `@expo/vector-icons`; migrate them during Phase 2 polish, not piecemeal.
+
 ## Guardrails
 
 - Keep UI work polished but scoped. Do not let visual polish consume backend timeline.

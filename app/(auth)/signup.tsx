@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { EyeIcon, EyeClosedIcon } from 'phosphor-react-native';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import {
@@ -151,11 +151,11 @@ export default function SignupScreen() {
                 hitSlop={8}
                 style={{ padding: 4 }}
               >
-                <Ionicons
-                  name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                  size={20}
-                  color={colors.text.tertiary}
-                />
+                {showPassword ? (
+                  <EyeClosedIcon size={20} color={colors.text.tertiary} weight="regular" />
+                ) : (
+                  <EyeIcon size={20} color={colors.text.tertiary} weight="regular" />
+                )}
               </Pressable>
             }
           />

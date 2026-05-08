@@ -149,6 +149,44 @@ Only three surfaces are in scope for the light-touch polish pass. Everything els
 
 ---
 
+## 5b. Icons
+
+Library: **`phosphor-react-native`** (MIT-licensed, 1500+ icons across 6 weights). `react-native-svg` is the runtime peer dep.
+
+Why Phosphor over alternatives:
+- React Native–native (proper RN exports, not a web-only port).
+- 6 weights — `thin / light / regular / bold / fill / duotone` — let us mimic SF Symbols' filled vs. outlined states without swapping libraries.
+- 9000+ glyphs cover everything we need (food, fire/streaks, camera, chat, crown, restaurant, etc.).
+- Free and open. No attribution required.
+
+Defaults:
+
+| Use | Size | Weight |
+|---|---|---|
+| Nav / feature icons | 24 | `duotone` |
+| Tab bar | 28 | `duotone` (active) / `regular` (inactive) |
+| Inline form glyphs (back chevron, eye toggle) | 20 | `regular` |
+| List rows | 24 | `regular` |
+| Badges / CTAs (premium crown, success check) | 20–36 | `fill` |
+| Streaks fire icon | 28 | `duotone` |
+
+Usage:
+
+```tsx
+import { ForkKnifeIcon, CameraIcon, CrownIcon, FireIcon } from 'phosphor-react-native';
+
+<ForkKnifeIcon weight="duotone" size={24} color={accent} />
+<CrownIcon weight="fill" size={20} color={accent} />          // premium badge
+<FireIcon weight="duotone" size={28} color="#FF6B35" />       // streaks
+```
+
+Conventions:
+- Use the `*Icon` suffix (`CameraIcon`, not `Camera`). Bare exports are deprecated in v3.
+- Color: pull `accent` from `useTheme()`; never hardcode `#1BAD66` for non-brand surfaces.
+- Never use `lucide-react` or `@expo/vector-icons` in new code. v2 legacy screens still reference `@expo/vector-icons` and will be swept in Phase 2 polish.
+
+---
+
 ## 6. Out of scope for P1 Mid
 
 - Dark mode runtime switching (tokens exist; not wired in `ThemeContext` UI)

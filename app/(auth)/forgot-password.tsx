@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { CheckIcon } from 'phosphor-react-native';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import {
@@ -142,7 +142,7 @@ export default function ForgotPasswordScreen() {
                   marginBottom: Spacing.xl,
                 }}
               >
-                <Ionicons name="checkmark" size={36} color={accent} />
+                <CheckIcon size={36} color={accent} weight="bold" />
               </View>
 
               <Text

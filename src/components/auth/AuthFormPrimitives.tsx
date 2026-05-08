@@ -8,7 +8,7 @@ import {
   type TextInputProps,
 } from 'react-native';
 import { router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { CaretLeftIcon, GoogleLogoIcon } from 'phosphor-react-native';
 import { useTheme } from '../../contexts/ThemeContext';
 import { Type, FontFamily } from '../../constants/fonts';
 import { Spacing, Radius } from '../../constants/spacing';
@@ -62,7 +62,7 @@ export function AuthHeader({ title, subtitle, onBack }: AuthHeaderProps) {
           opacity: pressed ? 0.5 : 1,
         })}
       >
-        <Ionicons name="chevron-back" size={26} color={colors.text.primary} />
+        <CaretLeftIcon size={24} color={colors.text.primary} weight="regular" />
       </Pressable>
 
       <Text style={{ ...Type.headingLg, color: colors.text.primary }}>{title}</Text>
@@ -224,7 +224,7 @@ export function GoogleButton({ onPress, loading, disabled }: GoogleButtonProps) 
         <ActivityIndicator color={colors.text.primary} size="small" />
       ) : (
         <>
-          <Ionicons name="logo-google" size={20} color={colors.text.primary} />
+          <GoogleLogoIcon size={20} color={colors.text.primary} weight="bold" />
           <Text
             style={{
               ...Type.bodyLg,
