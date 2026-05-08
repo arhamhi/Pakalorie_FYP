@@ -52,10 +52,12 @@ REQ-ID format: `[CATEGORY]-[NUMBER]`. Mapped to phases in `ROADMAP.md`.
 ### DEMO — Acceptance & Delivery
 
 - [ ] **DEMO-01**: Fresh install on Arham's Android via EAS dev build; sign-up + Google sign-in both succeed
-- [ ] **DEMO-02**: Live demo flow (capture chicken karahi → results in <5s → save to history) runs end-to-end
+- [ ] **DEMO-02**: Live demo flow (capture chicken karahi → results in <5s → save to history) runs end-to-end on Android
 - [ ] **DEMO-03**: Backup demo video recorded and stored locally + on Drive
 - [ ] **DEMO-04**: README at repo root with architecture diagram, env-var list, run instructions
 - [ ] **DEMO-05**: `/gsd-verify-work` run against milestone before demo day; no failing acceptance criteria
+- [ ] **DEMO-06**: iOS simulator build succeeds via EAS cloud build (`eas build --platform ios --profile development --simulator`); auth + capture screens render without iOS-specific layout regressions
+- [ ] **DEMO-07**: (best-effort, gated on Apple Dev account) Physical iPhone install via TestFlight runs the same end-to-end demo flow
 
 ---
 
@@ -90,7 +92,7 @@ REQ-ID format: `[CATEGORY]-[NUMBER]`. Mapped to phases in `ROADMAP.md`.
 | Ustad coach chatbot | Per FYP doc, scoped to P1 Final |
 | Restaurant discovery (Google Places) | Out of FYP doc; deprioritized |
 | Push notifications | No infra in P1 Mid; pushed to P1 Final at earliest |
-| iOS build | Apple Developer cert not purchased; Android-only demo |
+| iOS App Store submission | Deferred to P2 Final; FYP demo only requires simulator + best-effort TestFlight |
 | Dark mode (runtime) | Tokens defined; UI wiring deferred to June UI sprint |
 | Liquid glass / blur tab bar | Deferred to June UI sprint |
 | Animations / micro-interactions | Deferred to June UI sprint |

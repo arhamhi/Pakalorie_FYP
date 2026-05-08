@@ -46,7 +46,8 @@ End-of-session protocol for both tools: update `STATE.md`, write the relevant `T
 **Prerequisite — Firebase Console setup:** the app uses `@react-native-firebase/*` (native modules), so it cannot run in Expo Go. You need:
 1. A Firebase project with email/password + Google providers enabled.
 2. `google-services.json` dropped at the repo root (Android).
-3. The Web OAuth client ID pasted into `app.json` → `extra.googleSignInWebClientId`.
+3. `GoogleService-Info.plist` dropped at the repo root (iOS).
+4. Three IDs pasted into `app.json`: Web Client ID, iOS Client ID, REVERSED_CLIENT_ID for `iosUrlScheme`.
 
 Walkthrough in [`.handoff/STATE.md`](./.handoff/STATE.md) (Firebase Console Setup section).
 
@@ -55,14 +56,17 @@ Then:
 ```sh
 npm install
 cp .env.example .env             # fill in API base URL when backend deploys
-npx expo prebuild --platform android   # generates android/ folder + applies plugins
+npx expo prebuild                # generates android/ + ios/ folders, applies plugins
 npx expo run:android             # native dev build, hot-reload via Metro
+npx expo run:ios                 # iOS simulator (requires macOS) — for Windows users, use EAS instead
 ```
 
-For a shareable EAS dev build (installs on Arham's daily Android):
+For shareable EAS cloud builds (no Mac required for iOS):
 
 ```sh
 npx eas build --profile development --platform android
+npx eas build --profile development --platform ios --simulator   # iOS simulator build, no Apple Dev account needed
+npx eas build --profile development --platform ios               # physical iPhone build (requires Apple Dev account)
 ```
 
 ## Local setup (backend, when it exists)

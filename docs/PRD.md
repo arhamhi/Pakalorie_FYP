@@ -30,7 +30,7 @@ The FYP submission scope is a working subset of this vision — enough to show t
 
 - **Primary:** Pakistani Gen Z and Millennials, 18–35.
 - **Behavior:** Tech-savvy, fitness-conscious or fitness-curious, fluent in Roman Urdu, value premium aesthetics, will not tolerate "AI-slop UI."
-- **Devices:** Mid-range Android dominant (Samsung A-series, Infinix, Tecno). iPhone minority but high-LTV.
+- **Devices:** Both platforms in scope. Mid-range Android dominant in PK (Samsung A-series, Infinix, Tecno); iPhone minority but high-LTV. App targets parity from day one.
 - **Connectivity:** Patchy. Offline-first is a requirement, not nice-to-have.
 
 ---
@@ -160,7 +160,7 @@ The university Overleaf document specifies FR1–FR16. Coverage in P1 Mid:
 - Animations / micro-interactions
 - Onboarding visual redesign
 - Accent picker UI in settings
-- iOS-specific build (Apple Developer cert not yet purchased — Android-only demo)
+- iOS App Store submission (deferred to P2 Final). iOS simulator + TestFlight demo are in scope.
 
 ---
 
@@ -170,7 +170,7 @@ The university Overleaf document specifies FR1–FR16. Coverage in P1 Mid:
 - **Budget:** $0 net new spend. All chosen tools have free tiers (Render free, Supabase / Neon free, Firebase Spark, GitHub free, Google Fonts free).
 - **Team:** Arham writes 100% of code. Hassan Nadeem owns documentation; Husnain Sarwar owns presentation and test cases.
 - **Doc compliance:** University Overleaf doc commits us to specific stack choices (Firebase + FastAPI + PostgreSQL). Doc compliance > engineering elegance during grading.
-- **Demo phone:** Arham's Android (daily driver). EAS dev build via Expo. iOS build deferred until Apple cert purchased.
+- **Demo:** Arham's Android (daily driver) for primary live demo via EAS dev build. iOS support shipped via EAS cloud build — physical iPhone demo (TestFlight) is best-effort and gated on Apple Developer account purchase ($99/yr); iOS Simulator build is the fallback.
 
 ---
 

@@ -86,6 +86,18 @@ Format: `## YYYY-MM-DD — <decision title>` then the decision, the rationale, a
 
 ---
 
+## 2026-05-08 — iOS added to P1 Mid scope (was Android-only)
+
+**Decision:** Both Android and iOS now ship as part of P1 Mid demo. Android remains the primary demo target (Arham's daily-driver phone, EAS dev build). iOS ships via EAS cloud build for simulator at minimum; physical iPhone via TestFlight is best-effort and gated on Apple Developer account purchase ($99/yr) — purchase deferred to late May.
+
+**Why:** App Store reach matters for the FYP narrative even if we never submit. Adding iOS now (when the codebase is small and Firebase config is being set up anyway) costs less than adding it in P1 Final after layouts have drifted Android-first. EAS cloud builds don't require a Mac, removing the historical blocker.
+
+**Cost:** +2 acceptance criteria (DEMO-06, DEMO-07), one extra Firebase Console step (iOS app registration + GoogleService-Info.plist), iOS-specific URL scheme wiring in `app.json`, and the deferred $99 Apple Dev account spend.
+
+**Rejected:** Keeping iOS out until P2 — would require a separate iOS port pass when Apple Sign-In and HealthKit work starts in P1 Final; cleaner to take the hit now.
+
+---
+
 ## 2026-05-08 — Apple Sign-In + Phone OTP stubbed, not removed
 
 **Decision:** AuthContext keeps `signInWithApple`, `signInWithPhone`, `verifyOtp` in its public API but they throw `not-implemented` errors. Methods will be filled in for P1 Final / P2.

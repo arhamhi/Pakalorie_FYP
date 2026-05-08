@@ -5,7 +5,7 @@ status: in_progress
 phase_current: 1
 phase_total: 4
 progress:
-  requirements_total: 31
+  requirements_total: 33
   requirements_done: 0
   phases_done: 0
 last_updated: 2026-05-08

@@ -52,17 +52,68 @@ Deferred to P1 Final / P2: YOLOv8, MiDaS depth, Health Sync, Gemini Coach (Ustad
 
 ## Firebase Console Setup (Arham — paste these into your browser)
 
-1. Open https://console.firebase.google.com → **Add project** → name it `pakalorie-fyp` (or `Pakalorie FYP`). Skip Google Analytics for now.
-2. **Authentication** → Get started → **Sign-in method**:
-   - Enable **Email/Password** (toggle on, save)
-   - Enable **Google** (toggle on, set support email, save). After saving, expand the Google provider — copy the **Web SDK configuration → Web client ID** (looks like `xxxxxxxxxxxx-yyyyyy.apps.googleusercontent.com`). Paste into `app.json` → `extra.googleSignInWebClientId`.
-3. **Project settings (gear icon) → General → Your apps**:
-   - Click the **Android** icon. Package name: `com.redolanse.pakaloriefyp`. SHA-1 cert (run locally): `cd android && ./gradlew signingReport` after first `expo prebuild --platform android` — paste it in. Download `google-services.json` and drop at repo root.
-   - (Optional, iOS deferred) Click the **iOS** icon. Bundle ID: `com.redolanse.pakaloriefyp`. Download `GoogleService-Info.plist` and drop at repo root.
-4. **Firestore Database** → Create database → start in **production mode** (we'll add per-user rules in CDX-001).
-5. Add `google-services.json` and `GoogleService-Info.plist` to `.gitignore` (sensitive — they identify the Firebase project but don't contain admin secrets; still safer to keep out of git for a private FYP). Done.
+P1 Mid now ships **both Android and iOS**. iOS demo on a physical iPhone requires an Apple Developer account ($99/yr) — defer the purchase until late May. iOS simulator builds via EAS work without it; only TestFlight / physical-device installs need the cert.
 
-After you finish step 5, ping me and I'll start the auth UI screens.
+### 1. Create the project
+Open https://console.firebase.google.com → **Add project** → name it `Pakalorie FYP`. Skip Google Analytics for now.
+
+### 2. Enable auth providers
+**Authentication → Get started → Sign-in method**:
+- Enable **Email/Password** (toggle on, save).
+- Enable **Google** (toggle on, set support email, save). After saving, expand the Google card and note the **Web SDK configuration**:
+  - **Web client ID** — copy this. It's used on both Android and iOS to verify ID tokens server-side. Format: `xxxxxxxxxxxx-yyyyyy.apps.googleusercontent.com`.
+
+### 3. Register the Android app
+**Project settings (gear icon) → General → Your apps → Add app → Android**:
+- Package name: `com.redolanse.pakaloriefyp`
+- App nickname: `Pakalorie Android`
+- SHA-1 cert: skip for now. Required only for physical-device Google Sign-In via EAS — we'll add it during EAS build prep using `cd android && ./gradlew signingReport` after first `npx expo prebuild --platform android`.
+- Click **Register app** → **Download `google-services.json`** → drop it at repo root: `C:\Users\Arham\OneDrive\Desktop\Uni\FYP\pakalorie-fyp\google-services.json`.
+
+### 4. Register the iOS app
+**Project settings → General → Your apps → Add app → iOS**:
+- Bundle ID: `com.redolanse.pakaloriefyp` (same as Android, for consistency).
+- App nickname: `Pakalorie iOS`.
+- App Store ID: leave blank.
+- Click **Register app** → **Download `GoogleService-Info.plist`** → drop at repo root: `C:\Users\Arham\OneDrive\Desktop\Uni\FYP\pakalorie-fyp\GoogleService-Info.plist`.
+- Open `GoogleService-Info.plist` in any text editor and find these two values:
+  - `CLIENT_ID` — looks like `xxxxxxxxxxxx-zzzzzz.apps.googleusercontent.com`. **Copy it.**
+  - `REVERSED_CLIENT_ID` — looks like `com.googleusercontent.apps.xxxxxxxxxxxx-zzzzzz`. **Copy it.**
+
+### 5. Create Firestore
+**Firestore Database → Create database → production mode → region `asia-south1` (Mumbai)**. Per-user security rules will land in CDX-001.
+
+### 6. Paste the IDs into `app.json`
+Three placeholders to fill in:
+
+```jsonc
+"plugins": [
+  // ...
+  [
+    "@react-native-google-signin/google-signin",
+    {
+      "iosUrlScheme": "PASTE_REVERSED_CLIENT_ID_HERE"   // step 4: REVERSED_CLIENT_ID
+    }
+  ],
+  // ...
+],
+"extra": {
+  "googleSignInWebClientId": "PASTE_WEB_CLIENT_ID_HERE",  // step 2: Web client ID
+  "googleSignInIosClientId": "PASTE_IOS_CLIENT_ID_HERE"   // step 4: CLIENT_ID
+}
+```
+
+### 7. gitignore confirmation
+`google-services.json` and `GoogleService-Info.plist` are already gitignored. They aren't secrets but should stay out of the public-facing surface. Keep them locally only.
+
+### 8. Apple Developer Account (defer to late May)
+Required only for: physical iPhone demo (TestFlight or ad-hoc), or App Store submission.
+Not required for: iOS simulator builds, local dev, EAS cloud builds for simulator.
+Cost: $99/year. Buy at https://developer.apple.com/programs/ when ready.
+
+---
+
+After you finish step 6, ping me with **"firebase done"** and I'll start the auth UI screens.
 
 ## Plan reference
 

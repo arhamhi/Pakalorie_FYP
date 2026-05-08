@@ -2,21 +2,22 @@
 milestone: v1.0
 name: P1 Mid
 created: 2026-05-07
+last_updated: 2026-05-08
 total_phases: 4
-total_requirements: 31
+total_requirements: 33
 coverage: 100%
 ---
 
 # Milestone v1.0 (P1 Mid) Roadmap
 
-**4 phases** | **31 requirements mapped** | All covered ✓
+**4 phases** | **33 requirements mapped** | All covered ✓
 
 | # | Phase | Goal | Requirements | Success Criteria |
 |---|---|---|---|---|
 | 1 | Foundation & Auth | Fork v2, Firebase migration, auth UI shipped | AUTH-01..07 + UI-09 (accent default) | 5 |
 | 2 | Capture/Results UI Polish | Geist + Instrument Serif + 70/20/10 tokens applied to 3 surfaces | UI-01..10 | 5 |
 | 3 | FastAPI + Postgres Backend | Service deployed, seeded, all 4 endpoints live | API-01..09 | 5 |
-| 4 | Demo & Acceptance | EAS build on real Android, demo script, README, verification | DEMO-01..05 | 4 |
+| 4 | Demo & Acceptance | EAS build on Android + iOS simulator, demo script, README, verification | DEMO-01..07 | 5 |
 
 ---
 
@@ -82,14 +83,14 @@ coverage: 100%
 **Goal:** Bug bash, EAS build on Arham's daily Android, rehearsed 90-second demo, supervisor-ready.
 
 **Requirements:**
-- DEMO-01..05
+- DEMO-01..07
 
 **Success criteria:**
-1. EAS dev build installed on Arham's Android; clean install works for a fresh test account
-2. 90-second demo script (signup → Google → capture → result → save → history) runs end-to-end live
-3. Backup screen-recorded video stored on local + Drive
-4. Repo `README.md` includes architecture diagram, env-var list, run instructions
-5. `/gsd-verify-work` shows zero failing acceptance criteria across all 31 requirements
+1. EAS dev build installed on Arham's Android; clean install works for a fresh test account; full demo flow runs live
+2. iOS simulator build succeeds via `eas build --platform ios --profile development --simulator`; auth + capture render without iOS-specific layout regressions
+3. (best-effort) Physical iPhone install via TestFlight if Apple Dev account purchased — same demo flow runs
+4. 90-second demo script (signup → Google → capture → result → save → history) recorded as backup video, stored locally + on Drive
+5. Repo `README.md` includes architecture diagram, env-var list, run instructions; `/gsd-verify-work` shows zero failing acceptance criteria across all 33 requirements
 
 ---
 
@@ -99,9 +100,9 @@ Every REQ-ID in `REQUIREMENTS.md` maps to exactly one phase:
 - Phase 1: AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, AUTH-06, AUTH-07, UI-09 (8)
 - Phase 2: UI-01, UI-02, UI-03, UI-04, UI-05, UI-06, UI-07, UI-08, UI-10 (9)
 - Phase 3: API-01, API-02, API-03, API-04, API-05, API-06, API-07, API-08, API-09 (9)
-- Phase 4: DEMO-01, DEMO-02, DEMO-03, DEMO-04, DEMO-05 (5)
+- Phase 4: DEMO-01, DEMO-02, DEMO-03, DEMO-04, DEMO-05, DEMO-06, DEMO-07 (7)
 
-**Total: 31 / 31 requirements mapped. 100% coverage.**
+**Total: 33 / 33 requirements mapped. 100% coverage.**
 
 ---
 

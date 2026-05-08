@@ -75,7 +75,7 @@ See `REQUIREMENTS.md` for the canonical list. Summary:
 - Restaurant discovery / Google Places (P2 Final)
 - Dark mode runtime switching (June UI sprint)
 - Animations, micro-interactions (June UI sprint)
-- iOS build (Apple Dev cert not purchased; Android-only demo)
+- iOS App Store submission (P2 Final). iOS simulator + best-effort TestFlight demo are in scope.
 
 ## Key Decisions
 
