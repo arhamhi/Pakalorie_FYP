@@ -1,0 +1,308 @@
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  Pressable,
+  ActivityIndicator,
+  type TextInputProps,
+} from 'react-native';
+import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../../contexts/ThemeContext';
+import { Type, FontFamily } from '../../constants/fonts';
+import { Spacing, Radius } from '../../constants/spacing';
+import { Colors } from '../../constants/colors';
+
+/**
+ * Shared atoms for the auth form screens (login / signup / forgot-password).
+ *
+ * These intentionally sit in `src/components/auth/` rather than in the
+ * `(auth)` route group to avoid expo-router treating them as routes.
+ * They use the new Geist + 70/20/10 token system from docs/DESIGN.md;
+ * they do NOT inherit from v2's `src/components/ui/Button` etc. (those
+ * still hardcode PlusJakartaSans for un-migrated screens).
+ */
+
+interface AuthHeaderProps {
+  title: string;
+  subtitle?: string;
+  onBack?: () => void;
+}
+
+export function AuthHeader({ title, subtitle, onBack }: AuthHeaderProps) {
+  const { colors } = useTheme();
+
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+      return;
+    }
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/(auth)/welcome');
+    }
+  };
+
+  return (
+    <View style={{ marginBottom: Spacing['2xl'] }}>
+      <Pressable
+        onPress={handleBack}
+        hitSlop={12}
+        style={({ pressed }) => ({
+          width: 40,
+          height: 40,
+          borderRadius: Radius.pill,
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'transparent',
+          marginBottom: Spacing.xl,
+          marginLeft: -Spacing.sm,
+          opacity: pressed ? 0.5 : 1,
+        })}
+      >
+        <Ionicons name="chevron-back" size={26} color={colors.text.primary} />
+      </Pressable>
+
+      <Text style={{ ...Type.headingLg, color: colors.text.primary }}>{title}</Text>
+
+      {subtitle && (
+        <Text
+          style={{
+            ...Type.bodyLg,
+            color: colors.text.secondary,
+            marginTop: Spacing.xs,
+          }}
+        >
+          {subtitle}
+        </Text>
+      )}
+    </View>
+  );
+}
+
+interface AuthInputProps extends TextInputProps {
+  label: string;
+  error?: string;
+  hint?: string;
+  rightSlot?: React.ReactNode;
+}
+
+export function AuthInput({ label, error, hint, rightSlot, ...textInputProps }: AuthInputProps) {
+  const { colors, accent } = useTheme();
+  const [isFocused, setIsFocused] = useState(false);
+
+  const borderColor = error
+    ? Colors.system.error
+    : isFocused
+    ? accent
+    : colors.surface.tertiary;
+
+  return (
+    <View style={{ marginBottom: Spacing.md }}>
+      <Text
+        style={{
+          ...Type.bodySm,
+          fontFamily: FontFamily.geistMedium,
+          color: colors.text.secondary,
+          marginBottom: Spacing.xs,
+        }}
+      >
+        {label}
+      </Text>
+
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          borderWidth: 1,
+          borderColor,
+          borderRadius: Radius.input,
+          paddingHorizontal: Spacing.md,
+          paddingVertical: Spacing.sm,
+          backgroundColor: colors.surface.primary,
+        }}
+      >
+        <TextInput
+          {...textInputProps}
+          onFocus={(e) => {
+            setIsFocused(true);
+            textInputProps.onFocus?.(e);
+          }}
+          onBlur={(e) => {
+            setIsFocused(false);
+            textInputProps.onBlur?.(e);
+          }}
+          placeholderTextColor={colors.text.tertiary}
+          style={{
+            flex: 1,
+            ...Type.bodyLg,
+            color: colors.text.primary,
+            paddingVertical: 0, // RN Android adds extra padding by default
+          }}
+        />
+        {rightSlot}
+      </View>
+
+      {(error || hint) && (
+        <Text
+          style={{
+            ...Type.bodySm,
+            color: error ? Colors.system.error : colors.text.tertiary,
+            marginTop: Spacing.xxs,
+          }}
+        >
+          {error ?? hint}
+        </Text>
+      )}
+    </View>
+  );
+}
+
+interface PrimaryButtonProps {
+  label: string;
+  onPress: () => void;
+  loading?: boolean;
+  disabled?: boolean;
+}
+
+export function PrimaryButton({ label, onPress, loading, disabled }: PrimaryButtonProps) {
+  const { accent } = useTheme();
+  const isInactive = loading || disabled;
+
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={isInactive}
+      style={({ pressed }) => ({
+        backgroundColor: accent,
+        paddingVertical: Spacing.md,
+        borderRadius: Radius.button,
+        alignItems: 'center',
+        opacity: isInactive ? 0.4 : pressed ? 0.9 : 1,
+      })}
+    >
+      {loading ? (
+        <ActivityIndicator color="#FFFFFF" size="small" />
+      ) : (
+        <Text style={{ ...Type.bodyLg, color: '#FFFFFF', fontFamily: FontFamily.geistSemiBold }}>
+          {label}
+        </Text>
+      )}
+    </Pressable>
+  );
+}
+
+interface GoogleButtonProps {
+  onPress: () => void;
+  loading?: boolean;
+  disabled?: boolean;
+}
+
+export function GoogleButton({ onPress, loading, disabled }: GoogleButtonProps) {
+  const { colors } = useTheme();
+  const isInactive = loading || disabled;
+
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={isInactive}
+      style={({ pressed }) => ({
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: colors.surface.primary,
+        borderWidth: 1,
+        borderColor: colors.surface.tertiary,
+        paddingVertical: Spacing.md,
+        borderRadius: Radius.button,
+        opacity: isInactive ? 0.4 : pressed ? 0.7 : 1,
+      })}
+    >
+      {loading ? (
+        <ActivityIndicator color={colors.text.primary} size="small" />
+      ) : (
+        <>
+          <Ionicons name="logo-google" size={20} color={colors.text.primary} />
+          <Text
+            style={{
+              ...Type.bodyLg,
+              color: colors.text.primary,
+              fontFamily: FontFamily.geistSemiBold,
+              marginLeft: Spacing.sm,
+            }}
+          >
+            Continue with Google
+          </Text>
+        </>
+      )}
+    </Pressable>
+  );
+}
+
+interface DividerProps {
+  label: string;
+}
+
+export function Divider({ label }: DividerProps) {
+  const { colors } = useTheme();
+
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: Spacing.xl,
+      }}
+    >
+      <View style={{ flex: 1, height: 1, backgroundColor: colors.surface.tertiary }} />
+      <Text
+        style={{
+          ...Type.caption,
+          color: colors.text.tertiary,
+          textTransform: 'uppercase',
+          letterSpacing: 0.5,
+          marginHorizontal: Spacing.md,
+        }}
+      >
+        {label}
+      </Text>
+      <View style={{ flex: 1, height: 1, backgroundColor: colors.surface.tertiary }} />
+    </View>
+  );
+}
+
+interface FootLinkProps {
+  prompt: string;
+  actionLabel: string;
+  onPress: () => void;
+}
+
+export function FootLink({ prompt, actionLabel, onPress }: FootLinkProps) {
+  const { colors, accent } = useTheme();
+
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: Spacing.xl,
+      }}
+    >
+      <Text style={{ ...Type.bodyMd, color: colors.text.secondary }}>{prompt} </Text>
+      <Pressable onPress={onPress} hitSlop={8}>
+        <Text
+          style={{
+            ...Type.bodyMd,
+            color: accent,
+            fontFamily: FontFamily.geistSemiBold,
+          }}
+        >
+          {actionLabel}
+        </Text>
+      </Pressable>
+    </View>
+  );
+}

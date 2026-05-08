@@ -15,10 +15,10 @@ last_updated: 2026-05-08
 
 ## Current Position
 
-Phase: **Phase 1 — Foundation & Auth** (in progress)
+Phase: **Phase 1 — Foundation & Auth** (auth UI shipped; smoke-test pending)
 Plan: `.planning/ROADMAP.md`
-Status: AuthContext + Firebase wiring shipped (code-complete); blocked on Firebase Console setup before auth UI screens can be built and tested.
-Last activity: 2026-05-08 — Day 2: Firebase migration shipped (commit `444f7b5`), pushed to https://github.com/arhamhi/Pakalorie_FYP
+Status: Day 3 complete — auth UI screens (welcome, login, signup, forgot-password) shipped with new Geist + 70/20/10 token system. Firebase Console fully wired by Arham. Awaiting `expo prebuild` + on-device smoke-test before marking AUTH-01..07 verified.
+Last activity: 2026-05-08 — Day 3: auth screens + design token primitives shipped.
 
 ## Accumulated Context
 
@@ -31,16 +31,17 @@ See `../.handoff/DECISIONS.md` for full log. Key calls:
 - Repo name: `Pakalorie_FYP` (matches Stitch project)
 - Firebase via `@react-native-firebase/*` (native modules, not JS SDK)
 - Apple Sign-In + Phone OTP stubbed in AuthContext, not removed
+- Auth screens use design tokens directly (Geist + spacing) rather than v2's
+  legacy Button/Input components — those still hardcode PlusJakartaSans and
+  will get migrated during Phase 2 polish.
 
 ### Blockers
-- **Firebase Console setup** (Arham, ~15 min): create project, enable email/password + Google providers, drop `google-services.json` at repo root, paste Web Client ID into `app.json` → `extra.googleSignInWebClientId`. Walkthrough in `../.handoff/STATE.md`.
-- Until this lands, the app builds but Firebase calls fail at runtime — auth UI screens (Day 3) are gated on this.
+- **Smoke-test on device** (Arham): run `npx expo prebuild --clean && npx expo run:android` and exercise the new auth flows. No code blocker.
 
 ### Pending todos
-- **Arham:** Firebase Console setup (BLOCKING)
-- **Claude (Day 3-4):** Build `app/(auth)/{welcome,login,signup,forgot-password}.tsx` using new AuthContext + design tokens
-- **Claude (Day 4-5):** Wire `configureGoogleSignIn(...)` in `app/_layout.tsx`; add auth-gated routing
-- **Codex (Day 6-7):** CDX-001 — Firestore migration spec for non-auth collections (`food_logs`, `hydration_logs`, `favorites`, `chat_sessions`, `weight_logs`)
+- **Arham:** smoke-test on device (Android first, iOS via EAS simulator after).
+- **Claude (Day 4-5):** Capture/results UI polish — apply Geist + 70/20/10 tokens to `app/(tabs)/scan.tsx` (Phase 2 / UI-01..10).
+- **Codex (Day 6-7):** CDX-001 — Firestore migration spec for non-auth collections (`food_logs`, `hydration_logs`, `favorites`, `chat_sessions`, `weight_logs`).
 
 ## Plan Reference
 

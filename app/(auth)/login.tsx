@@ -1,0 +1,209 @@
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  Pressable,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StatusBar,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../../src/contexts/AuthContext';
+import { useTheme } from '../../src/contexts/ThemeContext';
+import {
+  AuthHeader,
+  AuthInput,
+  PrimaryButton,
+  GoogleButton,
+  Divider,
+  FootLink,
+} from '../../src/components/auth/AuthFormPrimitives';
+import { Type, FontFamily } from '../../src/constants/fonts';
+import { Spacing } from '../../src/constants/spacing';
+import type { AuthError } from '../../src/types/auth';
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export default function LoginScreen() {
+  const { signInWithEmail, signInWithGoogle } = useAuth();
+  const { colors, accent } = useTheme();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = useState<string | undefined>();
+  const [passwordError, setPasswordError] = useState<string | undefined>();
+  const [formError, setFormError] = useState<string | undefined>();
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  const validate = (): boolean => {
+    let ok = true;
+    setEmailError(undefined);
+    setPasswordError(undefined);
+    setFormError(undefined);
+
+    if (!email.trim()) {
+      setEmailError('Email is required.');
+      ok = false;
+    } else if (!EMAIL_REGEX.test(email.trim())) {
+      setEmailError('Enter a valid email.');
+      ok = false;
+    }
+
+    if (!password) {
+      setPasswordError('Password is required.');
+      ok = false;
+    }
+
+    return ok;
+  };
+
+  const handleEmailSignIn = async () => {
+    if (!validate()) return;
+    setEmailLoading(true);
+    try {
+      await signInWithEmail(email.trim(), password);
+      // Auth state listener in AuthContext will flip `user` and the
+      // root layout will redirect; nothing to do here.
+    } catch (err) {
+      const authErr = err as AuthError;
+      setFormError(authErr.message ?? 'Could not sign in. Try again.');
+    } finally {
+      setEmailLoading(false);
+    }
+  };
+
+  const handleGoogle = async () => {
+    setFormError(undefined);
+    setGoogleLoading(true);
+    try {
+      await signInWithGoogle();
+    } catch (err) {
+      const authErr = err as AuthError;
+      // Skip the noisy "user cancelled" toast — that's expected UX.
+      if (authErr.code !== 'google-sign-in-cancelled') {
+        setFormError(authErr.message ?? 'Google sign-in failed.');
+      }
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  return (
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: colors.surface.primary }}
+      edges={['top', 'left', 'right']}
+    >
+      <StatusBar barStyle="dark-content" />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingHorizontal: Spacing.xl,
+            paddingTop: Spacing.lg,
+            paddingBottom: Spacing.xl,
+          }}
+          keyboardShouldPersistTaps="handled"
+        >
+          <AuthHeader title="Welcome back" subtitle="Sign in to continue tracking." />
+
+          <AuthInput
+            label="Email"
+            value={email}
+            onChangeText={setEmail}
+            placeholder="you@example.com"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoComplete="email"
+            autoCorrect={false}
+            error={emailError}
+            textContentType="emailAddress"
+          />
+
+          <AuthInput
+            label="Password"
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Enter your password"
+            secureTextEntry={!showPassword}
+            autoCapitalize="none"
+            autoComplete="password"
+            autoCorrect={false}
+            error={passwordError}
+            textContentType="password"
+            rightSlot={
+              <Pressable
+                onPress={() => setShowPassword((v) => !v)}
+                hitSlop={8}
+                style={{ padding: 4 }}
+              >
+                <Ionicons
+                  name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                  size={20}
+                  color={colors.text.tertiary}
+                />
+              </Pressable>
+            }
+          />
+
+          <Pressable
+            onPress={() => router.push('/(auth)/forgot-password')}
+            hitSlop={6}
+            style={{ alignSelf: 'flex-end', marginBottom: Spacing.lg }}
+          >
+            <Text
+              style={{
+                ...Type.bodyMd,
+                color: accent,
+                fontFamily: FontFamily.geistMedium,
+              }}
+            >
+              Forgot password?
+            </Text>
+          </Pressable>
+
+          {formError && (
+            <Text
+              style={{
+                ...Type.bodySm,
+                color: '#D32F2F',
+                marginBottom: Spacing.sm,
+                textAlign: 'center',
+              }}
+            >
+              {formError}
+            </Text>
+          )}
+
+          <PrimaryButton
+            label="Sign in"
+            onPress={handleEmailSignIn}
+            loading={emailLoading}
+            disabled={googleLoading}
+          />
+
+          <Divider label="or" />
+
+          <GoogleButton
+            onPress={handleGoogle}
+            loading={googleLoading}
+            disabled={emailLoading}
+          />
+
+          <FootLink
+            prompt="Don't have an account?"
+            actionLabel="Sign up"
+            onPress={() => router.replace('/(auth)/signup')}
+          />
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
+}

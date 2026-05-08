@@ -62,7 +62,7 @@
       [
         "@react-native-google-signin/google-signin",
         {
-          "iosUrlScheme": "com.googleusercontent.apps.PASTE_REVERSED_CLIENT_ID_HERE"
+          "iosUrlScheme": "com.googleusercontent.apps.562903530107-fdcg3jnkgljs993l84dg3armuodk96bi"
         }
       ],
       [
@@ -77,8 +77,8 @@
       "typedRoutes": true
     },
     "extra": {
-      "googleSignInWebClientId": "",
-      "googleSignInIosClientId": ""
+      "googleSignInWebClientId": "562903530107-cbu9mkdqg5mokdlbucmakd56hg8o7lqi.apps.googleusercontent.com",
+      "googleSignInIosClientId": "562903530107-fdcg3jnkgljs993l84dg3armuodk96bi.apps.googleusercontent.com"
     }
   }
 }

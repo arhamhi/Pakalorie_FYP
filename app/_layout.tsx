@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { Stack, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { View, ActivityIndicator, Platform } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 import {
   useFonts,
   PlusJakartaSans_300Light,
@@ -19,10 +19,18 @@ import {
   IBMPlexMono_600SemiBold,
   IBMPlexMono_700Bold,
 } from '@expo-google-fonts/ibm-plex-mono';
+import {
+  Geist_400Regular,
+  Geist_500Medium,
+  Geist_600SemiBold,
+  Geist_700Bold,
+} from '@expo-google-fonts/geist';
+import { InstrumentSerif_400Regular } from '@expo-google-fonts/instrument-serif';
 import { AuthProvider } from '../src/contexts/AuthContext';
 import { ThemeProvider, useTheme } from '../src/contexts/ThemeContext';
 import { OnboardingProvider } from '../src/contexts/OnboardingContext';
 import { LanguageProvider } from '../src/contexts/LanguageContext';
+import { configureGoogleSignIn } from '../src/lib/firebase';
 import {
   requestNotificationPermissions,
   rescheduleAllNotifications,
@@ -42,50 +50,73 @@ const queryClient = new QueryClient({
   },
 });
 
+/**
+ * Configure Google Sign-In once at app start. Reads the Web Client ID from
+ * Expo `extra` config (set in app.json after Firebase Console setup). The
+ * Web Client ID is what Firebase requires when exchanging the Google ID
+ * token — NOT the Android or iOS client ID.
+ */
+function bootGoogleSignIn(): void {
+  const webClientId =
+    (Constants.expoConfig?.extra?.googleSignInWebClientId as string | undefined) ?? '';
+
+  if (!webClientId) {
+    // Surface loudly in dev; production builds should never hit this.
+    if (__DEV__) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        '[auth] googleSignInWebClientId is empty in app.json → Google Sign-In will fail. ' +
+          'Paste the Web Client ID from Firebase Console → Authentication → Sign-in method → Google.'
+      );
+    }
+    return;
+  }
+
+  configureGoogleSignIn(webClientId);
+}
+
 function RootLayoutNav() {
   const { theme, colors } = useTheme();
   const router = useRouter();
   const notificationListener = useRef<(() => void) | null>(null);
 
   useEffect(() => {
+    bootGoogleSignIn();
+
     // Initialize notifications
     const initNotifications = async () => {
-      // Request permissions
       const granted = await requestNotificationPermissions();
-      
+
       if (granted) {
-        // Check if user is returning after absence
         const daysAway = await getDaysSinceLastActive();
         if (daysAway >= 3) {
           await sendComebackNotification(daysAway);
         }
-
-        // Schedule all recurring notifications
         await rescheduleAllNotifications();
       }
 
-      // Update last active date
       await updateLastActiveDate();
     };
 
     initNotifications();
 
-    // Set up notification response handler
     notificationListener.current = setupNotificationResponseHandler(
-      // When notification received while app is open
       (notification) => {
-        console.log('Notification received:', notification.request.content.title);
+        if (__DEV__) {
+          // eslint-disable-next-line no-console
+          console.log('Notification received:', notification.request.content.title);
+        }
       },
-      // When user taps on notification
       (response) => {
-        console.log('Notification tapped:', response.notification.request.content.title);
-        // Navigate to home screen when notification is tapped
+        if (__DEV__) {
+          // eslint-disable-next-line no-console
+          console.log('Notification tapped:', response.notification.request.content.title);
+        }
         router.push('/(tabs)');
       }
     );
 
     return () => {
-      // Cleanup notification listeners
       if (notificationListener.current) {
         notificationListener.current();
       }
@@ -105,6 +136,7 @@ function RootLayoutNav() {
         }}
       >
         <Stack.Screen name="index" />
+        <Stack.Screen name="(auth)" />
         <Stack.Screen name="onboarding" />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="discover" />
@@ -115,6 +147,14 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
+    // Pakalorie design system (Geist + Instrument Serif)
+    Geist_400Regular,
+    Geist_500Medium,
+    Geist_600SemiBold,
+    Geist_700Bold,
+    InstrumentSerif_400Regular,
+    // v2 legacy fonts (still referenced by un-migrated screens; remove in
+    // Phase 2 when polish pass lands across all surfaces)
     PlusJakartaSans_300Light,
     PlusJakartaSans_400Regular,
     PlusJakartaSans_500Medium,
@@ -128,7 +168,14 @@ export default function RootLayout() {
 
   if (!fontsLoaded) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#121212' }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#FFFFFF',
+        }}
+      >
         <ActivityIndicator size="large" color="#1BAD66" />
       </View>
     );
@@ -150,4 +197,3 @@ export default function RootLayout() {
     </GestureHandlerRootView>
   );
 }
-
