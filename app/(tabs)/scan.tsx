@@ -2,40 +2,59 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
   Image,
   Alert,
   ScrollView,
   ActivityIndicator,
   TextInput,
+  Pressable,
+  Linking,
+  Platform,
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import * as Haptics from 'expo-haptics';
-import { MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  CameraIcon,
+  ImageSquareIcon,
+  XIcon,
+  ArrowLeftIcon,
+  MinusIcon,
+  PlusIcon,
+  ArrowsClockwiseIcon,
+  CheckCircleIcon,
+  WarningCircleIcon,
+  CoffeeIcon,
+  ForkKnifeIcon,
+  BowlFoodIcon,
+  IceCreamIcon,
+} from 'phosphor-react-native';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { supabase } from '../../src/lib/supabase';
 import { identifyFood, FoodIdentificationResult } from '../../src/lib/gemini';
-import { Button, Card } from '../../src/components/ui';
 import { FOOD_MODIFIERS } from '../../src/constants/nutrition';
+import { Type, FontFamily } from '../../src/constants/fonts';
+import { Spacing, Radius } from '../../src/constants/spacing';
 
 type ScanState = 'camera' | 'preview' | 'result';
 type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
 
 interface ScanResult extends FoodIdentificationResult {}
 
-const MEAL_TYPES: { value: MealType; label: string; icon: string }[] = [
-  { value: 'breakfast', label: 'Breakfast', icon: 'free-breakfast' },
-  { value: 'lunch', label: 'Lunch', icon: 'restaurant' },
-  { value: 'dinner', label: 'Dinner', icon: 'dinner-dining' },
-  { value: 'snack', label: 'Snack', icon: 'icecream' },
+const CONFIDENCE_LOW_THRESHOLD = 0.7;
+
+const MEAL_TYPES: { value: MealType; label: string; Icon: typeof CoffeeIcon }[] = [
+  { value: 'breakfast', label: 'Breakfast', Icon: CoffeeIcon },
+  { value: 'lunch', label: 'Lunch', Icon: ForkKnifeIcon },
+  { value: 'dinner', label: 'Dinner', Icon: BowlFoodIcon },
+  { value: 'snack', label: 'Snack', Icon: IceCreamIcon },
 ];
 
 export default function ScanScreen() {
-  const { colors, accent, theme } = useTheme();
+  const { colors, accent } = useTheme();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const cameraRef = useRef<CameraView>(null);
@@ -49,21 +68,12 @@ export default function ScanScreen() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [servings, setServings] = useState(1);
   const [additionalNotes, setAdditionalNotes] = useState('');
+  const [adjustmentsApplied, setAdjustmentsApplied] = useState(false);
   const [isCameraReady, setIsCameraReady] = useState(false);
 
-  const onCameraReady = () => {
-    console.log('Camera is ready');
-    setIsCameraReady(true);
-  };
-
-  // Ref to track if we should auto-analyze
-  const shouldAutoAnalyze = useRef(false);
-  
-  // Ref to track component mount state and timer IDs for cleanup
   const isMountedRef = useRef(true);
   const analysisTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  
-  // Cleanup effect to prevent memory leaks and stale callbacks
+
   useEffect(() => {
     isMountedRef.current = true;
     return () => {
@@ -75,131 +85,82 @@ export default function ScanScreen() {
     };
   }, []);
 
-  // Analyze function
-  const runAnalysis = async (uri: string) => {
-    console.log('runAnalysis called with URI:', uri);
-    setIsAnalyzing(true);
+  const onCameraReady = () => setIsCameraReady(true);
 
+  const runAnalysis = async (uri: string) => {
+    setIsAnalyzing(true);
     try {
       const scanResult = await identifyFood(uri);
-      console.log('Analysis result:', scanResult);
-
       if (scanResult && scanResult.name) {
         setResult(scanResult);
         setState('result');
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       } else {
-        Alert.alert('Error', 'Could not identify food in the image. Please try with a clearer photo.');
+        Alert.alert('Could not identify food', 'Try a clearer photo with better lighting.');
       }
-    } catch (error: any) {
-      console.error('Analysis error:', error);
-      Alert.alert(
-        'Analysis Failed',
-        error?.message || 'Failed to analyze image. Check your internet connection and try again.'
-      );
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : 'Failed to analyze image.';
+      Alert.alert('Analysis failed', `${msg} Check your internet and try again.`);
     } finally {
       setIsAnalyzing(false);
     }
   };
 
-  // Use Gemini AI for food identification
-  const analyzeImage = async (uri: string): Promise<ScanResult> => {
-    return await identifyFood(uri);
-  };
-
   const takePicture = async () => {
-    console.log('takePicture called');
-    console.log('cameraRef.current:', !!cameraRef.current);
-    console.log('isCameraReady:', isCameraReady);
-
     if (!cameraRef.current || !isCameraReady) {
-      Alert.alert('Error', 'Camera not ready. Please wait a moment and try again.');
+      Alert.alert('Camera not ready', 'Wait a moment and try again.');
       return;
     }
-
     try {
-      console.log('Taking picture...');
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      const photo = await cameraRef.current.takePictureAsync({
-        quality: 0.8,
-        skipProcessing: false,
-      });
-      console.log('Photo taken:', photo);
+      const photo = await cameraRef.current.takePictureAsync({ quality: 0.8, skipProcessing: false });
       if (photo?.uri) {
         setImageUri(photo.uri);
         setState('preview');
-        // Auto-start analysis with mounted check
         analysisTimerRef.current = setTimeout(() => {
-          if (isMountedRef.current) {
-            runAnalysis(photo.uri);
-          }
+          if (isMountedRef.current) runAnalysis(photo.uri);
         }, 300);
-      } else {
-        Alert.alert('Error', 'Failed to capture photo. Please try again.');
       }
-    } catch (error: any) {
-      console.error('Error taking picture:', error);
-      Alert.alert('Camera Error', error?.message || 'Failed to take picture. Try using gallery instead.');
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : 'Failed to take picture.';
+      Alert.alert('Camera error', `${msg} Try the gallery instead.`);
     }
   };
 
   const pickImage = async () => {
-    console.log('pickImage called');
     try {
-      console.log('Requesting media library permission...');
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      console.log('Permission result:', permissionResult);
       if (!permissionResult.granted) {
-        Alert.alert('Permission Required', 'Please allow access to your photo library to select images.');
+        Alert.alert('Permission required', 'Allow photo library access to upload an image.');
         return;
       }
-
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         aspect: [1, 1],
         quality: 0.8,
       });
-
-      console.log('Image picker result:', result);
-
-      if (!result.canceled && result.assets && result.assets[0]) {
+      if (!result.canceled && result.assets?.[0]) {
         const uri = result.assets[0].uri;
-        console.log('Selected image URI:', uri);
         setImageUri(uri);
         setState('preview');
-        // Auto-start analysis with mounted check
         analysisTimerRef.current = setTimeout(() => {
-          if (isMountedRef.current) {
-            runAnalysis(uri);
-          }
+          if (isMountedRef.current) runAnalysis(uri);
         }, 300);
       }
-    } catch (error: any) {
-      console.error('Error picking image:', error);
-      Alert.alert('Error', error?.message || 'Failed to pick image from gallery.');
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : 'Failed to pick image.';
+      Alert.alert('Error', msg);
     }
   };
 
-  const handleAnalyze = () => {
-    console.log('handleAnalyze button pressed');
-    if (imageUri) {
-      runAnalysis(imageUri);
-    }
-  };
-
-  // Calculate modifier multiplier for calories
   const getModifierMultiplier = () => {
     let multiplier = 1;
     let addition = 0;
-    selectedModifiers.forEach(mod => {
+    selectedModifiers.forEach((mod) => {
       const modifier = FOOD_MODIFIERS[mod as keyof typeof FOOD_MODIFIERS];
-      if (modifier && 'calorieMultiplier' in modifier) {
-        multiplier *= modifier.calorieMultiplier;
-      }
-      if (modifier && 'calorieAdd' in modifier) {
-        addition += modifier.calorieAdd;
-      }
+      if (modifier && 'calorieMultiplier' in modifier) multiplier *= modifier.calorieMultiplier;
+      if (modifier && 'calorieAdd' in modifier) addition += modifier.calorieAdd;
     });
     return { multiplier, addition };
   };
@@ -209,50 +170,45 @@ export default function ScanScreen() {
     let calories = result.calories * servings;
     if (withModifiers) {
       const { multiplier, addition } = getModifierMultiplier();
-      calories = (calories * multiplier) + addition;
+      calories = calories * multiplier + addition;
     }
     return Math.round(calories);
   };
 
   const calculateFinalMacro = (value: number, withModifiers = false) => {
-    let result = value * servings;
+    let r = value * servings;
     if (withModifiers) {
       const { multiplier } = getModifierMultiplier();
-      result *= multiplier;
+      r *= multiplier;
     }
-    return Math.round(result);
+    return Math.round(r);
   };
 
-  // State to track if adjustments are applied
-  const [adjustmentsApplied, setAdjustmentsApplied] = useState(false);
-
-  // Apply adjustments when modifiers change
   const applyAdjustments = () => {
     setAdjustmentsApplied(true);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
-  // Build notes string from quick adds and additional notes
   const buildNotesString = () => {
     const parts: string[] = [];
     if (selectedModifiers.length > 0) {
-      const modLabels = selectedModifiers.map(mod =>
-        FOOD_MODIFIERS[mod as keyof typeof FOOD_MODIFIERS]?.label || mod
+      const modLabels = selectedModifiers.map(
+        (mod) => FOOD_MODIFIERS[mod as keyof typeof FOOD_MODIFIERS]?.label ?? mod
       );
       parts.push(modLabels.join(', '));
     }
-    if (additionalNotes.trim()) {
-      parts.push(additionalNotes.trim());
-    }
+    if (additionalNotes.trim()) parts.push(additionalNotes.trim());
     return parts.join(' - ');
   };
 
   const logMeal = useMutation({
     mutationFn: async () => {
       if (!user || !result) throw new Error('Missing data');
-
       const notes = buildNotesString();
       const useAdjusted = adjustmentsApplied && selectedModifiers.length > 0;
+      // NOTE: still writes to Supabase until CDX-001 ships. The history-reading
+      // surfaces (home tab, calendar log) read from Supabase too, so flipping
+      // to Firestore in isolation would break them. Migration is paired work.
       const { error } = await supabase.from('food_logs').insert({
         user_id: user.id,
         name: result.name,
@@ -260,20 +216,20 @@ export default function ScanScreen() {
         protein: calculateFinalMacro(result.protein, useAdjusted),
         carbs: calculateFinalMacro(result.carbs, useAdjusted),
         fat: calculateFinalMacro(result.fat, useAdjusted),
+        fiber: result.fiber != null ? calculateFinalMacro(result.fiber, useAdjusted) : null,
         meal_type: mealType,
         image_path: imageUri,
         notes: notes || null,
       });
-
       if (error) throw error;
     },
     onSuccess: () => {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       queryClient.invalidateQueries({ queryKey: ['foodLogs'] });
-      Alert.alert('Success', 'Meal logged successfully!');
+      Alert.alert('Saved', 'Meal logged successfully.');
       resetScanner();
     },
-    onError: (error) => {
+    onError: () => {
       Alert.alert('Error', 'Failed to log meal. Please try again.');
     },
   });
@@ -284,19 +240,22 @@ export default function ScanScreen() {
     setResult(null);
     setSelectedModifiers([]);
     setIsCameraReady(false);
-    shouldAutoAnalyze.current = false;
     setServings(1);
     setAdditionalNotes('');
     setAdjustmentsApplied(false);
   };
 
   const toggleModifier = (mod: string) => {
-    setSelectedModifiers(prev =>
-      prev.includes(mod) ? prev.filter(m => m !== mod) : [...prev, mod]
+    setSelectedModifiers((prev) =>
+      prev.includes(mod) ? prev.filter((m) => m !== mod) : [...prev, mod]
     );
+    setAdjustmentsApplied(false);
   };
 
-  // Handle permission loading state
+  // ─────────────────────────────────────────────────────────────────────────
+  // Permission states
+  // ─────────────────────────────────────────────────────────────────────────
+
   if (permission === null) {
     return (
       <View
@@ -307,49 +266,18 @@ export default function ScanScreen() {
           alignItems: 'center',
         }}
       >
-        <Text style={{ color: colors.text.secondary }}>Loading camera...</Text>
+        <ActivityIndicator color={accent} />
       </View>
     );
   }
 
   if (!permission.granted) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: colors.surface.primary,
-          justifyContent: 'center',
-          alignItems: 'center',
-          paddingHorizontal: 24,
-        }}
-      >
-        <MaterialIcons name="photo-camera" size={64} color={colors.text.tertiary} />
-        <Text
-          style={{
-            fontFamily: 'PlusJakartaSans_600SemiBold',
-            fontSize: 20,
-            color: colors.text.primary,
-            marginTop: 24,
-            marginBottom: 8,
-          }}
-        >
-          Camera Access Needed
-        </Text>
-        <Text
-          style={{
-            fontFamily: 'PlusJakartaSans_400Regular',
-            fontSize: 14,
-            color: colors.text.secondary,
-            textAlign: 'center',
-            marginBottom: 24,
-          }}
-        >
-          Allow camera access to scan your meals and track calories automatically.
-        </Text>
-        <Button title="Grant Permission" onPress={requestPermission} size="lg" />
-      </View>
-    );
+    return <CameraPermissionCard onGrant={requestPermission} canAskAgain={permission.canAskAgain} />;
   }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Camera state
+  // ─────────────────────────────────────────────────────────────────────────
 
   if (state === 'camera') {
     return (
@@ -360,35 +288,37 @@ export default function ScanScreen() {
           facing="back"
           onCameraReady={onCameraReady}
         >
-          {/* Header */}
+          {/* Top bar — close button */}
           <View
             style={{
               flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingHorizontal: 20,
-              paddingTop: 60,
+              justifyContent: 'flex-end',
+              paddingHorizontal: Spacing.lg,
+              paddingTop: Platform.OS === 'ios' ? 60 : Spacing['2xl'],
             }}
           >
-            <TouchableOpacity
+            <Pressable
               onPress={() => router.back()}
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 22,
+              hitSlop={8}
+              style={({ pressed }) => ({
+                width: 40,
+                height: 40,
+                borderRadius: Radius.pill,
                 backgroundColor: 'rgba(0,0,0,0.5)',
                 justifyContent: 'center',
                 alignItems: 'center',
-              }}
+                opacity: pressed ? 0.7 : 1,
+              })}
             >
-              <MaterialIcons name="close" size={24} color="#fff" />
-            </TouchableOpacity>
+              <XIcon size={20} color="#FFFFFF" weight="bold" />
+            </Pressable>
           </View>
 
-          {/* Bottom Controls */}
+          {/* Bottom sheet over camera — capture button + gallery */}
           <View
             style={{
               position: 'absolute',
-              bottom: 120,
+              bottom: Platform.OS === 'ios' ? 130 : 110,
               left: 0,
               right: 0,
               alignItems: 'center',
@@ -396,61 +326,65 @@ export default function ScanScreen() {
           >
             <Text
               style={{
-                fontFamily: 'PlusJakartaSans_500Medium',
-                fontSize: 14,
-                color: '#fff',
-                marginBottom: 24,
+                ...Type.bodyMd,
+                color: '#FFFFFF',
+                marginBottom: Spacing.lg,
+                textAlign: 'center',
+                opacity: 0.9,
               }}
             >
-              {isCameraReady ? 'Point at your food' : 'Loading camera...'}
+              {isCameraReady ? 'Point at your food' : 'Loading camera…'}
             </Text>
+
             <View
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
-                gap: 40,
+                gap: Spacing['3xl'],
               }}
             >
-              <TouchableOpacity
+              <Pressable
                 onPress={pickImage}
-                style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: 12,
-                  backgroundColor: 'rgba(255,255,255,0.2)',
-                  justifyContent: 'center',
+                hitSlop={6}
+                style={({ pressed }) => ({
+                  width: 52,
+                  height: 52,
+                  borderRadius: Radius.button,
+                  backgroundColor: 'rgba(255,255,255,0.18)',
                   alignItems: 'center',
-                }}
+                  justifyContent: 'center',
+                  opacity: pressed ? 0.7 : 1,
+                })}
               >
-                <MaterialIcons name="photo-library" size={24} color="#fff" />
-              </TouchableOpacity>
+                <ImageSquareIcon size={24} color="#FFFFFF" weight="duotone" />
+              </Pressable>
 
-              <TouchableOpacity
+              <Pressable
                 onPress={takePicture}
                 disabled={!isCameraReady}
-                style={{
+                style={({ pressed }) => ({
                   width: 80,
                   height: 80,
-                  borderRadius: 40,
-                  backgroundColor: '#fff',
-                  justifyContent: 'center',
+                  borderRadius: Radius.pill,
+                  backgroundColor: '#FFFFFF',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   borderWidth: 4,
                   borderColor: isCameraReady ? accent : 'rgba(255,255,255,0.3)',
-                  opacity: isCameraReady ? 1 : 0.5,
-                }}
+                  opacity: !isCameraReady ? 0.5 : pressed ? 0.85 : 1,
+                })}
               >
                 <View
                   style={{
                     width: 64,
                     height: 64,
-                    borderRadius: 32,
+                    borderRadius: Radius.pill,
                     backgroundColor: isCameraReady ? accent : 'rgba(255,255,255,0.3)',
                   }}
                 />
-              </TouchableOpacity>
+              </Pressable>
 
-              <View style={{ width: 50, height: 50 }} />
+              <View style={{ width: 52, height: 52 }} />
             </View>
           </View>
         </CameraView>
@@ -458,27 +392,27 @@ export default function ScanScreen() {
     );
   }
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // Preview state — image + analyzing overlay + retake/analyze CTAs
+  // ─────────────────────────────────────────────────────────────────────────
+
   if (state === 'preview') {
     if (!imageUri) {
-      // Safety check - go back to camera if no image
       setState('camera');
       return null;
     }
-
     return (
-      <View style={{ flex: 1, backgroundColor: colors.surface.primary }}>
+      <View style={{ flex: 1, backgroundColor: '#000' }}>
         <Image
           source={{ uri: imageUri }}
           style={{ flex: 1 }}
           resizeMode="cover"
-          onError={(e) => {
-            console.error('Image load error:', e.nativeEvent.error);
-            Alert.alert('Error', 'Failed to load image. Please try again.');
+          onError={() => {
+            Alert.alert('Error', 'Failed to load image.');
             resetScanner();
           }}
         />
 
-        {/* Loading Overlay */}
         {isAnalyzing && (
           <View
             style={{
@@ -487,7 +421,7 @@ export default function ScanScreen() {
               left: 0,
               right: 0,
               bottom: 0,
-              backgroundColor: 'rgba(0,0,0,0.7)',
+              backgroundColor: 'rgba(0,0,0,0.65)',
               justifyContent: 'center',
               alignItems: 'center',
             }}
@@ -495,23 +429,21 @@ export default function ScanScreen() {
             <ActivityIndicator size="large" color={accent} />
             <Text
               style={{
-                fontFamily: 'PlusJakartaSans_600SemiBold',
-                fontSize: 18,
-                color: '#fff',
-                marginTop: 16,
+                ...Type.headingSm,
+                color: '#FFFFFF',
+                marginTop: Spacing.md,
               }}
             >
-              Analyzing your food...
+              Analyzing your food…
             </Text>
             <Text
               style={{
-                fontFamily: 'PlusJakartaSans_400Regular',
-                fontSize: 14,
+                ...Type.bodyMd,
                 color: 'rgba(255,255,255,0.7)',
-                marginTop: 8,
+                marginTop: Spacing.xs,
               }}
             >
-              Ustad is identifying the dish
+              Identifying the dish
             </Text>
           </View>
         )}
@@ -522,27 +454,22 @@ export default function ScanScreen() {
             bottom: 0,
             left: 0,
             right: 0,
-            padding: 24,
-            paddingBottom: 40,
+            paddingHorizontal: Spacing.xl,
+            paddingTop: Spacing.xl,
+            paddingBottom: Platform.OS === 'ios' ? 40 : Spacing.xl,
             backgroundColor: colors.surface.primary,
-            borderTopLeftRadius: 24,
-            borderTopRightRadius: 24,
+            borderTopLeftRadius: Radius.card * 1.5,
+            borderTopRightRadius: Radius.card * 1.5,
           }}
         >
-          <View style={{ flexDirection: 'row', gap: 12 }}>
-            <Button
-              title="Retake"
-              onPress={resetScanner}
-              variant="outline"
-              style={{ flex: 1 }}
-              disabled={isAnalyzing}
-            />
-            <Button
-              title={isAnalyzing ? 'Analyzing...' : 'Analyze'}
-              onPress={handleAnalyze}
+          <View style={{ flexDirection: 'row', gap: Spacing.sm }}>
+            <SecondaryButton label="Retake" onPress={resetScanner} disabled={isAnalyzing} flex />
+            <PrimaryButton
+              label={isAnalyzing ? 'Analyzing…' : 'Analyze'}
+              onPress={() => imageUri && runAnalysis(imageUri)}
               loading={isAnalyzing}
-              style={{ flex: 1 }}
               disabled={isAnalyzing}
+              flex
             />
           </View>
         </View>
@@ -550,458 +477,712 @@ export default function ScanScreen() {
     );
   }
 
-  // Result screen
+  // ─────────────────────────────────────────────────────────────────────────
+  // Result state — DESIGN.md §5: hero card + 4-card macro grid + adjust + save
+  // ─────────────────────────────────────────────────────────────────────────
+
+  const useAdjusted = adjustmentsApplied && selectedModifiers.length > 0;
+  const heroCalories = calculateFinalCalories(useAdjusted);
+  const baseCalories = calculateFinalCalories(false);
+  const confidence = result?.confidence ?? 0;
+  const isLowConfidence = confidence > 0 && confidence < CONFIDENCE_LOW_THRESHOLD;
+
   return (
-    <View style={{ flex: 1, backgroundColor: colors.surface.primary }}>
+    <View style={{ flex: 1, backgroundColor: colors.surface.secondary }}>
       <ScrollView
-        contentContainerStyle={{ padding: 20, paddingTop: 60, paddingBottom: 180 }}
-        showsVerticalScrollIndicator={true}
+        contentContainerStyle={{
+          paddingHorizontal: Spacing.xl,
+          paddingTop: Platform.OS === 'ios' ? 60 : Spacing['2xl'],
+          paddingBottom: 180,
+        }}
+        showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
         {/* Header */}
         <View
           style={{
             flexDirection: 'row',
-            justifyContent: 'space-between',
             alignItems: 'center',
-            marginBottom: 24,
+            justifyContent: 'space-between',
+            marginBottom: Spacing.xl,
           }}
         >
-          <TouchableOpacity onPress={resetScanner}>
-            <MaterialIcons name="arrow-back" size={24} color={colors.text.primary} />
-          </TouchableOpacity>
-          <Text
-            style={{
-              fontFamily: 'PlusJakartaSans_600SemiBold',
-              fontSize: 18,
-              color: colors.text.primary,
-            }}
-          >
-            Log Meal
-          </Text>
+          <Pressable onPress={resetScanner} hitSlop={12}>
+            <ArrowLeftIcon size={24} color={colors.text.primary} weight="regular" />
+          </Pressable>
+          <Text style={{ ...Type.headingSm, color: colors.text.primary }}>Log meal</Text>
           <View style={{ width: 24 }} />
         </View>
 
-        {/* Food Image */}
+        {/* Food image */}
         {imageUri && (
           <Image
             source={{ uri: imageUri }}
             style={{
               width: '100%',
               height: 200,
-              borderRadius: 16,
-              marginBottom: 20,
+              borderRadius: Radius.card,
+              marginBottom: Spacing.lg,
             }}
             resizeMode="cover"
           />
         )}
 
-        {/* Food Info Card */}
-        <Card style={{ marginBottom: 20 }}>
-          <Text
-            style={{
-              fontFamily: 'PlusJakartaSans_700Bold',
-              fontSize: 24,
-              color: colors.text.primary,
-              marginBottom: 4,
-            }}
-          >
-            {result?.name}
-          </Text>
-          {result?.nameUrdu && (
-            <Text
-              style={{
-                fontFamily: 'PlusJakartaSans_400Regular',
-                fontSize: 14,
-                color: colors.text.tertiary,
-                marginBottom: 8,
-              }}
-            >
-              {result.nameUrdu}
-            </Text>
-          )}
-
-          {/* Servings Slider */}
+        {/* Hero card */}
+        <View
+          style={{
+            backgroundColor: colors.surface.primary,
+            borderRadius: Radius.card,
+            borderWidth: 1,
+            borderColor: colors.surface.tertiary,
+            padding: Spacing.lg,
+            marginBottom: Spacing.lg,
+          }}
+        >
           <View
             style={{
               flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginVertical: 16,
-              paddingVertical: 12,
-              backgroundColor: colors.surface.secondary,
-              borderRadius: 12,
+              alignItems: 'flex-start',
+              justifyContent: 'space-between',
+              marginBottom: Spacing.sm,
             }}
           >
-            <TouchableOpacity
-              onPress={() => setServings(Math.max(0.5, servings - 0.5))}
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 22,
-                backgroundColor: colors.surface.tertiary,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <MaterialIcons name="remove" size={24} color={colors.text.primary} />
-            </TouchableOpacity>
-            <View style={{ marginHorizontal: 24, alignItems: 'center' }}>
-              <Text
-                style={{
-                  fontFamily: 'IBMPlexMono_700Bold',
-                  fontSize: 32,
-                  color: colors.text.primary,
-                }}
-              >
-                {servings}
+            <View style={{ flex: 1, paddingRight: Spacing.sm }}>
+              <Text style={{ ...Type.headingLg, color: colors.text.primary }}>
+                {result?.name}
               </Text>
-              <Text
-                style={{
-                  fontFamily: 'PlusJakartaSans_400Regular',
-                  fontSize: 14,
-                  color: colors.text.tertiary,
-                }}
-              >
-                {servings === 1 ? 'serving' : 'servings'}
-              </Text>
+              {result?.nameUrdu && (
+                <Text
+                  style={{
+                    ...Type.bodyMd,
+                    color: colors.text.tertiary,
+                    marginTop: Spacing.xxs,
+                  }}
+                >
+                  {result.nameUrdu}
+                </Text>
+              )}
             </View>
-            <TouchableOpacity
-              onPress={() => setServings(servings + 0.5)}
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 22,
-                backgroundColor: colors.surface.tertiary,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <MaterialIcons name="add" size={24} color={colors.text.primary} />
-            </TouchableOpacity>
+            {confidence > 0 && (
+              <ConfidencePill confidence={confidence} accent={accent} colors={colors} />
+            )}
           </View>
 
-          {/* Calories */}
-          <View style={{ alignItems: 'center' }}>
+          {/* Hero calorie number — Instrument Serif */}
+          <View style={{ alignItems: 'center', marginVertical: Spacing.lg }}>
             <Text
               style={{
-                fontFamily: 'IBMPlexMono_700Bold',
-                fontSize: 40,
-                color: accent,
+                ...Type.displayHero,
+                color: colors.text.primary,
                 textAlign: 'center',
               }}
             >
-              {adjustmentsApplied ? calculateFinalCalories(true) : calculateFinalCalories(false)}
-              <Text
-                style={{
-                  fontFamily: 'PlusJakartaSans_400Regular',
-                  fontSize: 16,
-                  color: colors.text.tertiary,
-                }}
-              >
-                {' '}kcal
-              </Text>
+              {heroCalories}
             </Text>
-            {adjustmentsApplied && selectedModifiers.length > 0 && (
+            <Text
+              style={{
+                ...Type.bodyMd,
+                color: colors.text.secondary,
+                marginTop: Spacing.xs,
+              }}
+            >
+              kcal
+            </Text>
+            {useAdjusted && heroCalories !== baseCalories && (
               <Text
                 style={{
-                  fontFamily: 'PlusJakartaSans_400Regular',
-                  fontSize: 12,
+                  ...Type.bodySm,
                   color: colors.text.tertiary,
-                  marginTop: 4,
+                  marginTop: Spacing.xxs,
                 }}
               >
-                (adjusted from {calculateFinalCalories(false)} kcal)
+                adjusted from {baseCalories} kcal
               </Text>
             )}
           </View>
 
-          {/* Macros */}
+          {/* Servings stepper */}
           <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              marginTop: 20,
-              paddingTop: 16,
-              borderTopWidth: 1,
-              borderTopColor: colors.surface.tertiary,
-            }}
-          >
-            <View style={{ alignItems: 'center' }}>
-              <Text
-                style={{
-                  fontFamily: 'IBMPlexMono_600SemiBold',
-                  fontSize: 18,
-                  color: '#FF6B6B',
-                }}
-              >
-                {adjustmentsApplied ? calculateFinalMacro(result?.protein || 0, true) : calculateFinalMacro(result?.protein || 0)}g
-              </Text>
-              <Text
-                style={{
-                  fontFamily: 'PlusJakartaSans_400Regular',
-                  fontSize: 12,
-                  color: colors.text.tertiary,
-                }}
-              >
-                Protein
-              </Text>
-            </View>
-            <View style={{ alignItems: 'center' }}>
-              <Text
-                style={{
-                  fontFamily: 'IBMPlexMono_600SemiBold',
-                  fontSize: 18,
-                  color: '#FFC107',
-                }}
-              >
-                {adjustmentsApplied ? calculateFinalMacro(result?.carbs || 0, true) : calculateFinalMacro(result?.carbs || 0)}g
-              </Text>
-              <Text
-                style={{
-                  fontFamily: 'PlusJakartaSans_400Regular',
-                  fontSize: 12,
-                  color: colors.text.tertiary,
-                }}
-              >
-                Carbs
-              </Text>
-            </View>
-            <View style={{ alignItems: 'center' }}>
-              <Text
-                style={{
-                  fontFamily: 'IBMPlexMono_600SemiBold',
-                  fontSize: 18,
-                  color: '#1BAD66',
-                }}
-              >
-                {adjustmentsApplied ? calculateFinalMacro(result?.fat || 0, true) : calculateFinalMacro(result?.fat || 0)}g
-              </Text>
-              <Text
-                style={{
-                  fontFamily: 'PlusJakartaSans_400Regular',
-                  fontSize: 12,
-                  color: colors.text.tertiary,
-                }}
-              >
-                Fat
-              </Text>
-            </View>
-          </View>
-        </Card>
-
-        {/* Meal Type */}
-        <Text
-          style={{
-            fontFamily: 'PlusJakartaSans_600SemiBold',
-            fontSize: 16,
-            color: colors.text.primary,
-            marginBottom: 12,
-          }}
-        >
-          Meal Type
-        </Text>
-        <View style={{ flexDirection: 'row', gap: 8, marginBottom: 20 }}>
-          {MEAL_TYPES.map(type => (
-            <TouchableOpacity
-              key={type.value}
-              onPress={() => setMealType(type.value)}
-              style={{
-                flex: 1,
-                paddingVertical: 12,
-                borderRadius: 12,
-                backgroundColor:
-                  mealType === type.value ? accent + '20' : colors.surface.secondary,
-                borderWidth: mealType === type.value ? 2 : (theme === 'light' ? 1 : 0),
-                borderColor: mealType === type.value ? accent : (theme === 'light' ? colors.border : 'transparent'),
-                alignItems: 'center',
-              }}
-            >
-              <MaterialIcons
-                name={type.icon as any}
-                size={20}
-                color={mealType === type.value ? accent : colors.text.secondary}
-              />
-              <Text
-                style={{
-                  fontFamily: 'PlusJakartaSans_500Medium',
-                  fontSize: 11,
-                  color: mealType === type.value ? accent : colors.text.secondary,
-                  marginTop: 4,
-                }}
-              >
-                {type.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {/* Additional Comments */}
-        <Text
-          style={{
-            fontFamily: 'PlusJakartaSans_600SemiBold',
-            fontSize: 16,
-            color: colors.text.primary,
-            marginBottom: 12,
-          }}
-        >
-          Additional Comments
-        </Text>
-        <TextInput
-          value={additionalNotes}
-          onChangeText={setAdditionalNotes}
-          placeholder="Add notes about your meal (e.g., extra oil, less salt, homemade)"
-          placeholderTextColor={colors.text.tertiary}
-          multiline
-          numberOfLines={3}
-          style={{
-            fontFamily: 'PlusJakartaSans_400Regular',
-            fontSize: 15,
-            color: colors.text.primary,
-            backgroundColor: colors.surface.secondary,
-            borderRadius: 12,
-            padding: 16,
-            minHeight: 80,
-            textAlignVertical: 'top',
-            marginBottom: 20,
-            borderWidth: theme === 'light' ? 1 : 0,
-            borderColor: theme === 'light' ? colors.border : 'transparent',
-          }}
-        />
-
-        {/* Quick Add Tags */}
-        <Text
-          style={{
-            fontFamily: 'PlusJakartaSans_600SemiBold',
-            fontSize: 16,
-            color: colors.text.primary,
-            marginBottom: 8,
-          }}
-        >
-          Quick Add
-        </Text>
-        <Text
-          style={{
-            fontFamily: 'PlusJakartaSans_400Regular',
-            fontSize: 13,
-            color: colors.text.tertiary,
-            marginBottom: 12,
-          }}
-        >
-          Tap to add to comments
-        </Text>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
-          {Object.entries(FOOD_MODIFIERS).map(([key, mod]) => (
-            <TouchableOpacity
-              key={key}
-              onPress={() => {
-                toggleModifier(key);
-                setAdjustmentsApplied(false); // Reset when modifiers change
-              }}
-              style={{
-                paddingHorizontal: 16,
-                paddingVertical: 10,
-                borderRadius: 20,
-                backgroundColor: selectedModifiers.includes(key)
-                  ? accent + '20'
-                  : colors.surface.secondary,
-                borderWidth: 1,
-                borderColor: selectedModifiers.includes(key) ? accent : (theme === 'light' ? colors.border : 'transparent'),
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: 'PlusJakartaSans_500Medium',
-                  fontSize: 13,
-                  color: selectedModifiers.includes(key) ? accent : colors.text.primary,
-                }}
-              >
-                {mod.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {/* Readjust Button - Shows when modifiers are selected but not yet applied */}
-        {selectedModifiers.length > 0 && !adjustmentsApplied && (
-          <TouchableOpacity
-            onPress={applyAdjustments}
             style={{
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: accent + '15',
-              borderRadius: 12,
-              paddingVertical: 14,
-              paddingHorizontal: 20,
-              marginBottom: 20,
-              borderWidth: 1,
-              borderColor: accent + '40',
-              gap: 8,
+              gap: Spacing.lg,
+              paddingTop: Spacing.md,
+              borderTopWidth: 1,
+              borderTopColor: colors.surface.tertiary,
             }}
           >
-            <MaterialIcons name="refresh" size={20} color={accent} />
+            <StepperButton
+              icon={<MinusIcon size={16} color={colors.text.primary} weight="bold" />}
+              onPress={() => setServings(Math.max(0.5, servings - 0.5))}
+              colors={colors}
+            />
+            <View style={{ alignItems: 'center', minWidth: 80 }}>
+              <Text style={{ ...Type.headingMd, color: colors.text.primary }}>{servings}</Text>
+              <Text style={{ ...Type.caption, color: colors.text.tertiary }}>
+                {servings === 1 ? 'serving' : 'servings'}
+              </Text>
+            </View>
+            <StepperButton
+              icon={<PlusIcon size={16} color={colors.text.primary} weight="bold" />}
+              onPress={() => setServings(servings + 0.5)}
+              colors={colors}
+            />
+          </View>
+        </View>
+
+        {/* 4-card macro grid */}
+        <View
+          style={{
+            flexDirection: 'row',
+            gap: Spacing.sm,
+            marginBottom: Spacing.lg,
+          }}
+        >
+          <MacroCard
+            label="Protein"
+            value={calculateFinalMacro(result?.protein ?? 0, useAdjusted)}
+            colors={colors}
+          />
+          <MacroCard
+            label="Carbs"
+            value={calculateFinalMacro(result?.carbs ?? 0, useAdjusted)}
+            colors={colors}
+          />
+          <MacroCard
+            label="Fat"
+            value={calculateFinalMacro(result?.fat ?? 0, useAdjusted)}
+            colors={colors}
+          />
+          <MacroCard
+            label="Fiber"
+            value={
+              result?.fiber != null
+                ? calculateFinalMacro(result.fiber, useAdjusted)
+                : null
+            }
+            colors={colors}
+          />
+        </View>
+
+        {/* Alternatives card — shown when confidence is shaky */}
+        {isLowConfidence && result?.alternatives && result.alternatives.length > 0 && (
+          <View
+            style={{
+              backgroundColor: colors.surface.primary,
+              borderRadius: Radius.card,
+              borderWidth: 1,
+              borderColor: colors.surface.tertiary,
+              padding: Spacing.md,
+              marginBottom: Spacing.lg,
+            }}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: Spacing.sm }}>
+              <WarningCircleIcon size={18} color={colors.text.secondary} weight="duotone" />
+              <Text
+                style={{
+                  ...Type.bodySm,
+                  fontFamily: FontFamily.geistMedium,
+                  color: colors.text.secondary,
+                  marginLeft: Spacing.xs,
+                }}
+              >
+                Not quite sure — also could be:
+              </Text>
+            </View>
+            {result.alternatives.slice(0, 3).map((alt) => (
+              <View
+                key={alt.name}
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingVertical: Spacing.xs,
+                }}
+              >
+                <Text style={{ ...Type.bodyMd, color: colors.text.primary }}>{alt.name}</Text>
+                <Text style={{ ...Type.bodyMd, color: colors.text.tertiary }}>
+                  ~{alt.calories} kcal
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* Meal type */}
+        <SectionLabel colors={colors}>Meal type</SectionLabel>
+        <View style={{ flexDirection: 'row', gap: Spacing.xs, marginBottom: Spacing.lg }}>
+          {MEAL_TYPES.map((m) => {
+            const active = mealType === m.value;
+            const IconCmp = m.Icon;
+            return (
+              <Pressable
+                key={m.value}
+                onPress={() => setMealType(m.value)}
+                style={({ pressed }) => ({
+                  flex: 1,
+                  paddingVertical: Spacing.sm,
+                  borderRadius: Radius.button,
+                  backgroundColor: active ? accent + '1F' : colors.surface.primary,
+                  borderWidth: 1,
+                  borderColor: active ? accent : colors.surface.tertiary,
+                  alignItems: 'center',
+                  opacity: pressed ? 0.7 : 1,
+                })}
+              >
+                <IconCmp
+                  size={20}
+                  color={active ? accent : colors.text.secondary}
+                  weight={active ? 'fill' : 'duotone'}
+                />
+                <Text
+                  style={{
+                    ...Type.caption,
+                    color: active ? accent : colors.text.secondary,
+                    marginTop: Spacing.xxs,
+                  }}
+                >
+                  {m.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+
+        {/* Modifiers */}
+        <SectionLabel colors={colors}>Adjustments</SectionLabel>
+        <Text
+          style={{
+            ...Type.bodySm,
+            color: colors.text.tertiary,
+            marginTop: -Spacing.xs,
+            marginBottom: Spacing.sm,
+          }}
+        >
+          Tap to log how this dish was prepared.
+        </Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            gap: Spacing.xs,
+            marginBottom: Spacing.md,
+          }}
+        >
+          {Object.entries(FOOD_MODIFIERS).map(([key, mod]) => {
+            const active = selectedModifiers.includes(key);
+            return (
+              <Pressable
+                key={key}
+                onPress={() => toggleModifier(key)}
+                style={({ pressed }) => ({
+                  paddingHorizontal: Spacing.md,
+                  paddingVertical: Spacing.sm,
+                  borderRadius: Radius.pill,
+                  backgroundColor: active ? accent + '1F' : colors.surface.primary,
+                  borderWidth: 1,
+                  borderColor: active ? accent : colors.surface.tertiary,
+                  opacity: pressed ? 0.7 : 1,
+                })}
+              >
+                <Text
+                  style={{
+                    ...Type.bodySm,
+                    fontFamily: FontFamily.geistMedium,
+                    color: active ? accent : colors.text.primary,
+                  }}
+                >
+                  {mod.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+
+        {/* Apply / Applied banner */}
+        {selectedModifiers.length > 0 && !adjustmentsApplied && (
+          <Pressable
+            onPress={applyAdjustments}
+            style={({ pressed }) => ({
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: Spacing.xs,
+              backgroundColor: accent + '15',
+              borderWidth: 1,
+              borderColor: accent + '40',
+              paddingVertical: Spacing.sm,
+              borderRadius: Radius.button,
+              marginBottom: Spacing.lg,
+              opacity: pressed ? 0.7 : 1,
+            })}
+          >
+            <ArrowsClockwiseIcon size={18} color={accent} weight="bold" />
             <Text
               style={{
-                fontFamily: 'PlusJakartaSans_600SemiBold',
-                fontSize: 14,
+                ...Type.bodyMd,
+                fontFamily: FontFamily.geistSemiBold,
                 color: accent,
               }}
             >
-              Readjust Calories & Macros
+              Recalculate calories &amp; macros
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         )}
-
-        {/* Adjustment Applied Indicator */}
         {selectedModifiers.length > 0 && adjustmentsApplied && (
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: '#1BAD66' + '15',
-              borderRadius: 12,
-              paddingVertical: 12,
-              paddingHorizontal: 16,
-              marginBottom: 20,
-              gap: 8,
+              gap: Spacing.xs,
+              backgroundColor: accent + '12',
+              paddingVertical: Spacing.sm,
+              borderRadius: Radius.button,
+              marginBottom: Spacing.lg,
             }}
           >
-            <MaterialIcons name="check-circle" size={18} color="#1BAD66" />
+            <CheckCircleIcon size={18} color={accent} weight="fill" />
             <Text
               style={{
-                fontFamily: 'PlusJakartaSans_500Medium',
-                fontSize: 13,
-                color: '#1BAD66',
+                ...Type.bodySm,
+                fontFamily: FontFamily.geistMedium,
+                color: accent,
               }}
             >
-              Adjustments applied to nutrition values
+              Adjustments applied
             </Text>
           </View>
         )}
+
+        {/* Notes */}
+        <SectionLabel colors={colors}>Notes</SectionLabel>
+        <TextInput
+          value={additionalNotes}
+          onChangeText={setAdditionalNotes}
+          placeholder="Anything else? (e.g., homemade, extra naan)"
+          placeholderTextColor={colors.text.tertiary}
+          multiline
+          numberOfLines={3}
+          style={{
+            ...Type.bodyLg,
+            color: colors.text.primary,
+            backgroundColor: colors.surface.primary,
+            borderRadius: Radius.input,
+            borderWidth: 1,
+            borderColor: colors.surface.tertiary,
+            padding: Spacing.md,
+            minHeight: 84,
+            textAlignVertical: 'top',
+            marginBottom: Spacing.lg,
+          }}
+        />
+
+        {/* Medical disclaimer */}
+        <Text
+          style={{
+            ...Type.bodySm,
+            color: colors.text.tertiary,
+            textAlign: 'center',
+            paddingHorizontal: Spacing.md,
+            marginTop: Spacing.sm,
+          }}
+        >
+          Estimates only. Not a substitute for medical advice.
+        </Text>
       </ScrollView>
 
-      {/* Bottom Button */}
+      {/* Sticky save bar */}
       <View
         style={{
           position: 'absolute',
           bottom: 0,
           left: 0,
           right: 0,
-          padding: 20,
-          paddingBottom: 100,
-          backgroundColor: colors.surface.primary,
+          paddingHorizontal: Spacing.xl,
+          paddingTop: Spacing.md,
+          paddingBottom: Platform.OS === 'ios' ? 40 : Spacing.xl,
+          backgroundColor: colors.surface.secondary,
+          borderTopWidth: 1,
+          borderTopColor: colors.surface.tertiary,
         }}
       >
-        <Button
-          title="Log Meal"
+        <PrimaryButton
+          label="Save to history"
           onPress={() => logMeal.mutate()}
-          size="lg"
-          fullWidth
           loading={logMeal.isPending}
         />
       </View>
     </View>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Local components — kept inline since they're not reused outside this screen
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface PermissionCardProps {
+  onGrant: () => void;
+  canAskAgain: boolean;
+}
+
+function CameraPermissionCard({ onGrant, canAskAgain }: PermissionCardProps) {
+  const { colors, accent } = useTheme();
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: colors.surface.secondary,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: Spacing.xl,
+      }}
+    >
+      <View
+        style={{
+          width: '100%',
+          backgroundColor: colors.surface.primary,
+          borderWidth: 1,
+          borderColor: colors.surface.tertiary,
+          borderRadius: Radius.card,
+          padding: Spacing.xl,
+          alignItems: 'center',
+        }}
+      >
+        <View
+          style={{
+            width: 64,
+            height: 64,
+            borderRadius: Radius.pill,
+            backgroundColor: accent + '15',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: Spacing.lg,
+          }}
+        >
+          <CameraIcon size={28} color={accent} weight="duotone" />
+        </View>
+
+        <Text
+          style={{
+            ...Type.headingSm,
+            color: colors.text.primary,
+            marginBottom: Spacing.xs,
+            textAlign: 'center',
+          }}
+        >
+          Camera access needed
+        </Text>
+        <Text
+          style={{
+            ...Type.bodyMd,
+            color: colors.text.secondary,
+            textAlign: 'center',
+            marginBottom: Spacing.xl,
+          }}
+        >
+          Allow camera access to scan your meals and track calories automatically.
+        </Text>
+
+        <View style={{ width: '100%' }}>
+          <PrimaryButton
+            label={canAskAgain ? 'Grant permission' : 'Open settings'}
+            onPress={canAskAgain ? onGrant : () => Linking.openSettings()}
+          />
+        </View>
+      </View>
+    </View>
+  );
+}
+
+interface ConfidencePillProps {
+  confidence: number;
+  accent: string;
+  colors: ReturnType<typeof useTheme>['colors'];
+}
+
+function ConfidencePill({ confidence, accent, colors }: ConfidencePillProps) {
+  const pct = Math.round(confidence * 100);
+  const isLow = confidence < CONFIDENCE_LOW_THRESHOLD;
+  const tint = isLow ? colors.text.secondary : accent;
+  const bg = isLow ? colors.surface.tertiary : accent + '1F';
+  return (
+    <View
+      style={{
+        paddingHorizontal: Spacing.sm,
+        paddingVertical: 4,
+        borderRadius: Radius.pill,
+        backgroundColor: bg,
+      }}
+    >
+      <Text
+        style={{
+          ...Type.caption,
+          color: tint,
+          textTransform: 'uppercase',
+          letterSpacing: 0.4,
+        }}
+      >
+        {pct}% sure
+      </Text>
+    </View>
+  );
+}
+
+interface MacroCardProps {
+  label: string;
+  value: number | null;
+  colors: ReturnType<typeof useTheme>['colors'];
+}
+
+function MacroCard({ label, value, colors }: MacroCardProps) {
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: colors.surface.primary,
+        borderWidth: 1,
+        borderColor: colors.surface.tertiary,
+        borderRadius: Radius.card,
+        paddingVertical: Spacing.sm,
+        paddingHorizontal: Spacing.xs,
+        alignItems: 'center',
+      }}
+    >
+      <Text
+        style={{
+          ...Type.caption,
+          color: colors.text.tertiary,
+          textTransform: 'uppercase',
+          letterSpacing: 0.4,
+          marginBottom: Spacing.xxs,
+        }}
+      >
+        {label}
+      </Text>
+      <Text style={{ ...Type.headingMd, color: colors.text.primary }}>
+        {value != null ? value : '—'}
+      </Text>
+      <Text style={{ ...Type.bodySm, color: colors.text.tertiary }}>g</Text>
+    </View>
+  );
+}
+
+interface SectionLabelProps {
+  children: React.ReactNode;
+  colors: ReturnType<typeof useTheme>['colors'];
+}
+
+function SectionLabel({ children, colors }: SectionLabelProps) {
+  return (
+    <Text
+      style={{
+        ...Type.headingSm,
+        color: colors.text.primary,
+        marginBottom: Spacing.sm,
+      }}
+    >
+      {children}
+    </Text>
+  );
+}
+
+interface StepperButtonProps {
+  icon: React.ReactNode;
+  onPress: () => void;
+  colors: ReturnType<typeof useTheme>['colors'];
+}
+
+function StepperButton({ icon, onPress, colors }: StepperButtonProps) {
+  return (
+    <Pressable
+      onPress={onPress}
+      hitSlop={6}
+      style={({ pressed }) => ({
+        width: 40,
+        height: 40,
+        borderRadius: Radius.pill,
+        backgroundColor: colors.surface.tertiary,
+        alignItems: 'center',
+        justifyContent: 'center',
+        opacity: pressed ? 0.7 : 1,
+      })}
+    >
+      {icon}
+    </Pressable>
+  );
+}
+
+interface PrimaryButtonProps {
+  label: string;
+  onPress: () => void;
+  loading?: boolean;
+  disabled?: boolean;
+  flex?: boolean;
+}
+
+function PrimaryButton({ label, onPress, loading, disabled, flex }: PrimaryButtonProps) {
+  const { accent } = useTheme();
+  const isInactive = loading || disabled;
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={isInactive}
+      style={({ pressed }) => ({
+        flex: flex ? 1 : undefined,
+        backgroundColor: accent,
+        paddingVertical: Spacing.md,
+        borderRadius: Radius.button,
+        alignItems: 'center',
+        justifyContent: 'center',
+        opacity: isInactive ? 0.4 : pressed ? 0.9 : 1,
+      })}
+    >
+      {loading ? (
+        <ActivityIndicator color="#FFFFFF" size="small" />
+      ) : (
+        <Text style={{ ...Type.bodyLg, color: '#FFFFFF', fontFamily: FontFamily.geistSemiBold }}>
+          {label}
+        </Text>
+      )}
+    </Pressable>
+  );
+}
+
+interface SecondaryButtonProps {
+  label: string;
+  onPress: () => void;
+  disabled?: boolean;
+  flex?: boolean;
+}
+
+function SecondaryButton({ label, onPress, disabled, flex }: SecondaryButtonProps) {
+  const { colors } = useTheme();
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={disabled}
+      style={({ pressed }) => ({
+        flex: flex ? 1 : undefined,
+        paddingVertical: Spacing.md,
+        borderRadius: Radius.button,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        borderColor: colors.surface.tertiary,
+        opacity: disabled ? 0.4 : pressed ? 0.7 : 1,
+      })}
+    >
+      <Text
+        style={{
+          ...Type.bodyLg,
+          color: colors.text.primary,
+          fontFamily: FontFamily.geistSemiBold,
+        }}
+      >
+        {label}
+      </Text>
+    </Pressable>
   );
 }
