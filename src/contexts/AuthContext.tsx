@@ -7,7 +7,7 @@ import {
   signInWithCredential,
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
-} from 'firebase/auth';
+} from '../lib/firebaseAuth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, firestore, type FirebaseUser } from '../lib/firebase';
 import { normalizeAuthError } from '../lib/authErrors';

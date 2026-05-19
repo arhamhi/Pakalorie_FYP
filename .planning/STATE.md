@@ -18,7 +18,7 @@ last_updated: 2026-05-19
 Phase: **Phase 1 — Foundation & Auth / Phase 2 — Capture & Results** (auth UI + scan polish shipped; smoke-test pending)
 Plan: `.planning/ROADMAP.md`
 Status: Native Firebase path reversed. The app now uses the Firebase JS SDK so day-to-day testing is back to `npx expo start` → Expo Go QR on Android/iPhone. Email/password + Firestore profile work is the Expo Go target; Google OAuth is wired through AuthSession but must be verified in a development/production build.
-Last activity: 2026-05-19 — Codex converted auth from native Firebase modules to Firebase JS SDK and then fixed Expo Go runtime auth initialization to use Firebase's React Native persistence helper.
+Last activity: 2026-05-19 — Codex converted auth from native Firebase modules to Firebase JS SDK and then fixed the Expo Go runtime auth crash by forcing Firebase Auth through the browser ESM bundle with AsyncStorage-backed persistence.
 
 ## Accumulated Context
 

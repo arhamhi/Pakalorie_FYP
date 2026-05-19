@@ -1,6 +1,6 @@
 # STATE — single source of truth on current code state
 
-**Last updated:** 2026-05-19 by Codex (Firebase JS SDK init fix — Expo Go path restored)
+**Last updated:** 2026-05-19 by Codex (Firebase Auth ESM runtime fix — Expo Go path restored)
 **Next action owner:** Arham (smoke-test Expo Go auth + scan flow), then Claude Code (decide whether Google OAuth needs a dev-build verification before P1 Mid demo).
 
 ---
@@ -20,7 +20,7 @@
 - Color tokens defined in `src/constants/colors.ts` — surface/text/accent semantic tokens, light + dark.
 - 3 accents already live: green `#1BAD66`, gold `#FFC107`, coral `#FF6B6B`.
 - **Day 2:** Firebase + Google Sign-In + Geist + Instrument Serif installed.
-- **Day 2 / revised 2026-05-19:** `src/lib/firebase.ts` initializes the Firebase JS SDK from `EXPO_PUBLIC_FIREBASE_*` values and configures AsyncStorage-backed auth persistence.
+- **Day 2 / revised 2026-05-19:** `src/lib/firebase.ts` initializes the Firebase JS SDK from `EXPO_PUBLIC_FIREBASE_*` values and configures AsyncStorage-backed auth persistence through an Expo Go-safe Firebase Auth ESM wrapper.
 - **Day 2 / revised 2026-05-19:** `src/contexts/AuthContext.tsx` uses Firebase JS Auth + Firestore modular APIs. API surface preserved except `signInWithGoogle` now receives an AuthSession ID token.
 - **Day 2:** `src/types/profile.ts` defines Firestore-shaped Profile (re-exported from `database.ts` for backwards-compat).
 - **Day 2 / revised 2026-05-19:** `src/lib/authErrors.ts` normalizes Firebase + Google AuthSession errors into project `AuthError` shape.
@@ -34,7 +34,7 @@
 - **NEW (Day 3.5):** Phosphor adopted (`phosphor-react-native`). All new code uses `*Icon` exports; `@expo/vector-icons` banned in new code.
 - **NEW (Day 4-5):** `app/(tabs)/scan.tsx` rewritten against DESIGN.md §5 — Phosphor icons, Geist + Instrument Serif typography, 70/20/10 tokens. Hero numeric (Instrument Serif), 4-card macro grid (now includes Fiber), confidence pill, alternatives card when confidence <70%, medical disclaimer footer, "Save to history" sticky CTA, denied-permission card with "Open settings" fallback. Servings stepper / modifiers / meal type / notes preserved from v2 but restyled. Type-check clean for the rewritten file.
 - **NEW (2026-05-19):** `src/hooks/useGoogleAuthSession.ts` wires Google OAuth through `expo-auth-session`. It deliberately returns a clear Expo Go error because OAuth needs a development/production build with the app's custom scheme.
-- **FIX (2026-05-19):** `src/lib/firebase.ts` now uses Firebase's actual React Native `getReactNativePersistence(AsyncStorage)` helper instead of a handwritten persistence shim. This addresses the Expo Go runtime crash: `Component auth has not been registered yet`.
+- **FIX (2026-05-19):** `src/lib/firebaseAuth.ts` bypasses Metro's React Native Firebase Auth bundle and imports Firebase Auth's browser ESM bundle directly. This keeps Auth on the same Firebase app/component registry as `firebase/app` and addresses the Expo Go runtime crash: `Component auth has not been registered yet`.
 
 ## What's broken / stubbed
 

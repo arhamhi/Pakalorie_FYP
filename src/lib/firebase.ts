@@ -10,15 +10,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getApp, getApps, initializeApp, type FirebaseApp } from 'firebase/app';
 import {
-  // Firebase's RN bundle exports this at runtime, but the package's default
-  // TypeScript entry does not expose the React Native conditional export.
-  // @ts-expect-error React Native conditional export.
-  getReactNativePersistence,
   getAuth,
   initializeAuth,
   type Auth,
-  type User as FirebaseUser,
-} from 'firebase/auth';
+  type FirebaseUser,
+  type Persistence,
+} from './firebaseAuth';
 import { getFirestore, type Firestore } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -43,10 +40,49 @@ function assertFirebaseConfig() {
   }
 }
 
+function getAsyncStoragePersistence(storage: typeof AsyncStorage): Persistence {
+  return class ReactNativeAsyncStoragePersistence {
+    static type = 'LOCAL' as const;
+    readonly type = 'LOCAL' as const;
+
+    async _isAvailable(): Promise<boolean> {
+      try {
+        const testKey = 'firebase:storage_available';
+        await storage.setItem(testKey, '1');
+        await storage.removeItem(testKey);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    async _set(key: string, value: unknown): Promise<void> {
+      await storage.setItem(key, JSON.stringify(value));
+    }
+
+    async _get<T = unknown>(key: string): Promise<T | null> {
+      const value = await storage.getItem(key);
+      return value ? (JSON.parse(value) as T) : null;
+    }
+
+    async _remove(key: string): Promise<void> {
+      await storage.removeItem(key);
+    }
+
+    _addListener(): void {
+      // AsyncStorage does not provide cross-runtime change listeners.
+    }
+
+    _removeListener(): void {
+      // AsyncStorage does not provide cross-runtime change listeners.
+    }
+  } as unknown as Persistence;
+}
+
 function createAuth(app: FirebaseApp): Auth {
   try {
     return initializeAuth(app, {
-      persistence: getReactNativePersistence(AsyncStorage),
+      persistence: getAsyncStoragePersistence(AsyncStorage),
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : '';

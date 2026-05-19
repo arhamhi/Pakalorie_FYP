@@ -126,3 +126,15 @@ Format: `## YYYY-MM-DD — <decision title>` then the decision, the rationale, a
 **Scope:** Email/password auth and Firestore profiles are the Expo Go acceptance path. Google OAuth remains code-wired through AuthSession, but Expo Go cannot reliably test OAuth with the app's custom scheme; verify Google in a development or production build if it is needed for the live demo.
 
 **Rejected:** Continuing native Firebase as the default. It forces `expo run:*` or EAS dev builds for every device smoke-test, which is too slow for the May P1 Mid timeline.
+
+---
+
+## 2026-05-19 - Force Firebase Auth through browser ESM in Expo Go
+
+**Decision:** Runtime Auth imports go through `src/lib/firebaseAuth.ts`, which directly imports Firebase Auth's browser ESM bundle. `src/lib/firebase.ts` still uses `firebase/app` and `firebase/firestore`, but Auth no longer imports the React Native/CJS Auth bundle in Expo Go.
+
+**Why:** Metro resolved `firebase/app` and `firebase/auth` through different Firebase app/component registries. That crashed Expo Go at startup with `Component auth has not been registered yet`, then Expo Router reported misleading missing-default-export warnings for every route that imported AuthContext.
+
+**Scope:** Email/password auth and credential sign-in stay pure JS and Expo Go-compatible. Auth persistence is still backed by AsyncStorage via a local persistence class.
+
+**Rejected:** Returning to native Firebase/dev-client as the default. That would fix the registry mismatch but would again break Arham's fast `npx expo start` -> Expo Go QR workflow.
