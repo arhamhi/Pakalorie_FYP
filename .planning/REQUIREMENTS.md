@@ -18,7 +18,7 @@ REQ-ID format: `[CATEGORY]-[NUMBER]`. Mapped to phases in `ROADMAP.md`.
 
 - [ ] **AUTH-01**: User can sign up with email + password and lands on home screen on first sign-in
 - [ ] **AUTH-02**: User can sign in with email + password and persistent session restores across restarts
-- [ ] **AUTH-03**: User can sign in with Google in two taps (OAuth via Firebase)
+- [ ] **AUTH-03**: User can sign in with Google via Firebase OAuth in a development/production build
 - [ ] **AUTH-04**: User can reset password via email link
 - [ ] **AUTH-05**: User can sign out and session ends across the app
 - [ ] **AUTH-06**: Firestore `users/{uid}` document is created on first sign-in with onboarding state flag
@@ -51,12 +51,12 @@ REQ-ID format: `[CATEGORY]-[NUMBER]`. Mapped to phases in `ROADMAP.md`.
 
 ### DEMO — Acceptance & Delivery
 
-- [ ] **DEMO-01**: Fresh install on Arham's Android via EAS dev build; sign-up + Google sign-in both succeed
+- [ ] **DEMO-01**: Expo Go QR flow (`npx expo start`) runs on Android/iPhone; email/password sign-up succeeds
 - [ ] **DEMO-02**: Live demo flow (capture chicken karahi → results in <5s → save to history) runs end-to-end on Android
 - [ ] **DEMO-03**: Backup demo video recorded and stored locally + on Drive
 - [ ] **DEMO-04**: README at repo root with architecture diagram, env-var list, run instructions
 - [ ] **DEMO-05**: `/gsd-verify-work` run against milestone before demo day; no failing acceptance criteria
-- [ ] **DEMO-06**: iOS simulator build succeeds via EAS cloud build (`eas build --platform ios --profile development --simulator`); auth + capture screens render without iOS-specific layout regressions
+- [ ] **DEMO-06**: iOS Expo Go smoke-test succeeds; EAS iOS simulator build is run only if Google OAuth/native install verification is needed
 - [ ] **DEMO-07**: (best-effort, gated on Apple Dev account) Physical iPhone install via TestFlight runs the same end-to-end demo flow
 
 ---

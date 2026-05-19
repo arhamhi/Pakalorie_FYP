@@ -114,3 +114,15 @@ Format: `## YYYY-MM-DD — <decision title>` then the decision, the rationale, a
 **Why:** Pakalorie FYP is now a two-agent workflow. Every fresh session must start from `.handoff/STATE.md`, use the correct queue file, respect ownership boundaries, and update handoff files before ending. This prevents Claude and Codex from drifting or solving the same problem twice.
 
 **Rejected:** Keeping the workflow only in chat memory. Chat context is fragile across sessions; repo-level instructions make the operating rhythm durable.
+
+---
+
+## 2026-05-19 - Reverse native Firebase; Expo Go first
+
+**Decision:** Replace `@react-native-firebase/{app,auth,firestore}` and native Google Sign-In with the Firebase JS SDK (`firebase`) plus `expo-auth-session`. Remove `expo-dev-client`, `expo-build-properties`, native Firebase config plugins, and the Google Sign-In config plugin from `app.json`.
+
+**Why:** Arham needs the old fast loop back: `npx expo start` -> QR -> Expo Go on Android/iPhone. The native-module path was technically cleaner for production Google Sign-In, but it blocked day-to-day FYP demo velocity.
+
+**Scope:** Email/password auth and Firestore profiles are the Expo Go acceptance path. Google OAuth remains code-wired through AuthSession, but Expo Go cannot reliably test OAuth with the app's custom scheme; verify Google in a development or production build if it is needed for the live demo.
+
+**Rejected:** Continuing native Firebase as the default. It forces `expo run:*` or EAS dev builds for every device smoke-test, which is too slow for the May P1 Mid timeline.

@@ -43,25 +43,24 @@ End-of-session protocol for both tools: update `STATE.md`, write the relevant `T
 
 ## Local setup (mobile app)
 
-**Prerequisite — Firebase Console setup:** the app uses `@react-native-firebase/*` (native modules), so it cannot run in Expo Go. You need:
+**Prerequisite — Firebase Console setup:** the app uses the Firebase JS SDK so it can run in Expo Go. You need:
 1. A Firebase project with email/password + Google providers enabled.
-2. `google-services.json` dropped at the repo root (Android).
-3. `GoogleService-Info.plist` dropped at the repo root (iOS).
-4. Three IDs pasted into `app.json`: Web Client ID, iOS Client ID, REVERSED_CLIENT_ID for `iosUrlScheme`.
+2. `EXPO_PUBLIC_FIREBASE_*` values filled in `.env` from Firebase project settings.
+3. Google Web/iOS client IDs in `app.json` for the AuthSession path.
 
-Walkthrough in [`.handoff/STATE.md`](./.handoff/STATE.md) (Firebase Console Setup section).
+`google-services.json` and `GoogleService-Info.plist` can stay at the repo root as local reference files, but they are not used by the Expo Go Firebase JS SDK path.
 
 Then:
 
 ```sh
 npm install
 cp .env.example .env             # fill in API base URL when backend deploys
-npx expo prebuild                # generates android/ + ios/ folders, applies plugins
-npx expo run:android             # native dev build, hot-reload via Metro
-npx expo run:ios                 # iOS simulator (requires macOS) — for Windows users, use EAS instead
+npx expo start                   # scan QR with Expo Go on Android or iPhone
 ```
 
-For shareable EAS cloud builds (no Mac required for iOS):
+Google OAuth uses `expo-auth-session`. Email/password works in Expo Go; Google sign-in should be verified in a development or production build because Expo Go cannot use the app's custom OAuth scheme.
+
+For shareable EAS cloud builds later (no Mac required for iOS):
 
 ```sh
 npx eas build --profile development --platform android
@@ -84,10 +83,10 @@ uvicorn app.main:app --reload
 
 ## Status
 
-Day 2 of P1 Mid (2026-05-08) — **Phase 1: Foundation & Auth in progress**.
+P1 Mid (updated 2026-05-19) — **Phase 1/2 mobile work in progress**.
 
-Done so far: repo scaffolded, GSD planning artifacts written, Supabase → Firebase migration shipped (AuthContext rewritten, Firebase + Google Sign-In + Geist + Instrument Serif installed, app.json plugin config in place), pushed to GitHub.
+Done so far: repo scaffolded, GSD planning artifacts written, Firebase Auth + Firestore profile migration shipped through the JS SDK, auth UI screens shipped, scan/results polish shipped, and the project is back on the `npx expo start` Expo Go path for day-to-day testing.
 
-Blocked on: Firebase Console setup (Arham). After that lands, next up is auth UI screens (welcome/login/signup/forgot-password) and root layout wiring.
+Current blocker: smoke-test the Expo Go path on device. Google OAuth remains a dev-build/prod-build verification item; use email/password for Expo Go testing.
 
 See [`.planning/STATE.md`](./.planning/STATE.md) for the live phase position.

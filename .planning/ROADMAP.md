@@ -86,10 +86,10 @@ coverage: 100%
 - DEMO-01..07
 
 **Success criteria:**
-1. EAS dev build installed on Arham's Android; clean install works for a fresh test account; full demo flow runs live
-2. iOS simulator build succeeds via `eas build --platform ios --profile development --simulator`; auth + capture render without iOS-specific layout regressions
-3. (best-effort) Physical iPhone install via TestFlight if Apple Dev account purchased — same demo flow runs
-4. 90-second demo script (signup → Google → capture → result → save → history) recorded as backup video, stored locally + on Drive
+1. Expo Go QR flow works from `npx expo start` on Arham's Android/iPhone; fresh email/password account reaches the app
+2. Google OAuth is verified in a development or production build if it is part of the live demo script
+3. iOS Expo Go smoke-test passes; physical iPhone install via TestFlight remains best-effort if Apple Dev account is purchased
+4. 90-second demo script (signup → capture → result → save → history, with Google OAuth as optional build-only segment) recorded as backup video, stored locally + on Drive
 5. Repo `README.md` includes architecture diagram, env-var list, run instructions; `/gsd-verify-work` shows zero failing acceptance criteria across all 33 requirements
 
 ---

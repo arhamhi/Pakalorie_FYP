@@ -1,12 +1,22 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { auth, firestore, GoogleSignin, type FirebaseAuthTypes } from '../lib/firebase';
+import {
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  signInWithCredential,
+  signInWithEmailAndPassword,
+  signOut as firebaseSignOut,
+} from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { auth, firestore, type FirebaseUser } from '../lib/firebase';
 import { normalizeAuthError } from '../lib/authErrors';
 import { toAuthUser } from '../types/auth';
 import type { AuthUser } from '../types/auth';
 import { DEFAULT_PROFILE, type Profile } from '../types/profile';
 
 /**
- * AuthContext — Firebase-backed auth + Firestore profile.
+ * AuthContext — Firebase JS SDK-backed auth + Firestore profile.
  *
  * Replaces v2's Supabase implementation. The public API is intentionally
  * close to the v2 shape so consumer screens don't need rewrites:
@@ -23,12 +33,12 @@ import { DEFAULT_PROFILE, type Profile } from '../types/profile';
 
 interface AuthContextType {
   user: AuthUser | null;
-  firebaseUser: FirebaseAuthTypes.User | null;
+  firebaseUser: FirebaseUser | null;
   profile: Profile | null;
   loading: boolean;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithEmail: (email: string, password: string) => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
+  signInWithGoogle: (idToken: string) => Promise<void>;
   signInWithApple: () => Promise<void>;
   signInWithPhone: (phone: string) => Promise<void>;
   verifyOtp: (phone: string, token: string) => Promise<void>;
@@ -53,14 +63,14 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [firebaseUser, setFirebaseUser] = useState<FirebaseAuthTypes.User | null>(null);
+  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
   const [user, setUser] = useState<AuthUser | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchProfile = useCallback(async (uid: string) => {
     try {
-      const snapshot = await firestore().collection(USERS_COLLECTION).doc(uid).get();
+      const snapshot = await getDoc(doc(firestore, USERS_COLLECTION, uid));
       if (snapshot.exists()) {
         setProfile(snapshot.data() as Profile);
       } else {
@@ -74,7 +84,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   useEffect(() => {
-    const unsubscribe = auth().onAuthStateChanged(async (fbUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
       setFirebaseUser(fbUser);
       setUser(toAuthUser(fbUser));
 
@@ -91,9 +101,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [fetchProfile]);
 
   const ensureProfileDocument = useCallback(
-    async (fbUser: FirebaseAuthTypes.User) => {
-      const ref = firestore().collection(USERS_COLLECTION).doc(fbUser.uid);
-      const snapshot = await ref.get();
+    async (fbUser: FirebaseUser) => {
+      const ref = doc(firestore, USERS_COLLECTION, fbUser.uid);
+      const snapshot = await getDoc(ref);
       if (snapshot.exists()) return;
 
       // First sign-in — seed the profile doc with defaults + display info.
@@ -104,14 +114,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
         avatar_url: fbUser.photoURL ?? null,
         updated_at: new Date().toISOString(),
       };
-      await ref.set(seed, { merge: true });
+      await setDoc(ref, seed, { merge: true });
     },
     []
   );
 
   const signInWithEmail = useCallback(async (email: string, password: string) => {
     try {
-      const cred = await auth().signInWithEmailAndPassword(email, password);
+      const cred = await signInWithEmailAndPassword(auth, email, password);
       await ensureProfileDocument(cred.user);
     } catch (error) {
       throw normalizeAuthError(error);
@@ -120,28 +130,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const signUpWithEmail = useCallback(async (email: string, password: string) => {
     try {
-      const cred = await auth().createUserWithEmailAndPassword(email, password);
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
       await ensureProfileDocument(cred.user);
     } catch (error) {
       throw normalizeAuthError(error);
     }
   }, [ensureProfileDocument]);
 
-  const signInWithGoogle = useCallback(async () => {
+  const signInWithGoogle = useCallback(async (idToken: string) => {
     try {
-      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-      const result = await GoogleSignin.signIn();
-      const idToken =
-        // newer SDK shape: result.data.idToken; older: result.idToken
-        (result as { data?: { idToken?: string }; idToken?: string }).data?.idToken ??
-        (result as { idToken?: string }).idToken;
-
       if (!idToken) {
         throw new Error('Google sign-in did not return an ID token.');
       }
 
-      const credential = auth.GoogleAuthProvider.credential(idToken);
-      const userCred = await auth().signInWithCredential(credential);
+      const credential = GoogleAuthProvider.credential(idToken);
+      const userCred = await signInWithCredential(auth, credential);
       await ensureProfileDocument(userCred.user);
     } catch (error) {
       throw normalizeAuthError(error);
@@ -162,7 +165,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const sendPasswordReset = useCallback(async (email: string) => {
     try {
-      await auth().sendPasswordResetEmail(email);
+      await sendPasswordResetEmail(auth, email);
     } catch (error) {
       throw normalizeAuthError(error);
     }
@@ -170,13 +173,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const signOut = useCallback(async () => {
     try {
-      // Best-effort Google sign-out — ignore errors if the user isn't a Google user
-      try {
-        await GoogleSignin.signOut();
-      } catch {
-        // not signed in via Google; ignore
-      }
-      await auth().signOut();
+      await firebaseSignOut(auth);
       setProfile(null);
     } catch (error) {
       throw normalizeAuthError(error);
@@ -195,12 +192,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
         throw new Error('No user logged in.');
       }
 
-      const ref = firestore().collection(USERS_COLLECTION).doc(firebaseUser.uid);
+      const ref = doc(firestore, USERS_COLLECTION, firebaseUser.uid);
       const next = {
         ...updates,
         updated_at: new Date().toISOString(),
       };
-      await ref.set(next, { merge: true });
+      await setDoc(ref, next, { merge: true });
 
       // Optimistic local update
       setProfile((prev) => (prev ? ({ ...prev, ...next } as Profile) : null));

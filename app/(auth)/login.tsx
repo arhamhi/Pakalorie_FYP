@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import { router } from 'expo-router';
 import { EyeIcon, EyeClosedIcon } from 'phosphor-react-native';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useTheme } from '../../src/contexts/ThemeContext';
+import { useGoogleAuthSession } from '../../src/hooks/useGoogleAuthSession';
 import {
   AuthHeader,
   AuthInput,
@@ -30,6 +31,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export default function LoginScreen() {
   const { signInWithEmail, signInWithGoogle } = useAuth();
   const { colors, accent } = useTheme();
+  const googleAuth = useGoogleAuthSession(signInWithGoogle);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -38,7 +40,13 @@ export default function LoginScreen() {
   const [passwordError, setPasswordError] = useState<string | undefined>();
   const [formError, setFormError] = useState<string | undefined>();
   const [emailLoading, setEmailLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
+
+  useEffect(() => {
+    if (!googleAuth.error) return;
+    if (googleAuth.error.code !== 'google-sign-in-cancelled') {
+      setFormError(googleAuth.error.message ?? 'Google sign-in failed.');
+    }
+  }, [googleAuth.error]);
 
   const validate = (): boolean => {
     let ok = true;
@@ -79,18 +87,7 @@ export default function LoginScreen() {
 
   const handleGoogle = async () => {
     setFormError(undefined);
-    setGoogleLoading(true);
-    try {
-      await signInWithGoogle();
-    } catch (err) {
-      const authErr = err as AuthError;
-      // Skip the noisy "user cancelled" toast — that's expected UX.
-      if (authErr.code !== 'google-sign-in-cancelled') {
-        setFormError(authErr.message ?? 'Google sign-in failed.');
-      }
-    } finally {
-      setGoogleLoading(false);
-    }
+    await googleAuth.start();
   };
 
   return (
@@ -182,18 +179,18 @@ export default function LoginScreen() {
             </Text>
           )}
 
-          <PrimaryButton
-            label="Sign in"
-            onPress={handleEmailSignIn}
-            loading={emailLoading}
-            disabled={googleLoading}
-          />
+            <PrimaryButton
+              label="Sign in"
+              onPress={handleEmailSignIn}
+              loading={emailLoading}
+              disabled={googleAuth.loading}
+            />
 
           <Divider label="or" />
 
           <GoogleButton
             onPress={handleGoogle}
-            loading={googleLoading}
+            loading={googleAuth.loading}
             disabled={emailLoading}
           />
 

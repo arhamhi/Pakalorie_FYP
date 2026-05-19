@@ -4,7 +4,6 @@ import { StatusBar } from 'expo-status-bar';
 import { View, ActivityIndicator } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import Constants from 'expo-constants';
 import {
   useFonts,
   PlusJakartaSans_300Light,
@@ -30,7 +29,6 @@ import { AuthProvider } from '../src/contexts/AuthContext';
 import { ThemeProvider, useTheme } from '../src/contexts/ThemeContext';
 import { OnboardingProvider } from '../src/contexts/OnboardingContext';
 import { LanguageProvider } from '../src/contexts/LanguageContext';
-import { configureGoogleSignIn } from '../src/lib/firebase';
 import {
   requestNotificationPermissions,
   rescheduleAllNotifications,
@@ -50,39 +48,12 @@ const queryClient = new QueryClient({
   },
 });
 
-/**
- * Configure Google Sign-In once at app start. Reads the Web Client ID from
- * Expo `extra` config (set in app.json after Firebase Console setup). The
- * Web Client ID is what Firebase requires when exchanging the Google ID
- * token — NOT the Android or iOS client ID.
- */
-function bootGoogleSignIn(): void {
-  const webClientId =
-    (Constants.expoConfig?.extra?.googleSignInWebClientId as string | undefined) ?? '';
-
-  if (!webClientId) {
-    // Surface loudly in dev; production builds should never hit this.
-    if (__DEV__) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        '[auth] googleSignInWebClientId is empty in app.json → Google Sign-In will fail. ' +
-          'Paste the Web Client ID from Firebase Console → Authentication → Sign-in method → Google.'
-      );
-    }
-    return;
-  }
-
-  configureGoogleSignIn(webClientId);
-}
-
 function RootLayoutNav() {
   const { theme, colors } = useTheme();
   const router = useRouter();
   const notificationListener = useRef<(() => void) | null>(null);
 
   useEffect(() => {
-    bootGoogleSignIn();
-
     // Initialize notifications
     const initNotifications = async () => {
       const granted = await requestNotificationPermissions();

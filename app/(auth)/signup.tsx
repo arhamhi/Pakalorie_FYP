@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import { router } from 'expo-router';
 import { EyeIcon, EyeClosedIcon } from 'phosphor-react-native';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useTheme } from '../../src/contexts/ThemeContext';
+import { useGoogleAuthSession } from '../../src/hooks/useGoogleAuthSession';
 import {
   AuthHeader,
   AuthInput,
@@ -31,6 +32,7 @@ const MIN_PASSWORD_LEN = 8;
 export default function SignupScreen() {
   const { signUpWithEmail, signInWithGoogle } = useAuth();
   const { colors } = useTheme();
+  const googleAuth = useGoogleAuthSession(signInWithGoogle);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,7 +41,13 @@ export default function SignupScreen() {
   const [passwordError, setPasswordError] = useState<string | undefined>();
   const [formError, setFormError] = useState<string | undefined>();
   const [emailLoading, setEmailLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
+
+  useEffect(() => {
+    if (!googleAuth.error) return;
+    if (googleAuth.error.code !== 'google-sign-in-cancelled') {
+      setFormError(googleAuth.error.message ?? 'Google sign-in failed.');
+    }
+  }, [googleAuth.error]);
 
   const validate = (): boolean => {
     let ok = true;
@@ -83,17 +91,7 @@ export default function SignupScreen() {
 
   const handleGoogle = async () => {
     setFormError(undefined);
-    setGoogleLoading(true);
-    try {
-      await signInWithGoogle();
-    } catch (err) {
-      const authErr = err as AuthError;
-      if (authErr.code !== 'google-sign-in-cancelled') {
-        setFormError(authErr.message ?? 'Google sign-in failed.');
-      }
-    } finally {
-      setGoogleLoading(false);
-    }
+    await googleAuth.start();
   };
 
   return (
@@ -179,7 +177,7 @@ export default function SignupScreen() {
               label="Create account"
               onPress={handleSignUp}
               loading={emailLoading}
-              disabled={googleLoading}
+              disabled={googleAuth.loading}
             />
           </View>
 
@@ -187,7 +185,7 @@ export default function SignupScreen() {
 
           <GoogleButton
             onPress={handleGoogle}
-            loading={googleLoading}
+            loading={googleAuth.loading}
             disabled={emailLoading}
           />
 

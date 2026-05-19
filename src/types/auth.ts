@@ -1,9 +1,9 @@
-import type { FirebaseAuthTypes } from '../lib/firebase';
+import type { FirebaseUser } from '../lib/firebase';
 
 /**
  * Project-level user shape. Decouples consumer screens from
- * @react-native-firebase types so we can swap auth providers later
- * without touching every screen.
+ * Firebase vendor types so we can swap auth providers later without touching
+ * every screen.
  *
  * `id` is the Firebase UID. We keep the field name `id` (not `uid`) so the
  * existing v2 screens that read `user.id` keep working without changes.
@@ -18,7 +18,7 @@ export interface AuthUser {
   providerId: string | null;
 }
 
-export function toAuthUser(firebaseUser: FirebaseAuthTypes.User | null): AuthUser | null {
+export function toAuthUser(firebaseUser: FirebaseUser | null): AuthUser | null {
   if (!firebaseUser) return null;
 
   // Pick the primary provider (the first non-firebase provider, if any)
@@ -38,7 +38,7 @@ export function toAuthUser(firebaseUser: FirebaseAuthTypes.User | null): AuthUse
 }
 
 /**
- * Auth error shape we normalize Firebase + Google Sign-In errors into so the
+ * Auth error shape we normalize Firebase + Google AuthSession errors into so the
  * UI layer can display localized messages without parsing vendor codes.
  */
 export interface AuthError {
@@ -57,5 +57,7 @@ export type AuthErrorCode =
   | 'google-sign-in-cancelled'
   | 'google-sign-in-in-progress'
   | 'google-play-services-unavailable'
+  | 'google-auth-requires-dev-build'
+  | 'missing-google-client-id'
   | 'not-implemented'
   | 'unknown';

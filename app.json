@@ -16,7 +16,6 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.redolanse.pakaloriefyp",
-      "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
         "NSCameraUsageDescription": "Khane ki photos capture karne ke liye camera access chahiye.",
         "NSLocationWhenInUseUsageDescription": "Paas ke healthy restaurants suggest karne ke liye location chahiye.",
@@ -29,7 +28,6 @@
         "backgroundColor": "#1BAD66"
       },
       "package": "com.redolanse.pakaloriefyp",
-      "googleServicesFile": "./google-services.json",
       "permissions": [
         "CAMERA",
         "ACCESS_FINE_LOCATION",
@@ -48,23 +46,6 @@
       "expo-camera",
       "expo-image-picker",
       "expo-location",
-      "expo-dev-client",
-      "@react-native-firebase/app",
-      "@react-native-firebase/auth",
-      [
-        "expo-build-properties",
-        {
-          "ios": {
-            "useFrameworks": "static"
-          }
-        }
-      ],
-      [
-        "@react-native-google-signin/google-signin",
-        {
-          "iosUrlScheme": "com.googleusercontent.apps.562903530107-fdcg3jnkgljs993l84dg3armuodk96bi"
-        }
-      ],
       [
         "expo-notifications",
         {
@@ -78,7 +59,8 @@
     },
     "extra": {
       "googleSignInWebClientId": "562903530107-cbu9mkdqg5mokdlbucmakd56hg8o7lqi.apps.googleusercontent.com",
-      "googleSignInIosClientId": "562903530107-fdcg3jnkgljs993l84dg3armuodk96bi.apps.googleusercontent.com"
+      "googleSignInIosClientId": "562903530107-fdcg3jnkgljs993l84dg3armuodk96bi.apps.googleusercontent.com",
+      "googleSignInAndroidClientId": ""
     }
   }
 }

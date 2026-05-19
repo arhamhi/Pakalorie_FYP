@@ -170,7 +170,7 @@ The university Overleaf document specifies FR1–FR16. Coverage in P1 Mid:
 - **Budget:** $0 net new spend. All chosen tools have free tiers (Render free, Supabase / Neon free, Firebase Spark, GitHub free, Google Fonts free).
 - **Team:** Arham writes 100% of code. Hassan Nadeem owns documentation; Husnain Sarwar owns presentation and test cases.
 - **Doc compliance:** University Overleaf doc commits us to specific stack choices (Firebase + FastAPI + PostgreSQL). Doc compliance > engineering elegance during grading.
-- **Demo:** Arham's Android (daily driver) for primary live demo via EAS dev build. iOS support shipped via EAS cloud build — physical iPhone demo (TestFlight) is best-effort and gated on Apple Developer account purchase ($99/yr); iOS Simulator build is the fallback.
+- **Demo:** Daily mobile testing uses Expo Go from `npx expo start` on Android and iPhone. EAS development/production builds are reserved for Google OAuth verification, final install checks, and any native-only late-May demo needs. Physical iPhone install (TestFlight) remains best-effort and gated on Apple Developer account purchase ($99/yr); iOS Simulator build is the fallback.
 
 ---
 
@@ -190,16 +190,17 @@ Full risk register lives in the master plan at `C:\Users\Arham\.claude\plans\and
 
 Run before demo day:
 
-1. Fresh install on Arham's Android via EAS dev build.
+1. Fresh Expo Go session on Arham's Android or iPhone via `npx expo start`.
 2. Sign up new account with email/password → Firestore `users/{uid}` doc created.
-3. Log out, sign in with Google → land on home tab.
-4. Tap Capture → grant camera → snap chicken karahi → Results screen shows calories + 4 macros + confidence within 5s.
-5. Save to history → entry appears with timestamp.
-6. Force-quit → relaunch → still signed in.
-7. Airplane mode → graceful "no connection" UI.
-8. `curl https://<deployed>/healthz` → 200.
-9. `curl https://<deployed>/foods/search?q=karahi` → returns chicken karahi.
-10. UI spot-check: all 3 P1 Mid surfaces use Geist + Instrument Serif + 70/20/10 tokens.
+3. Log out, sign back in with email/password → persistent session restores after relaunch.
+4. In a development or production build, sign in with Google → land on home tab.
+5. Tap Capture → grant camera → snap chicken karahi → Results screen shows calories + 4 macros + confidence within 5s.
+6. Save to history → entry appears with timestamp.
+7. Force-quit → relaunch → still signed in.
+8. Airplane mode → graceful "no connection" UI.
+9. `curl https://<deployed>/healthz` → 200.
+10. `curl https://<deployed>/foods/search?q=karahi` → returns chicken karahi.
+11. UI spot-check: all 3 P1 Mid surfaces use Geist + Instrument Serif + 70/20/10 tokens.
 
 ---
 
