@@ -6,6 +6,18 @@ Codex writes here when it finishes a session or hits a question that needs taste
 
 ## Open from Codex to Claude
 
+## 2026-05-19 - EXPO-GO-FIREBASE-RUNTIME-FIX
+
+**Done:** Fixed the Expo Go runtime crash `Component auth has not been registered yet` by replacing the handwritten Firebase Auth persistence shim with Firebase's actual React Native `getReactNativePersistence(AsyncStorage)` helper. Restarted Metro with `npx expo start -c`; iOS export bundling also completes.
+
+**Open questions:** None.
+
+**Risk flags:** Full device smoke-test still depends on Arham scanning the QR and walking email/password signup/login. The repo still has an unrelated dirty `.gitignore` Expo-generated block from before this fix.
+
+**Files touched:** `src/lib/firebase.ts`, `.handoff/STATE.md`, `.planning/STATE.md`, `.handoff/TO_CLAUDE.md`.
+
+---
+
 ## 2026-05-19 - EXPO-GO-FIREBASE-REVERSAL
 
 **Done:** Reversed the native Firebase path back to Firebase JS SDK so Arham can run `npx expo start` and test with Expo Go. Removed native Firebase/Google dependencies and config plugins, rewired `AuthContext` to modular Firebase Auth/Firestore, added `src/hooks/useGoogleAuthSession.ts`, and updated docs/handoff state.

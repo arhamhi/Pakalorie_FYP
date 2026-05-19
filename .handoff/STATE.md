@@ -1,6 +1,6 @@
 # STATE — single source of truth on current code state
 
-**Last updated:** 2026-05-19 by Codex (Firebase JS SDK reversal — Expo Go path restored)
+**Last updated:** 2026-05-19 by Codex (Firebase JS SDK init fix — Expo Go path restored)
 **Next action owner:** Arham (smoke-test Expo Go auth + scan flow), then Claude Code (decide whether Google OAuth needs a dev-build verification before P1 Mid demo).
 
 ---
@@ -34,10 +34,11 @@
 - **NEW (Day 3.5):** Phosphor adopted (`phosphor-react-native`). All new code uses `*Icon` exports; `@expo/vector-icons` banned in new code.
 - **NEW (Day 4-5):** `app/(tabs)/scan.tsx` rewritten against DESIGN.md §5 — Phosphor icons, Geist + Instrument Serif typography, 70/20/10 tokens. Hero numeric (Instrument Serif), 4-card macro grid (now includes Fiber), confidence pill, alternatives card when confidence <70%, medical disclaimer footer, "Save to history" sticky CTA, denied-permission card with "Open settings" fallback. Servings stepper / modifiers / meal type / notes preserved from v2 but restyled. Type-check clean for the rewritten file.
 - **NEW (2026-05-19):** `src/hooks/useGoogleAuthSession.ts` wires Google OAuth through `expo-auth-session`. It deliberately returns a clear Expo Go error because OAuth needs a development/production build with the app's custom scheme.
+- **FIX (2026-05-19):** `src/lib/firebase.ts` now uses Firebase's actual React Native `getReactNativePersistence(AsyncStorage)` helper instead of a handwritten persistence shim. This addresses the Expo Go runtime crash: `Component auth has not been registered yet`.
 
 ## What's broken / stubbed
 
-- Scan/auth flows haven't been smoke-tested on device yet — Arham to run `npx expo start`, scan with Expo Go, and exercise: welcome → signup/login with email → scan → result → save → history.
+- Scan/auth flows haven't been smoke-tested end-to-end on device yet — Arham to run `npx expo start -c`, scan with Expo Go, and exercise: welcome → signup/login with email → scan → result → save → history.
 - Google OAuth is code-wired but not an Expo Go acceptance item. Test it in a dev/production build only if it must appear in the P1 Mid live demo.
 - Save-to-history STILL writes to Supabase `food_logs`, not Firestore. The v2 read paths in `app/(tabs)/index.tsx` and `app/(tabs)/calendar-log.tsx` still read from Supabase, so flipping save in isolation breaks history. Migration paired with CDX-001 (Codex's Firestore migration spec).
 - AuthContext methods `signInWithApple`, `signInWithPhone`, `verifyOtp` throw `not-implemented` — deferred to P1 Final / P2.
@@ -60,7 +61,7 @@ Deferred to P1 Final / P2: YOLOv8, MiDaS depth, Health Sync, Gemini Coach (Ustad
 
 1. **Arham smoke-test (Expo Go auth + scan path):**
    ```sh
-   npx expo start
+   npx expo start -c
    ```
    Walk: welcome → "Create account" → email/password → land on home → tap Scan tab → grant camera → capture chicken karahi → analyzing overlay → result card shows hero calorie number, 4-card macro grid, confidence pill, "Save to history" → save → check entry appears in home tab + calendar-log. Report any visual or runtime regressions.
 2. **Claude Code next:** decide whether Google OAuth is needed for the live P1 Mid demo. If yes, verify it in a development/production build; if no, keep the live demo on email/password through Expo Go.

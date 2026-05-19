@@ -10,10 +10,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getApp, getApps, initializeApp, type FirebaseApp } from 'firebase/app';
 import {
+  // Firebase's RN bundle exports this at runtime, but the package's default
+  // TypeScript entry does not expose the React Native conditional export.
+  // @ts-expect-error React Native conditional export.
+  getReactNativePersistence,
   getAuth,
   initializeAuth,
   type Auth,
-  type Persistence,
   type User as FirebaseUser,
 } from 'firebase/auth';
 import { getFirestore, type Firestore } from 'firebase/firestore';
@@ -40,53 +43,16 @@ function assertFirebaseConfig() {
   }
 }
 
-function getAsyncStoragePersistence(storage: typeof AsyncStorage): Persistence {
-  class ReactNativeAsyncStoragePersistence {
-    static type = 'LOCAL' as const;
-    readonly type = 'LOCAL' as const;
-
-    async _isAvailable(): Promise<boolean> {
-      try {
-        const testKey = 'firebase:storage-test';
-        await storage.setItem(testKey, '1');
-        await storage.removeItem(testKey);
-        return true;
-      } catch {
-        return false;
-      }
-    }
-
-    _set(key: string, value: unknown): Promise<void> {
-      return storage.setItem(key, JSON.stringify(value));
-    }
-
-    async _get<T>(key: string): Promise<T | null> {
-      const json = await storage.getItem(key);
-      return json ? (JSON.parse(json) as T) : null;
-    }
-
-    _remove(key: string): Promise<void> {
-      return storage.removeItem(key);
-    }
-
-    _addListener(): void {
-      // AsyncStorage does not support cross-context listeners in React Native.
-    }
-
-    _removeListener(): void {
-      // AsyncStorage does not support cross-context listeners in React Native.
-    }
-  }
-
-  return ReactNativeAsyncStoragePersistence as unknown as Persistence;
-}
-
 function createAuth(app: FirebaseApp): Auth {
   try {
     return initializeAuth(app, {
-      persistence: getAsyncStoragePersistence(AsyncStorage),
+      persistence: getReactNativePersistence(AsyncStorage),
     });
-  } catch {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : '';
+    if (!message.includes('already been initialized')) {
+      throw error;
+    }
     // Fast Refresh can re-run this module after Auth is already initialized.
     return getAuth(app);
   }
