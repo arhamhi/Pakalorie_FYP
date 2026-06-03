@@ -6,6 +6,25 @@ Codex writes here when it finishes a session or hits a question that needs taste
 
 ## Open from Codex to Claude
 
+## 2026-06-03 - CDX-P1FINAL-FOODBACKEND
+
+**Done:** Implemented the foundational backend lane in `backend/`: FastAPI scaffold, async SQLAlchemy models, Alembic baseline, dev Docker Compose, in-repo desi seed, filtered USDA Foundation Foods extract, idempotent seed script, food endpoints, server-side Gemini recognition route, and `POST /calories` grounded calorie engine. Added typed response models so OpenAPI documents the endpoint contracts, plus `backend/docs/API_CONTRACT.md` for mobile wiring and `backend/docs/LOCAL_DB_SMOKE.md` for the next DB verification run. Backend package metadata now builds/install via `uv sync`, Dockerfile is corrected for `pip install .`, and root `.pre-commit-config.yaml` runs ruff on backend files. Local Uvicorn health/OpenAPI smoke passed: `GET /healthz` returned `{"status":"ok"}` and `/openapi.json` lists all backend paths. Ruff is green; pytest is green with 9 tests, including seed invariants and missing Gemini key envelope behavior.
+
+**Endpoint shapes for mobile wiring:**
+- `POST /recognize` multipart field `image` -> `{success,data:{food_label,confidence,alternatives:[{food_label,confidence}]},error}`. Requires server `GEMINI_API_KEY`.
+- `GET /foods/search?q=<text>&limit=10` -> `{success,data:[{id,name_en,name_ur,category,source,default_portion,score}],error}`.
+- `GET /foods/{id}` -> `{success,data:{id,name_en,name_ur,category,source,base_unit,aliases,portions,modifiers},error}`.
+- `POST /foods/{id}/nutrition` body `{portion:"<label or id>",modifiers:["<name>"]}` -> adjusted kcal/macros. Portion/modifiers must belong to that food. Desi `fiber_g` can be `null`.
+- `POST /calories` body `{recognized_dish,portion?,modifiers?,top_k?}` -> `{food_id,food_label,portion_label,calories_kcal,protein_g,carbs_g,fat_g,fiber_g,applied_modifiers,ignored_modifiers,why,model_used,source_rows}`.
+
+**Open questions:** None for Claude until DB smoke/deploy is verified. Once API is reachable, wire `src/lib/api.ts` against the shapes above and keep current client Gemini path as fallback.
+
+**Risk flags:** Full live DB verification is blocked by local Docker Desktop instability. `docker compose up db -d` pulled `pgvector/pgvector:pg16`, then failed container creation with Docker API `502 Bad Gateway`; retry hit Docker CLI `pageAlloc: out of memory`. After restarting Docker Desktop, escalated `docker info` still hung; a later `docker info` retry also hung and was stopped. Alembic SQL renders offline and seed data normalizes to 160 rows, but `alembic upgrade head && python -m scripts.seed_foods` still needs a healthy Docker/Postgres run. Recognition/calorie Gemini generation needs `GEMINI_API_KEY`; no key is committed.
+
+**Files touched:** `.gitignore`, `.pre-commit-config.yaml`, `backend/**`, `.handoff/STATE.md`, `.handoff/DECISIONS.md`, `.handoff/TO_CLAUDE.md`, `.handoff/TO_CODEX.md`, `.planning/STATE.md`.
+
+---
+
 ## 2026-05-19 - EXPO-GO-FIREBASE-RUNTIME-FIX
 
 **Done:** Fixed the Expo Go runtime crash `Component auth has not been registered yet` by adding `src/lib/firebaseAuth.ts`, which imports Firebase Auth's browser ESM bundle directly and avoids Metro's React Native/CJS Auth registry split. `src/lib/firebase.ts` now uses that wrapper with AsyncStorage-backed persistence. iOS export bundling completes.

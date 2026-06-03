@@ -1,111 +1,118 @@
 ---
-milestone: v1.0
-name: P1 Mid
-created: 2026-05-07
-last_updated: 2026-05-08
-total_phases: 4
-total_requirements: 33
+milestone: v1.1
+name: P1 Final
+created: 2026-06-03
+last_updated: 2026-06-03
+total_phases: 5
+total_requirements: 26
 coverage: 100%
+supersedes: v1.0 (P1 Mid — submitted)
 ---
 
-# Milestone v1.0 (P1 Mid) Roadmap
+# Milestone v1.1 (P1 Final) Roadmap
 
-**4 phases** | **33 requirements mapped** | All covered ✓
+**5 phases** | **26 requirements mapped** | All covered ✓
+Target: 7th-sem final, cumulative 50%, due before July 2026. Live demo + report + metrics.
 
-| # | Phase | Goal | Requirements | Success Criteria |
-|---|---|---|---|---|
-| 1 | Foundation & Auth | Fork v2, Firebase migration, auth UI shipped | AUTH-01..07 + UI-09 (accent default) | 5 |
-| 2 | Capture/Results UI Polish | Geist + Instrument Serif + 70/20/10 tokens applied to 3 surfaces | UI-01..10 | 5 |
-| 3 | FastAPI + Postgres Backend | Service deployed, seeded, all 4 endpoints live | API-01..09 | 5 |
-| 4 | Demo & Acceptance | EAS build on Android + iOS simulator, demo script, README, verification | DEMO-01..07 | 5 |
+Build order is **dependency-driven**, not calendar-driven: the Food DB is foundational (the calorie engine reads it), the calorie engine is the showpiece, YOLOv8 runs in parallel, MiDaS is last and minimal, then the mobile wiring + demo + docs close it out.
+
+| # | Phase | Goal | Requirements | Owner | Success Criteria |
+|---|---|---|---|---|---|
+| 1 | Food Database API | FastAPI + Postgres deployed on the VPS, seeded ≥150, 5 endpoints live | FOODDB-01..09 | Codex (CDX-002..005) | 5 |
+| 2 | Calorie Engine + RAG | Retrieve from DB → Gemini grounds calorie/macro + "why" + sources | CALC-01..04 | Codex (CDX-008) | 4 |
+| 3 | YOLOv8 Training | Real classification model + honest metrics (parallel) | YOLO-01..04 | Codex (CDX-006) | 4 |
+| 4 | MiDaS Depth (minimal) | Relative depth → portion bucket + limitations note | DEPTH-01..03 | Codex (CDX-007) | 3 |
+| 5 | Wiring, Demo & Docs | Mobile calls the real pipeline; live demo + SDS material | WIRE-01..04, DOCS-01..02 | Claude | 5 |
 
 ---
 
 ## Phase Details
 
-### Phase 1: Foundation & Auth (~Week 1, May 8–14)
+### Phase 1: Food Database API (foundational — START HERE)
 
-**Goal:** Repo and tooling solid; Firebase Auth + Firestore replacing Supabase; auth-gated routes redirect cleanly.
+**Goal:** A FastAPI service backed by self-hosted Postgres on the Hostinger VPS, seeded with the 30 desi dishes + USDA augmentation (≥150), exposing the food/nutrition endpoints. Everything downstream reads from this.
 
-**Requirements:**
-- AUTH-01 (signup), AUTH-02 (login), AUTH-03 (Google OAuth), AUTH-04 (password reset), AUTH-05 (signout), AUTH-06 (Firestore user doc), AUTH-07 (auth-gated routes)
-- UI-09 (default accent = green)
-
-**Success criteria:**
-1. Firebase project `pakalorie-fyp` exists; email/password + Google providers enabled
-2. `src/contexts/AuthContext.tsx` rewritten using Firebase SDK; v2's API contract preserved so consumer screens don't break
-3. `app/(auth)/{welcome,login,signup,forgot-password}.tsx` all build and navigate correctly
-4. New user signup creates a `users/{uid}` Firestore doc with `onboarding_complete: false`
-5. Force-quit + relaunch keeps user signed in (token refresh confirmed)
-
-**Codex parallel track:** CDX-001 (Firestore migration spec for non-auth collections — see `../.handoff/TO_CODEX.md`)
-
----
-
-### Phase 2: Capture/Results UI Polish (~Week 2, May 15–21)
-
-**Goal:** The 3 visible-to-supervisor surfaces feel premium. Tokens, fonts, type scale, components all consistent.
-
-**Requirements:**
-- UI-01..10
+**Requirements:** FOODDB-01..09
+**Codex:** CDX-002 (scaffold) → CDX-003 (schema + seed) → CDX-004 (endpoints) → CDX-005 (VPS Docker deploy).
 
 **Success criteria:**
-1. `src/constants/{fonts.ts,spacing.ts}` created; `tailwind.config.js` extended with the 70/20/10 token system
-2. Geist Sans + Instrument Serif load via `@expo-google-fonts` and render on Auth, Capture, Results without FOIT/FOUT regressions
-3. Capture screen: camera permission flow + denied-state card + gallery fallback all work
-4. Results screen: hero numeric (Instrument Serif), 4-card macro grid, confidence pill, alternatives when <70%, save CTA, disclaimer footer all render correctly
-5. Save-to-history writes a Firestore log doc and the entry appears in v2's existing history surface
+1. `docker-compose up` runs FastAPI + Postgres locally; `curl localhost:8000/healthz` → 200.
+2. Alembic schema covers all 5 tables; fiber nullable; portions labeled; modifiers additive. `SELECT COUNT(*) FROM foods` ≥ 150 after seed (30 desi + USDA).
+3. `/foods/search` (pg_trgm, EN + Roman Urdu), `/foods/{id}`, `/foods/{id}/nutrition` (portion + modifier math), `/recognize` (server-side Gemini) all documented in OpenAPI.
+4. No Gemini key in the mobile bundle (server-side only).
+5. Deployed on the VPS over HTTPS behind the reverse proxy, always-on, reachable from the app.
 
-**Codex parallel track:** Phase 2 is mostly Claude Code work; Codex starts CDX-002 (FastAPI scaffold) at end of Week 2.
+### Phase 2: Calorie Engine + RAG (showpiece)
 
----
+**Goal:** Turn a recognized dish + portion into a grounded calorie/macro breakdown by retrieving real nutrition rows and having Gemini compose the answer constrained to those rows.
 
-### Phase 3: FastAPI + Postgres Backend (~Week 3, May 22–28)
-
-**Goal:** Backend service deployed and reachable from the mobile app over HTTPS. End-to-end capture → results runs against our infra (not Supabase + direct Gemini).
-
-**Requirements:**
-- API-01..09
+**Requirements:** CALC-01..04
+**Codex:** CDX-008. **Depends on:** Phase 1 seeded DB (CDX-003).
 
 **Success criteria:**
-1. Postgres schema migrated via Alembic; seed script populates ≥150 foods (v1 dataset + USDA augmentation)
-2. All 4 P1 Mid endpoints (`/recognize`, `/foods/search`, `/foods/{id}`, `/foods/{id}/nutrition`) plus `/healthz` documented in OpenAPI
-3. FastAPI service deployed to Render free tier; HTTPS + env vars (`DATABASE_URL`, `GEMINI_API_KEY`, `CORS_ORIGINS`) configured
-4. `src/lib/api.ts` typed client wired to deployed URL; mobile app no longer calls Supabase or Gemini directly
-5. End-to-end smoke test: snap chicken karahi on Android device → results screen shows real macros from our backend
+1. Retrieval layer (pgvector or pg_trgm) returns top-k nutrition + portion + modifier rows for a dish.
+2. `POST /calories` returns structured macros + a "why" + the retrieved source rows (standard envelope).
+3. Gemini is grounded only in retrieved facts; portion scaling + modifiers handled correctly.
+4. Eval table (predicted vs reference kcal) on a known-dish set; numbers sane.
 
-**Codex track (primary owner):** CDX-002, CDX-003, CDX-004, CDX-005 — see `../.handoff/TO_CODEX.md`
+### Phase 3: YOLOv8 Training (carryover — runs in parallel)
 
----
+**Goal:** Replace the Gemini recognition stub with a real, reportable classification model. Independent of the API, so it can run alongside Phases 1–2.
 
-### Phase 4: Demo & Acceptance (~Week 4, May 29 – end of month)
-
-**Goal:** Bug bash, EAS build on Arham's daily Android, rehearsed 90-second demo, supervisor-ready.
-
-**Requirements:**
-- DEMO-01..07
+**Requirements:** YOLO-01..04
+**Codex:** CDX-006. **Blocked on:** Arham providing Kaggle dataset URL(s).
 
 **Success criteria:**
-1. Expo Go QR flow works from `npx expo start` on Arham's Android/iPhone; fresh email/password account reaches the app
-2. Google OAuth is verified in a development or production build if it is part of the live demo script
-3. iOS Expo Go smoke-test passes; physical iPhone install via TestFlight remains best-effort if Apple Dev account is purchased
-4. 90-second demo script (signup → capture → result → save → history, with Google OAuth as optional build-only segment) recorded as backup video, stored locally + on Drive
-5. Repo `README.md` includes architecture diagram, env-var list, run instructions; `/gsd-verify-work` shows zero failing acceptance criteria across all 33 requirements
+1. Colab notebook trains `yolov8*-cls` on the Kaggle desi-food data end-to-end on free T4.
+2. `ml/MODELCARD.md`: top-1/top-5, confusion matrix, sample predictions on Arham's photos, honest error analysis.
+3. `best.pt` + `best.onnx` exported; reproduction documented.
+4. *(stretch)* served behind `/recognize` on the VPS, or documented as the P2 on-device path.
+
+### Phase 4: MiDaS Depth (minimal — last)
+
+**Goal:** A pretrained depth pass that yields a portion bucket, with the limitation stated plainly. Deliberately small; partial marks accepted.
+
+**Requirements:** DEPTH-01..03
+**Codex:** CDX-007.
+
+**Success criteria:**
+1. MiDaS small (CPU) returns a relative depth map for a food photo on the VPS.
+2. Heuristic depth + plate-area → portion bucket (small/med/large multiplier) the calorie engine consumes.
+3. Limitations write-up: relative only, no calibrated grams. No faked accuracy.
+
+### Phase 5: Wiring, Demo & Docs (Claude)
+
+**Goal:** Make the app show the real pipeline, rehearse a reliable live demo, and hand Hassan/Husnain the report material.
+
+**Requirements:** WIRE-01..04, DOCS-01..02
+**Owner:** Claude. **Depends on:** Phases 1–2 deployed (3–4 feed in as they land).
+
+**Success criteria:**
+1. `src/lib/api.ts` wired to the VPS endpoints (typed).
+2. Results screen shows real recognition → portion → grounded calorie breakdown + "why" + sources.
+3. Gemini fallback kicks in gracefully when the pipeline is down; no silent fake numbers.
+4. Live end-to-end demo on device (Expo Go) in a sane time; backup video recorded.
+5. SDS material delivered: architecture diagram, OpenAPI contract, RAG methodology, YOLOv8 + MiDaS results tables.
 
 ---
 
 ## Coverage Validation
 
 Every REQ-ID in `REQUIREMENTS.md` maps to exactly one phase:
-- Phase 1: AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, AUTH-06, AUTH-07, UI-09 (8)
-- Phase 2: UI-01, UI-02, UI-03, UI-04, UI-05, UI-06, UI-07, UI-08, UI-10 (9)
-- Phase 3: API-01, API-02, API-03, API-04, API-05, API-06, API-07, API-08, API-09 (9)
-- Phase 4: DEMO-01, DEMO-02, DEMO-03, DEMO-04, DEMO-05, DEMO-06, DEMO-07 (7)
+- Phase 1: FOODDB-01..09 (9)
+- Phase 2: CALC-01..04 (4)
+- Phase 3: YOLO-01..04 (4)
+- Phase 4: DEPTH-01..03 (3)
+- Phase 5: WIRE-01..04, DOCS-01..02 (6)
 
-**Total: 33 / 33 requirements mapped. 100% coverage.**
+**Total: 26 mapped REQ-IDs across the 6 categories. 100% coverage of v1.1 active requirements.**
 
 ---
 
+## Archive: v1.0 (P1 Mid) — SUBMITTED
+
+The prior milestone shipped 4 phases / 33 requirements (AUTH-01..07, UI-01..10, API-01..09, DEMO-01..07): Foundation & Auth, Capture/Results UI Polish, FastAPI scaffold groundwork, Demo & Acceptance. Submitted at the 7th-sem midterm (25%). Food Recognition shipped as a Gemini stub; real YOLOv8 training is carried into v1.1 as Phase 3. Full v1.0 text is in this file's git history.
+
 ## Numbering note
 
-Phases reset to **1** for this milestone (project's first GSD milestone). Future milestones (v1.1 onward) continue numbering from where v1.0 ended (Phase 5 onwards) unless `--reset-phase-numbers` is passed.
+Phases reset to **1** for v1.1 since v1.0 is closed/submitted and these docs are a clean re-baseline. v1.0's phases (1–4) are archived above.
