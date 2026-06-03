@@ -53,8 +53,9 @@ Two modes:
 uv run pytest -m "not integration"
 
 # Integration tests against a live, seeded database
-# 1. open the SSH tunnel so localhost:5432 -> VPS Postgres
-# 2. ensure backend/.env DATABASE_URL points at it
+# 1. open the SSH tunnel so localhost:5432 -> VPS Postgres (leave it running):
+#      ssh -fN -L 5432:127.0.0.1:5432 root@179.61.246.154
+# 2. ensure backend/.env DATABASE_URL points at localhost:5432 (it does after setup)
 uv run pytest -m integration
 ```
 
