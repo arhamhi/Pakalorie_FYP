@@ -1,0 +1,3137 @@
+{
+  "version": "fdc-foundation-2026-04-filtered-v1",
+  "source": "usda",
+  "source_name": "USDA FoodData Central Foundation Foods",
+  "source_release": "04/2026",
+  "source_url": "https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_foundation_food_csv_2026-04-30.zip",
+  "foods": [
+    {
+      "id": "usda_321358",
+      "fdc_id": 321358,
+      "name_en": "Hummus, commercial",
+      "category": "Legumes and Legume Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 229.0,
+          "p": 7.35,
+          "c": 14.9,
+          "f": 17.1,
+          "fiber": 5.4
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Hummus",
+        "Hummus, commercial"
+      ]
+    },
+    {
+      "id": "usda_321359",
+      "fdc_id": 321359,
+      "name_en": "Milk, reduced fat, fluid, 2% milkfat, with added vitamin A and vitamin D",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 50.0,
+          "p": 3.35,
+          "c": 4.91,
+          "f": 1.9,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Milk",
+        "Milk, reduced fat, fluid, 2% milkfat, with added vitamin A and vitamin D",
+        "milk"
+      ]
+    },
+    {
+      "id": "usda_321360",
+      "fdc_id": 321360,
+      "name_en": "Tomatoes, grape, raw",
+      "category": "Vegetables and Vegetable Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 27.0,
+          "p": 0.83,
+          "c": 5.51,
+          "f": 0.63,
+          "fiber": 2.1
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Tomatoes",
+        "Tomatoes, grape, raw"
+      ]
+    },
+    {
+      "id": "usda_321611",
+      "fdc_id": 321611,
+      "name_en": "Beans, snap, green, canned, regular pack, drained solids",
+      "category": "Vegetables and Vegetable Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 21.0,
+          "p": 1.04,
+          "c": 4.11,
+          "f": 0.39,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Beans",
+        "Beans, snap, green, canned, regular pack, drained solids"
+      ]
+    },
+    {
+      "id": "usda_321900",
+      "fdc_id": 321900,
+      "name_en": "Broccoli, raw",
+      "category": "Vegetables and Vegetable Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 32.0,
+          "p": 2.57,
+          "c": 6.29,
+          "f": 0.34,
+          "fiber": 2.4
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Broccoli",
+        "Broccoli, raw"
+      ]
+    },
+    {
+      "id": "usda_322228",
+      "fdc_id": 322228,
+      "name_en": "Milk, lowfat, fluid, 1% milkfat, with added vitamin A and vitamin D",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 43.0,
+          "p": 3.38,
+          "c": 5.19,
+          "f": 0.95,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Milk",
+        "Milk, lowfat, fluid, 1% milkfat, with added vitamin A and vitamin D",
+        "milk"
+      ]
+    },
+    {
+      "id": "usda_322559",
+      "fdc_id": 322559,
+      "name_en": "Milk, nonfat, fluid, with added vitamin A and vitamin D (fat free or skim)",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 34.0,
+          "p": 3.43,
+          "c": 4.89,
+          "f": 0.08,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Milk",
+        "Milk, nonfat, fluid, with added vitamin A and vitamin D (fat free or skim)",
+        "milk"
+      ]
+    },
+    {
+      "id": "usda_322892",
+      "fdc_id": 322892,
+      "name_en": "Milk, whole, 3.25% milkfat, with added vitamin D",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 60.0,
+          "p": 3.28,
+          "c": 4.67,
+          "f": 3.2,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Milk",
+        "Milk, whole, 3.25% milkfat, with added vitamin D",
+        "milk"
+      ]
+    },
+    {
+      "id": "usda_323121",
+      "fdc_id": 323121,
+      "name_en": "Frankfurter, beef, unheated",
+      "category": "Sausages and Luncheon Meats",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 314.0,
+          "p": 11.7,
+          "c": 2.89,
+          "f": 28.0,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Frankfurter",
+        "Frankfurter, beef, unheated"
+      ]
+    },
+    {
+      "id": "usda_323294",
+      "fdc_id": 323294,
+      "name_en": "Nuts, almonds, dry roasted, with salt added",
+      "category": "Nut and Seed Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 620.0,
+          "p": 20.4,
+          "c": 16.2,
+          "f": 57.8,
+          "fiber": 11.0
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Nuts",
+        "Nuts, almonds, dry roasted, with salt added"
+      ]
+    },
+    {
+      "id": "usda_323444",
+      "fdc_id": 323444,
+      "name_en": "Cheese, ricotta, whole milk",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 157.0,
+          "p": 7.81,
+          "c": 6.86,
+          "f": 11.0,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Cheese",
+        "Cheese, ricotta, whole milk"
+      ]
+    },
+    {
+      "id": "usda_323505",
+      "fdc_id": 323505,
+      "name_en": "Kale, raw",
+      "category": "Vegetables and Vegetable Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 35.0,
+          "p": 2.92,
+          "c": 4.42,
+          "f": 1.49,
+          "fiber": 4.1
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Kale",
+        "Kale, raw"
+      ]
+    },
+    {
+      "id": "usda_323604",
+      "fdc_id": 323604,
+      "name_en": "Egg, whole, raw, frozen, pasteurized",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 150.0,
+          "p": 12.3,
+          "c": 0.91,
+          "f": 10.3,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Egg",
+        "Egg, whole, raw, frozen, pasteurized"
+      ]
+    },
+    {
+      "id": "usda_323697",
+      "fdc_id": 323697,
+      "name_en": "Egg, white, raw, frozen, pasteurized",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 48.0,
+          "p": 10.1,
+          "c": 0.74,
+          "f": 0.16,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Egg",
+        "Egg, white, raw, frozen, pasteurized"
+      ]
+    },
+    {
+      "id": "usda_323793",
+      "fdc_id": 323793,
+      "name_en": "Egg, white, dried",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 376.0,
+          "p": 79.9,
+          "c": 6.02,
+          "f": 0.65,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Egg",
+        "Egg, white, dried"
+      ]
+    },
+    {
+      "id": "usda_324038",
+      "fdc_id": 324038,
+      "name_en": "Sauce, salsa, ready-to-serve",
+      "category": "Soups, Sauces, and Gravies",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 29.0,
+          "p": 1.44,
+          "c": 6.74,
+          "f": 0.19,
+          "fiber": 1.8
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Sauce",
+        "Sauce, salsa, ready-to-serve"
+      ]
+    },
+    {
+      "id": "usda_324157",
+      "fdc_id": 324157,
+      "name_en": "Sausage, breakfast sausage, beef, pre-cooked, unprepared",
+      "category": "Sausages and Luncheon Meats",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 328.0,
+          "p": 13.3,
+          "c": 3.37,
+          "f": 28.7,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Sausage",
+        "Sausage, breakfast sausage, beef, pre-cooked, unprepared"
+      ]
+    },
+    {
+      "id": "usda_324317",
+      "fdc_id": 324317,
+      "name_en": "Onion rings, breaded, par fried, frozen, prepared, heated in oven",
+      "category": "Vegetables and Vegetable Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 288.0,
+          "p": 4.52,
+          "c": 36.3,
+          "f": 14.4,
+          "fiber": 2.4
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Onion rings",
+        "Onion rings, breaded, par fried, frozen, prepared, heated in oven"
+      ]
+    },
+    {
+      "id": "usda_324653",
+      "fdc_id": 324653,
+      "name_en": "Pickles, cucumber, dill or kosher dill",
+      "category": "Vegetables and Vegetable Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 12.0,
+          "p": 0.48,
+          "c": 1.99,
+          "f": 0.43,
+          "fiber": 1.0
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Pickles",
+        "Pickles, cucumber, dill or kosher dill"
+      ]
+    },
+    {
+      "id": "usda_324860",
+      "fdc_id": 324860,
+      "name_en": "Peanut butter, smooth style, with salt",
+      "category": "Legumes and Legume Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 597.0,
+          "p": 22.5,
+          "c": 22.3,
+          "f": 51.1,
+          "fiber": 4.8
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Peanut butter",
+        "Peanut butter, smooth style, with salt"
+      ]
+    },
+    {
+      "id": "usda_325036",
+      "fdc_id": 325036,
+      "name_en": "Cheese, parmesan, grated",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 421.0,
+          "p": 29.6,
+          "c": 12.4,
+          "f": 28.0,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Cheese",
+        "Cheese, parmesan, grated"
+      ]
+    },
+    {
+      "id": "usda_325198",
+      "fdc_id": 325198,
+      "name_en": "Cheese, pasteurized process, American, vitamin D fortified",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 366.0,
+          "p": 18.0,
+          "c": 5.27,
+          "f": 30.6,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Cheese",
+        "Cheese, pasteurized process, American, vitamin D fortified"
+      ]
+    },
+    {
+      "id": "usda_325287",
+      "fdc_id": 325287,
+      "name_en": "Grapefruit juice, white, canned or bottled, unsweetened",
+      "category": "Fruits and Fruit Juices",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 37.0,
+          "p": 0.55,
+          "c": 7.59,
+          "f": 0.7,
+          "fiber": 0.2
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Grapefruit juice",
+        "Grapefruit juice, white, canned or bottled, unsweetened"
+      ]
+    },
+    {
+      "id": "usda_325430",
+      "fdc_id": 325430,
+      "name_en": "Peaches, yellow, raw",
+      "category": "Fruits and Fruit Juices",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 42.0,
+          "p": 0.91,
+          "c": 10.1,
+          "f": 0.27,
+          "fiber": 1.5
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Peaches",
+        "Peaches, yellow, raw"
+      ]
+    },
+    {
+      "id": "usda_325524",
+      "fdc_id": 325524,
+      "name_en": "Seeds, sunflower seed kernels, dry roasted, with salt added",
+      "category": "Nut and Seed Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 612.0,
+          "p": 21.0,
+          "c": 17.1,
+          "f": 56.1,
+          "fiber": 10.3
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Seeds",
+        "Seeds, sunflower seed kernels, dry roasted, with salt added"
+      ]
+    },
+    {
+      "id": "usda_325658",
+      "fdc_id": 325658,
+      "name_en": "Sausage, Italian, pork, mild, cooked, pan-fried",
+      "category": "Sausages and Luncheon Meats",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 322.0,
+          "p": 18.2,
+          "c": 2.15,
+          "f": 26.2,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Sausage",
+        "Sausage, Italian, pork, mild, cooked, pan-fried"
+      ]
+    },
+    {
+      "id": "usda_325871",
+      "fdc_id": 325871,
+      "name_en": "Bread, white, commercially prepared",
+      "category": "Baked Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 270.0,
+          "p": 9.43,
+          "c": 49.2,
+          "f": 3.59,
+          "fiber": 2.3
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Bread",
+        "Bread, white, commercially prepared"
+      ]
+    },
+    {
+      "id": "usda_325992",
+      "fdc_id": 325992,
+      "name_en": "Sausage, turkey, breakfast links, mild, raw",
+      "category": "Sausages and Luncheon Meats",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 169.0,
+          "p": 16.7,
+          "c": 0.93,
+          "f": 10.4,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Sausage",
+        "Sausage, turkey, breakfast links, mild, raw"
+      ]
+    },
+    {
+      "id": "usda_326135",
+      "fdc_id": 326135,
+      "name_en": "Cheese, swiss",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 393.0,
+          "p": 27.0,
+          "c": 1.44,
+          "f": 31.0,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Cheese",
+        "Cheese, swiss"
+      ]
+    },
+    {
+      "id": "usda_326196",
+      "fdc_id": 326196,
+      "name_en": "Kale, frozen, cooked, boiled, drained, without salt",
+      "category": "Vegetables and Vegetable Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 36.0,
+          "p": 2.94,
+          "c": 5.3,
+          "f": 1.21,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Kale",
+        "Kale, frozen, cooked, boiled, drained, without salt"
+      ]
+    },
+    {
+      "id": "usda_326458",
+      "fdc_id": 326458,
+      "name_en": "Carrots, frozen, unprepared (Includes foods for USDA's Food Distribution Program)",
+      "category": "Vegetables and Vegetable Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 37.0,
+          "p": 0.81,
+          "c": 7.92,
+          "f": 0.47,
+          "fiber": 3.2
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Carrots",
+        "Carrots, frozen, unprepared (Includes foods for USDA's Food Distribution Program)"
+      ]
+    },
+    {
+      "id": "usda_326698",
+      "fdc_id": 326698,
+      "name_en": "Mustard, prepared, yellow",
+      "category": "Spices and Herbs",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 61.0,
+          "p": 4.25,
+          "c": 5.3,
+          "f": 3.38,
+          "fiber": 4.3
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Mustard",
+        "Mustard, prepared, yellow"
+      ]
+    },
+    {
+      "id": "usda_326905",
+      "fdc_id": 326905,
+      "name_en": "Figs, dried, uncooked",
+      "category": "Fruits and Fruit Juices",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 249.0,
+          "p": 3.3,
+          "c": 63.9,
+          "f": 0.92,
+          "fiber": 9.8
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Figs",
+        "Figs, dried, uncooked"
+      ]
+    },
+    {
+      "id": "usda_327046",
+      "fdc_id": 327046,
+      "name_en": "Kiwifruit, green, raw",
+      "category": "Fruits and Fruit Juices",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 58.0,
+          "p": 1.06,
+          "c": 14.0,
+          "f": 0.44,
+          "fiber": 3.0
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Kiwifruit",
+        "Kiwifruit, green, raw"
+      ]
+    },
+    {
+      "id": "usda_327198",
+      "fdc_id": 327198,
+      "name_en": "Melons, cantaloupe, raw",
+      "category": "Fruits and Fruit Juices",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 34.0,
+          "p": 0.82,
+          "c": 8.16,
+          "f": 0.18,
+          "fiber": 0.8
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Melons",
+        "Melons, cantaloupe, raw"
+      ]
+    },
+    {
+      "id": "usda_327357",
+      "fdc_id": 327357,
+      "name_en": "Nectarines, raw",
+      "category": "Fruits and Fruit Juices",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 39.0,
+          "p": 1.06,
+          "c": 9.18,
+          "f": 0.28,
+          "fiber": 1.5
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Nectarines",
+        "Nectarines, raw"
+      ]
+    },
+    {
+      "id": "usda_327501",
+      "fdc_id": 327501,
+      "name_en": "Oranges, raw, navels (Includes foods for USDA's Food Distribution Program)",
+      "category": "Fruits and Fruit Juices",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 47.0,
+          "p": 0.91,
+          "c": 11.8,
+          "f": 0.15,
+          "fiber": 2.0
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Oranges",
+        "Oranges, raw, navels (Includes foods for USDA's Food Distribution Program)"
+      ]
+    },
+    {
+      "id": "usda_327699",
+      "fdc_id": 327699,
+      "name_en": "Strawberries, raw",
+      "category": "Fruits and Fruit Juices",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 31.0,
+          "p": 0.64,
+          "c": 7.63,
+          "f": 0.22,
+          "fiber": 1.8
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Strawberries",
+        "Strawberries, raw"
+      ]
+    },
+    {
+      "id": "usda_327923",
+      "fdc_id": 327923,
+      "name_en": "Lettuce, cos or romaine, raw",
+      "category": "Vegetables and Vegetable Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 17.0,
+          "p": 1.24,
+          "c": 3.24,
+          "f": 0.26,
+          "fiber": 1.8
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Lettuce",
+        "Lettuce, cos or romaine, raw"
+      ]
+    },
+    {
+      "id": "usda_328637",
+      "fdc_id": 328637,
+      "name_en": "Cheese, cheddar",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 408.0,
+          "p": 23.3,
+          "c": 2.44,
+          "f": 34.0,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Cheese",
+        "Cheese, cheddar"
+      ]
+    },
+    {
+      "id": "usda_328841",
+      "fdc_id": 328841,
+      "name_en": "Cheese, cottage, lowfat, 2% milkfat",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 84.0,
+          "p": 11.0,
+          "c": 4.31,
+          "f": 2.3,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Cheese",
+        "Cheese, cottage, lowfat, 2% milkfat"
+      ]
+    },
+    {
+      "id": "usda_329370",
+      "fdc_id": 329370,
+      "name_en": "Cheese, mozzarella, low moisture, part-skim",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 298.0,
+          "p": 23.7,
+          "c": 4.44,
+          "f": 20.4,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Cheese",
+        "Cheese, mozzarella, low moisture, part-skim"
+      ]
+    },
+    {
+      "id": "usda_329490",
+      "fdc_id": 329490,
+      "name_en": "Egg, whole, dried",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 575.0,
+          "p": 48.1,
+          "c": 1.87,
+          "f": 39.8,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Egg",
+        "Egg, whole, dried"
+      ]
+    },
+    {
+      "id": "usda_329596",
+      "fdc_id": 329596,
+      "name_en": "Egg, yolk, raw, frozen, pasteurized",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 296.0,
+          "p": 15.6,
+          "c": 0.59,
+          "f": 25.1,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Egg",
+        "Egg, yolk, raw, frozen, pasteurized"
+      ]
+    },
+    {
+      "id": "usda_329716",
+      "fdc_id": 329716,
+      "name_en": "Egg, yolk, dried",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 654.0,
+          "p": 34.2,
+          "c": 1.07,
+          "f": 55.5,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Egg",
+        "Egg, yolk, dried"
+      ]
+    },
+    {
+      "id": "usda_329830",
+      "fdc_id": 329830,
+      "name_en": "Cheese, dry white, queso seco",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 326.0,
+          "p": 24.5,
+          "c": 2.07,
+          "f": 24.3,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Cheese",
+        "Cheese, dry white, queso seco"
+      ]
+    },
+    {
+      "id": "usda_330137",
+      "fdc_id": 330137,
+      "name_en": "Yogurt, Greek, plain, nonfat",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 61.0,
+          "p": 10.3,
+          "c": 3.64,
+          "f": 0.37,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Yogurt",
+        "Yogurt, Greek, plain, nonfat"
+      ]
+    },
+    {
+      "id": "usda_330415",
+      "fdc_id": 330415,
+      "name_en": "Yogurt, Greek, strawberry, nonfat",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 83.0,
+          "p": 8.06,
+          "c": 12.2,
+          "f": 0.15,
+          "fiber": 0.6
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Yogurt",
+        "Yogurt, Greek, strawberry, nonfat"
+      ]
+    },
+    {
+      "id": "usda_330458",
+      "fdc_id": 330458,
+      "name_en": "Oil, coconut",
+      "category": "Fats and Oils",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 833.0,
+          "p": 0.0,
+          "c": 0.84,
+          "f": 99.1,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Oil",
+        "Oil, coconut"
+      ]
+    },
+    {
+      "id": "usda_330869",
+      "fdc_id": 330869,
+      "name_en": "Turkey, ground, 93% lean, 7% fat, pan-broiled crumbles",
+      "category": "Poultry Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 220.0,
+          "p": 27.1,
+          "c": 0.0,
+          "f": 11.6,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Turkey",
+        "Turkey, ground, 93% lean, 7% fat, pan-broiled crumbles"
+      ]
+    },
+    {
+      "id": "usda_331897",
+      "fdc_id": 331897,
+      "name_en": "Chicken, broilers or fryers, drumstick, meat only, cooked, braised",
+      "category": "Poultry Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 156.0,
+          "p": 23.9,
+          "c": 0.0,
+          "f": 5.95,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Chicken",
+        "Chicken, broilers or fryers, drumstick, meat only, cooked, braised"
+      ]
+    },
+    {
+      "id": "usda_331960",
+      "fdc_id": 331960,
+      "name_en": "Chicken, broiler or fryers, breast, skinless, boneless, meat only, cooked, braised",
+      "category": "Poultry Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 166.0,
+          "p": 32.1,
+          "c": 0.0,
+          "f": 3.24,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Chicken",
+        "Chicken, broiler or fryers, breast, skinless, boneless, meat only, cooked, braised"
+      ]
+    },
+    {
+      "id": "usda_332282",
+      "fdc_id": 332282,
+      "name_en": "Sauce, pasta, spaghetti/marinara, ready-to-serve",
+      "category": "Soups, Sauces, and Gravies",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 45.0,
+          "p": 1.41,
+          "c": 8.05,
+          "f": 1.48,
+          "fiber": 1.8
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Sauce",
+        "Sauce, pasta, spaghetti/marinara, ready-to-serve"
+      ]
+    },
+    {
+      "id": "usda_332397",
+      "fdc_id": 332397,
+      "name_en": "Ham, sliced, pre-packaged, deli meat (96%fat free, water added)",
+      "category": "Sausages and Luncheon Meats",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 106.0,
+          "p": 16.7,
+          "c": 0.27,
+          "f": 3.73,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Ham",
+        "Ham, sliced, pre-packaged, deli meat (96%fat free, water added)"
+      ]
+    },
+    {
+      "id": "usda_332597",
+      "fdc_id": 332597,
+      "name_en": "Pears, raw, bartlett (Includes foods for USDA's Food Distribution Program)",
+      "category": "Fruits and Fruit Juices",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 57.0,
+          "p": 0.38,
+          "c": 15.1,
+          "f": 0.16,
+          "fiber": 3.1
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Pears",
+        "Pears, raw, bartlett (Includes foods for USDA's Food Distribution Program)"
+      ]
+    },
+    {
+      "id": "usda_332791",
+      "fdc_id": 332791,
+      "name_en": "Olives, green, Manzanilla, stuffed with pimiento",
+      "category": "Fruits and Fruit Juices",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 130.0,
+          "p": 1.15,
+          "c": 4.96,
+          "f": 12.9,
+          "fiber": 4.0
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Olives",
+        "Olives, green, Manzanilla, stuffed with pimiento"
+      ]
+    },
+    {
+      "id": "usda_332864",
+      "fdc_id": 332864,
+      "name_en": "Sausage, pork, chorizo, link or ground, cooked, pan-fried",
+      "category": "Sausages and Luncheon Meats",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 346.0,
+          "p": 19.3,
+          "c": 2.63,
+          "f": 28.1,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Sausage",
+        "Sausage, pork, chorizo, link or ground, cooked, pan-fried"
+      ]
+    },
+    {
+      "id": "usda_333008",
+      "fdc_id": 333008,
+      "name_en": "Cookies, oatmeal, soft, with raisins",
+      "category": "Baked Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 430.0,
+          "p": 5.79,
+          "c": 69.6,
+          "f": 14.3,
+          "fiber": 3.3
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Cookies",
+        "Cookies, oatmeal, soft, with raisins"
+      ]
+    },
+    {
+      "id": "usda_333281",
+      "fdc_id": 333281,
+      "name_en": "Tomatoes, canned, red, ripe, diced",
+      "category": "Vegetables and Vegetable Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 18.0,
+          "p": 0.84,
+          "c": 3.32,
+          "f": 0.5,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Tomatoes",
+        "Tomatoes, canned, red, ripe, diced"
+      ]
+    },
+    {
+      "id": "usda_333374",
+      "fdc_id": 333374,
+      "name_en": "Fish, haddock, raw",
+      "category": "Finfish and Shellfish Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 74.0,
+          "p": 16.3,
+          "c": 0.0,
+          "f": 0.45,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Fish",
+        "Fish, haddock, raw"
+      ]
+    },
+    {
+      "id": "usda_333476",
+      "fdc_id": 333476,
+      "name_en": "Fish, pollock, raw",
+      "category": "Finfish and Shellfish Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 56.0,
+          "p": 12.3,
+          "c": 0.0,
+          "f": 0.41,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Fish",
+        "Fish, pollock, raw"
+      ]
+    },
+    {
+      "id": "usda_334194",
+      "fdc_id": 334194,
+      "name_en": "Fish, tuna, light, canned in water, drained solids",
+      "category": "Finfish and Shellfish Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 90.0,
+          "p": 19.0,
+          "c": 0.08,
+          "f": 0.94,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Fish",
+        "Fish, tuna, light, canned in water, drained solids"
+      ]
+    },
+    {
+      "id": "usda_334247",
+      "fdc_id": 334247,
+      "name_en": "Sugars, granulated",
+      "category": "Sweets",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 385.0,
+          "p": 0.0,
+          "c": 99.6,
+          "f": 0.32,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Sugars",
+        "Sugars, granulated"
+      ]
+    },
+    {
+      "id": "usda_334462",
+      "fdc_id": 334462,
+      "name_en": "Restaurant, Chinese, sweet and sour pork",
+      "category": "Restaurant Foods",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 260.0,
+          "p": 8.88,
+          "c": 25.5,
+          "f": 13.6,
+          "fiber": 1.0
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Restaurant",
+        "Restaurant, Chinese, sweet and sour pork"
+      ]
+    },
+    {
+      "id": "usda_334536",
+      "fdc_id": 334536,
+      "name_en": "Restaurant, Chinese, fried rice, without meat",
+      "category": "Restaurant Foods",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 174.0,
+          "p": 3.84,
+          "c": 32.5,
+          "f": 3.19,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Restaurant",
+        "Restaurant, Chinese, fried rice, without meat"
+      ]
+    },
+    {
+      "id": "usda_334628",
+      "fdc_id": 334628,
+      "name_en": "Restaurant, Latino, tamale, pork",
+      "category": "Restaurant Foods",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 174.0,
+          "p": 7.38,
+          "c": 15.8,
+          "f": 9.04,
+          "fiber": 2.4
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Restaurant",
+        "Restaurant, Latino, tamale, pork"
+      ]
+    },
+    {
+      "id": "usda_334720",
+      "fdc_id": 334720,
+      "name_en": "Restaurant, Latino, pupusas con frijoles (pupusas, bean)",
+      "category": "Restaurant Foods",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 229.0,
+          "p": 5.59,
+          "c": 31.5,
+          "f": 9.01,
+          "fiber": 5.8
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Restaurant",
+        "Restaurant, Latino, pupusas con frijoles (pupusas, bean)"
+      ]
+    },
+    {
+      "id": "usda_334849",
+      "fdc_id": 334849,
+      "name_en": "Beef, loin, top loin steak, boneless, lip-on, separable lean only, trimmed to 1/8\" fat, choice, raw",
+      "category": "Beef Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 155.0,
+          "p": 22.8,
+          "c": 0.0,
+          "f": 6.39,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Beef",
+        "Beef, loin, top loin steak, boneless, lip-on, separable lean only, trimmed to 1/8\" fat, choice, raw"
+      ]
+    },
+    {
+      "id": "usda_334897",
+      "fdc_id": 334897,
+      "name_en": "Beef, loin, tenderloin roast, separable lean only, boneless, trimmed to 0\" fat, select, cooked, roasted",
+      "category": "Beef Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 176.0,
+          "p": 27.7,
+          "c": 0.0,
+          "f": 6.36,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Beef",
+        "Beef, loin, tenderloin roast, separable lean only, boneless, trimmed to 0\" fat, select, cooked, roasted"
+      ]
+    },
+    {
+      "id": "usda_334898",
+      "fdc_id": 334898,
+      "name_en": "Beef, round, eye of round roast, boneless, separable lean only, trimmed to 0\" fat, select, raw",
+      "category": "Beef Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 122.0,
+          "p": 23.4,
+          "c": 0.0,
+          "f": 2.48,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Beef",
+        "Beef, round, eye of round roast, boneless, separable lean only, trimmed to 0\" fat, select, raw"
+      ]
+    },
+    {
+      "id": "usda_334963",
+      "fdc_id": 334963,
+      "name_en": "Beef, round, top round roast, boneless, separable lean only, trimmed to 0\" fat, select, raw",
+      "category": "Beef Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 123.0,
+          "p": 23.7,
+          "c": 0.0,
+          "f": 2.41,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Beef",
+        "Beef, round, top round roast, boneless, separable lean only, trimmed to 0\" fat, select, raw"
+      ]
+    },
+    {
+      "id": "usda_335061",
+      "fdc_id": 335061,
+      "name_en": "Beef, short loin, t-bone steak, bone-in, separable lean only, trimmed to 1/8\" fat, choice, cooked, grilled",
+      "category": "Beef Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 219.0,
+          "p": 27.3,
+          "c": 0.0,
+          "f": 11.4,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Beef",
+        "Beef, short loin, t-bone steak, bone-in, separable lean only, trimmed to 1/8\" fat, choice, cooked, grilled"
+      ]
+    },
+    {
+      "id": "usda_335109",
+      "fdc_id": 335109,
+      "name_en": "Beef, short loin, porterhouse steak, separable lean only, trimmed to 1/8\" fat, select, raw",
+      "category": "Beef Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 145.0,
+          "p": 22.7,
+          "c": 0.0,
+          "f": 5.32,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Beef",
+        "Beef, short loin, porterhouse steak, separable lean only, trimmed to 1/8\" fat, select, raw"
+      ]
+    },
+    {
+      "id": "usda_335240",
+      "fdc_id": 335240,
+      "name_en": "Bread, whole-wheat, commercially prepared",
+      "category": "Baked Products",
+      "base_unit": "grams",
+      "publication_date": "2019-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 254.0,
+          "p": 12.3,
+          "c": 43.1,
+          "f": 3.55,
+          "fiber": 6.0
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Bread",
+        "Bread, whole-wheat, commercially prepared"
+      ]
+    },
+    {
+      "id": "usda_746758",
+      "fdc_id": 746758,
+      "name_en": "Beef, loin, tenderloin roast, separable lean only, boneless, trimmed to 0\" fat, select, cooked, roasted",
+      "category": "Beef Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 176.0,
+          "p": 27.7,
+          "c": 0.0,
+          "f": 6.36,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Beef",
+        "Beef, loin, tenderloin roast, separable lean only, boneless, trimmed to 0\" fat, select, cooked, roasted"
+      ]
+    },
+    {
+      "id": "usda_746759",
+      "fdc_id": 746759,
+      "name_en": "Beef, loin, top loin steak, boneless, lip-on, separable lean only, trimmed to 1/8\" fat, choice, raw",
+      "category": "Beef Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 155.0,
+          "p": 22.8,
+          "c": 0.0,
+          "f": 6.39,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Beef",
+        "Beef, loin, top loin steak, boneless, lip-on, separable lean only, trimmed to 1/8\" fat, choice, raw"
+      ]
+    },
+    {
+      "id": "usda_746760",
+      "fdc_id": 746760,
+      "name_en": "Beef, round, eye of round roast, boneless, separable lean only, trimmed to 0\" fat, select, raw",
+      "category": "Beef Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 122.0,
+          "p": 23.4,
+          "c": 0.0,
+          "f": 2.48,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Beef",
+        "Beef, round, eye of round roast, boneless, separable lean only, trimmed to 0\" fat, select, raw"
+      ]
+    },
+    {
+      "id": "usda_746761",
+      "fdc_id": 746761,
+      "name_en": "Beef, round, top round roast, boneless, separable lean only, trimmed to 0\" fat, select, raw",
+      "category": "Beef Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 123.0,
+          "p": 23.7,
+          "c": 0.0,
+          "f": 2.41,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Beef",
+        "Beef, round, top round roast, boneless, separable lean only, trimmed to 0\" fat, select, raw"
+      ]
+    },
+    {
+      "id": "usda_746762",
+      "fdc_id": 746762,
+      "name_en": "Beef, short loin, porterhouse steak, separable lean only, trimmed to 1/8\" fat, select, raw",
+      "category": "Beef Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 145.0,
+          "p": 22.7,
+          "c": 0.0,
+          "f": 5.32,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Beef",
+        "Beef, short loin, porterhouse steak, separable lean only, trimmed to 1/8\" fat, select, raw"
+      ]
+    },
+    {
+      "id": "usda_746763",
+      "fdc_id": 746763,
+      "name_en": "Beef, short loin, t-bone steak, bone-in, separable lean only, trimmed to 1/8\" fat, choice, cooked, grilled",
+      "category": "Beef Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 219.0,
+          "p": 27.3,
+          "c": 0.0,
+          "f": 11.4,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Beef",
+        "Beef, short loin, t-bone steak, bone-in, separable lean only, trimmed to 1/8\" fat, choice, cooked, grilled"
+      ]
+    },
+    {
+      "id": "usda_746764",
+      "fdc_id": 746764,
+      "name_en": "Carrots, frozen, unprepared",
+      "category": "Vegetables and Vegetable Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 37.0,
+          "p": 0.81,
+          "c": 7.92,
+          "f": 0.47,
+          "fiber": 3.2
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Carrots",
+        "Carrots, frozen, unprepared"
+      ]
+    },
+    {
+      "id": "usda_746765",
+      "fdc_id": 746765,
+      "name_en": "Cheese, dry white, queso seco",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 326.0,
+          "p": 24.5,
+          "c": 2.07,
+          "f": 24.3,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Cheese",
+        "Cheese, dry white, queso seco"
+      ]
+    },
+    {
+      "id": "usda_746766",
+      "fdc_id": 746766,
+      "name_en": "Cheese, ricotta, whole milk",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 157.0,
+          "p": 7.81,
+          "c": 6.86,
+          "f": 11.0,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Cheese",
+        "Cheese, ricotta, whole milk"
+      ]
+    },
+    {
+      "id": "usda_746767",
+      "fdc_id": 746767,
+      "name_en": "Cheese, swiss",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 393.0,
+          "p": 27.0,
+          "c": 1.44,
+          "f": 31.0,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Cheese",
+        "Cheese, swiss"
+      ]
+    },
+    {
+      "id": "usda_746768",
+      "fdc_id": 746768,
+      "name_en": "Figs, dried, uncooked",
+      "category": "Fruits and Fruit Juices",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 249.0,
+          "p": 3.3,
+          "c": 63.9,
+          "f": 0.92,
+          "fiber": 9.8
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Figs",
+        "Figs, dried, uncooked"
+      ]
+    },
+    {
+      "id": "usda_746769",
+      "fdc_id": 746769,
+      "name_en": "Lettuce, cos or romaine, raw",
+      "category": "Vegetables and Vegetable Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 17.0,
+          "p": 1.24,
+          "c": 3.24,
+          "f": 0.26,
+          "fiber": 1.8
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Lettuce",
+        "Lettuce, cos or romaine, raw"
+      ]
+    },
+    {
+      "id": "usda_746770",
+      "fdc_id": 746770,
+      "name_en": "Melons, cantaloupe, raw",
+      "category": "Fruits and Fruit Juices",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 34.0,
+          "p": 0.82,
+          "c": 8.16,
+          "f": 0.18,
+          "fiber": 0.8
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Melons",
+        "Melons, cantaloupe, raw"
+      ]
+    },
+    {
+      "id": "usda_746771",
+      "fdc_id": 746771,
+      "name_en": "Oranges, raw, navels",
+      "category": "Fruits and Fruit Juices",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 47.0,
+          "p": 0.91,
+          "c": 11.8,
+          "f": 0.15,
+          "fiber": 2.0
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Oranges",
+        "Oranges, raw, navels"
+      ]
+    },
+    {
+      "id": "usda_746772",
+      "fdc_id": 746772,
+      "name_en": "Milk, lowfat, fluid, 1% milkfat, with added vitamin A and vitamin D",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 43.0,
+          "p": 3.38,
+          "c": 5.18,
+          "f": 0.95,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Milk",
+        "Milk, lowfat, fluid, 1% milkfat, with added vitamin A and vitamin D",
+        "milk"
+      ]
+    },
+    {
+      "id": "usda_746773",
+      "fdc_id": 746773,
+      "name_en": "Pears, raw, bartlett",
+      "category": "Fruits and Fruit Juices",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 57.0,
+          "p": 0.38,
+          "c": 15.1,
+          "f": 0.16,
+          "fiber": 3.1
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Pears",
+        "Pears, raw, bartlett"
+      ]
+    },
+    {
+      "id": "usda_746774",
+      "fdc_id": 746774,
+      "name_en": "Restaurant, Chinese, sweet and sour pork",
+      "category": "Restaurant Foods",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 260.0,
+          "p": 8.88,
+          "c": 25.5,
+          "f": 13.6,
+          "fiber": 1.0
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Restaurant",
+        "Restaurant, Chinese, sweet and sour pork"
+      ]
+    },
+    {
+      "id": "usda_746776",
+      "fdc_id": 746776,
+      "name_en": "Milk, nonfat, fluid, with added vitamin A and vitamin D (fat free or skim)",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 34.0,
+          "p": 3.43,
+          "c": 4.92,
+          "f": 0.08,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Milk",
+        "Milk, nonfat, fluid, with added vitamin A and vitamin D (fat free or skim)",
+        "milk"
+      ]
+    },
+    {
+      "id": "usda_746777",
+      "fdc_id": 746777,
+      "name_en": "Sauce, salsa, ready-to-serve",
+      "category": "Soups, Sauces, and Gravies",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 29.0,
+          "p": 1.44,
+          "c": 6.74,
+          "f": 0.19,
+          "fiber": 1.8
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Sauce",
+        "Sauce, salsa, ready-to-serve"
+      ]
+    },
+    {
+      "id": "usda_746778",
+      "fdc_id": 746778,
+      "name_en": "Milk, reduced fat, fluid, 2% milkfat, with added vitamin A and vitamin D",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 50.0,
+          "p": 3.36,
+          "c": 4.9,
+          "f": 1.9,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Milk",
+        "Milk, reduced fat, fluid, 2% milkfat, with added vitamin A and vitamin D",
+        "milk"
+      ]
+    },
+    {
+      "id": "usda_746779",
+      "fdc_id": 746779,
+      "name_en": "Sausage, breakfast sausage, beef, pre-cooked, unprepared",
+      "category": "Sausages and Luncheon Meats",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 328.0,
+          "p": 13.3,
+          "c": 3.37,
+          "f": 28.7,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Sausage",
+        "Sausage, breakfast sausage, beef, pre-cooked, unprepared"
+      ]
+    },
+    {
+      "id": "usda_746780",
+      "fdc_id": 746780,
+      "name_en": "Sausage, Italian, pork, mild, cooked, pan-fried",
+      "category": "Sausages and Luncheon Meats",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 322.0,
+          "p": 18.2,
+          "c": 2.15,
+          "f": 26.2,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Sausage",
+        "Sausage, Italian, pork, mild, cooked, pan-fried"
+      ]
+    },
+    {
+      "id": "usda_746781",
+      "fdc_id": 746781,
+      "name_en": "Sausage, pork, chorizo, link or ground, cooked, pan-fried",
+      "category": "Sausages and Luncheon Meats",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 346.0,
+          "p": 19.3,
+          "c": 2.63,
+          "f": 28.1,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Sausage",
+        "Sausage, pork, chorizo, link or ground, cooked, pan-fried"
+      ]
+    },
+    {
+      "id": "usda_746782",
+      "fdc_id": 746782,
+      "name_en": "Milk, whole, 3.25% milkfat, with added vitamin D",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 60.0,
+          "p": 3.27,
+          "c": 4.63,
+          "f": 3.2,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Milk",
+        "Milk, whole, 3.25% milkfat, with added vitamin D",
+        "milk"
+      ]
+    },
+    {
+      "id": "usda_746783",
+      "fdc_id": 746783,
+      "name_en": "Sausage, turkey, breakfast links, mild, raw",
+      "category": "Sausages and Luncheon Meats",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 169.0,
+          "p": 16.7,
+          "c": 0.93,
+          "f": 10.4,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Sausage",
+        "Sausage, turkey, breakfast links, mild, raw"
+      ]
+    },
+    {
+      "id": "usda_746784",
+      "fdc_id": 746784,
+      "name_en": "Sugars, granulated",
+      "category": "Sweets",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 385.0,
+          "p": 0.0,
+          "c": 99.6,
+          "f": 0.32,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Sugars",
+        "Sugars, granulated"
+      ]
+    },
+    {
+      "id": "usda_746785",
+      "fdc_id": 746785,
+      "name_en": "Turkey, ground, 93% lean, 7% fat, pan-broiled crumbles",
+      "category": "Poultry Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 220.0,
+          "p": 27.1,
+          "c": 0.0,
+          "f": 11.6,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Turkey",
+        "Turkey, ground, 93% lean, 7% fat, pan-broiled crumbles"
+      ]
+    },
+    {
+      "id": "usda_746952",
+      "fdc_id": 746952,
+      "name_en": "Ham, sliced, restaurant",
+      "category": "Pork Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 121.0,
+          "p": 19.6,
+          "c": 2.36,
+          "f": 3.68,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Ham",
+        "Ham, sliced, restaurant"
+      ]
+    },
+    {
+      "id": "usda_747429",
+      "fdc_id": 747429,
+      "name_en": "Cheese, American, restaurant",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 375.0,
+          "p": 17.5,
+          "c": 6.35,
+          "f": 31.1,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Cheese",
+        "Cheese, American, restaurant"
+      ]
+    },
+    {
+      "id": "usda_747447",
+      "fdc_id": 747447,
+      "name_en": "Broccoli, raw",
+      "category": "Vegetables and Vegetable Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 31.0,
+          "p": 2.57,
+          "c": 6.27,
+          "f": 0.34,
+          "fiber": 2.4
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Broccoli",
+        "Broccoli, raw"
+      ]
+    },
+    {
+      "id": "usda_747448",
+      "fdc_id": 747448,
+      "name_en": "Strawberries, raw",
+      "category": "Fruits and Fruit Juices",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 31.0,
+          "p": 0.64,
+          "c": 7.63,
+          "f": 0.22,
+          "fiber": 1.8
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Strawberries",
+        "Strawberries, raw"
+      ]
+    },
+    {
+      "id": "usda_747693",
+      "fdc_id": 747693,
+      "name_en": "Ketchup, restaurant",
+      "category": "Vegetables and Vegetable Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 117.0,
+          "p": 1.11,
+          "c": 26.8,
+          "f": 0.55,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Ketchup",
+        "Ketchup, restaurant"
+      ]
+    },
+    {
+      "id": "usda_747997",
+      "fdc_id": 747997,
+      "name_en": "Eggs, Grade A, Large, egg white",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 55.0,
+          "p": 10.7,
+          "c": 2.36,
+          "f": 0.0,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Eggs",
+        "Eggs, Grade A, Large, egg white"
+      ]
+    },
+    {
+      "id": "usda_748236",
+      "fdc_id": 748236,
+      "name_en": "Eggs, Grade A, Large, egg yolk",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 334.0,
+          "p": 16.2,
+          "c": 1.02,
+          "f": 28.8,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Eggs",
+        "Eggs, Grade A, Large, egg yolk"
+      ]
+    },
+    {
+      "id": "usda_748967",
+      "fdc_id": 748967,
+      "name_en": "Eggs, Grade A, Large, egg whole",
+      "category": "Dairy and Egg Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 148.0,
+          "p": 12.4,
+          "c": 0.96,
+          "f": 9.96,
+          "fiber": 0.0
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Eggs",
+        "Eggs, Grade A, Large, egg whole"
+      ]
+    },
+    {
+      "id": "usda_749420",
+      "fdc_id": 749420,
+      "name_en": "Pork, cured, bacon, cooked, restaurant",
+      "category": "Pork Products",
+      "base_unit": "grams",
+      "publication_date": "2019-12-16",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 500.0,
+          "p": 40.9,
+          "c": 2.1,
+          "f": 36.5,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Pork",
+        "Pork, cured, bacon, cooked, restaurant"
+      ]
+    },
+    {
+      "id": "usda_789890",
+      "fdc_id": 789890,
+      "name_en": "Flour, wheat, all-purpose, enriched, bleached",
+      "category": "Cereal Grains and Pasta",
+      "base_unit": "grams",
+      "publication_date": "2020-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 366.0,
+          "p": 10.9,
+          "c": 77.3,
+          "f": 1.48,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Flour",
+        "Flour, wheat, all-purpose, enriched, bleached"
+      ]
+    },
+    {
+      "id": "usda_789951",
+      "fdc_id": 789951,
+      "name_en": "Flour, wheat, all-purpose, enriched, unbleached",
+      "category": "Cereal Grains and Pasta",
+      "base_unit": "grams",
+      "publication_date": "2020-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 358.0,
+          "p": 13.1,
+          "c": 73.2,
+          "f": 1.48,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Flour",
+        "Flour, wheat, all-purpose, enriched, unbleached"
+      ]
+    },
+    {
+      "id": "usda_790018",
+      "fdc_id": 790018,
+      "name_en": "Flour, wheat, all-purpose, unenriched, unbleached",
+      "category": "Cereal Grains and Pasta",
+      "base_unit": "grams",
+      "publication_date": "2020-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 362.0,
+          "p": 12.0,
+          "c": 74.6,
+          "f": 1.7,
+          "fiber": 3.0
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Flour",
+        "Flour, wheat, all-purpose, unenriched, unbleached"
+      ]
+    },
+    {
+      "id": "usda_790085",
+      "fdc_id": 790085,
+      "name_en": "Flour, whole wheat, unenriched",
+      "category": "Cereal Grains and Pasta",
+      "base_unit": "grams",
+      "publication_date": "2020-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 370.0,
+          "p": 15.1,
+          "c": 71.2,
+          "f": 2.73,
+          "fiber": 10.6
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Flour",
+        "Flour, whole wheat, unenriched"
+      ]
+    },
+    {
+      "id": "usda_790146",
+      "fdc_id": 790146,
+      "name_en": "Flour, bread, white, enriched, unbleached",
+      "category": "Cereal Grains and Pasta",
+      "base_unit": "grams",
+      "publication_date": "2020-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 363.0,
+          "p": 14.3,
+          "c": 72.8,
+          "f": 1.65,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Flour",
+        "Flour, bread, white, enriched, unbleached"
+      ]
+    },
+    {
+      "id": "usda_790214",
+      "fdc_id": 790214,
+      "name_en": "Flour, rice, white, unenriched",
+      "category": "Cereal Grains and Pasta",
+      "base_unit": "grams",
+      "publication_date": "2020-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 359.0,
+          "p": 6.94,
+          "c": 79.8,
+          "f": 1.3,
+          "fiber": 0.5
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Flour",
+        "Flour, rice, white, unenriched"
+      ]
+    },
+    {
+      "id": "usda_790276",
+      "fdc_id": 790276,
+      "name_en": "Flour, corn, yellow, fine meal, enriched",
+      "category": "Cereal Grains and Pasta",
+      "base_unit": "grams",
+      "publication_date": "2020-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 364.0,
+          "p": 6.2,
+          "c": 80.8,
+          "f": 1.74,
+          "fiber": 4.3
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Flour",
+        "Flour, corn, yellow, fine meal, enriched"
+      ]
+    },
+    {
+      "id": "usda_790577",
+      "fdc_id": 790577,
+      "name_en": "Onions, red, raw",
+      "category": "Vegetables and Vegetable Products",
+      "base_unit": "grams",
+      "publication_date": "2020-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 44.0,
+          "p": 0.94,
+          "c": 9.93,
+          "f": 0.1,
+          "fiber": 2.2
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Onions",
+        "Onions, red, raw"
+      ]
+    },
+    {
+      "id": "usda_790646",
+      "fdc_id": 790646,
+      "name_en": "Onions, yellow, raw",
+      "category": "Vegetables and Vegetable Products",
+      "base_unit": "grams",
+      "publication_date": "2020-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 38.0,
+          "p": 0.83,
+          "c": 8.61,
+          "f": 0.05,
+          "fiber": 1.9
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Onions",
+        "Onions, yellow, raw"
+      ]
+    },
+    {
+      "id": "usda_790774",
+      "fdc_id": 790774,
+      "name_en": "Bananas, overripe, raw",
+      "category": "Fruits and Fruit Juices",
+      "base_unit": "grams",
+      "publication_date": "2020-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 85.0,
+          "p": 0.73,
+          "c": 20.1,
+          "f": 0.22,
+          "fiber": 1.7
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Bananas",
+        "Bananas, overripe, raw"
+      ]
+    },
+    {
+      "id": "usda_790991",
+      "fdc_id": 790991,
+      "name_en": "Bananas, ripe and slightly ripe, raw",
+      "category": "Fruits and Fruit Juices",
+      "base_unit": "grams",
+      "publication_date": "2020-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 97.0,
+          "p": 0.74,
+          "c": 23.0,
+          "f": 0.29,
+          "fiber": 1.7
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Bananas",
+        "Bananas, ripe and slightly ripe, raw"
+      ]
+    },
+    {
+      "id": "usda_1104647",
+      "fdc_id": 1104647,
+      "name_en": "Garlic, raw",
+      "category": "Vegetables and Vegetable Products",
+      "base_unit": "grams",
+      "publication_date": "2020-10-30",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 143.0,
+          "p": 6.62,
+          "c": 28.2,
+          "f": 0.38,
+          "fiber": 2.7
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Garlic",
+        "Garlic, raw"
+      ]
+    },
+    {
+      "id": "usda_1104705",
+      "fdc_id": 1104705,
+      "name_en": "Flour, soy, defatted",
+      "category": "Legumes and Legume Products",
+      "base_unit": "grams",
+      "publication_date": "2020-10-30",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 366.0,
+          "p": 51.1,
+          "c": 32.9,
+          "f": 3.33,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Flour",
+        "Flour, soy, defatted"
+      ]
+    },
+    {
+      "id": "usda_1104766",
+      "fdc_id": 1104766,
+      "name_en": "Flour, soy, full-fat",
+      "category": "Legumes and Legume Products",
+      "base_unit": "grams",
+      "publication_date": "2020-10-30",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 452.0,
+          "p": 38.6,
+          "c": 27.9,
+          "f": 20.7,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Flour",
+        "Flour, soy, full-fat"
+      ]
+    },
+    {
+      "id": "usda_1104812",
+      "fdc_id": 1104812,
+      "name_en": "Flour, rice, brown",
+      "category": "Cereal Grains and Pasta",
+      "base_unit": "grams",
+      "publication_date": "2020-10-30",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 365.25,
+          "p": 7.19,
+          "c": 75.5,
+          "f": 3.85,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Flour",
+        "Flour, rice, brown"
+      ]
+    },
+    {
+      "id": "usda_1104867",
+      "fdc_id": 1104867,
+      "name_en": "Flour, rice, glutinous",
+      "category": "Cereal Grains and Pasta",
+      "base_unit": "grams",
+      "publication_date": "2020-10-30",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 358.0,
+          "p": 6.69,
+          "c": 80.1,
+          "f": 1.16,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Flour",
+        "Flour, rice, glutinous"
+      ]
+    },
+    {
+      "id": "usda_1104913",
+      "fdc_id": 1104913,
+      "name_en": "Flour, pastry, unenriched, unbleached",
+      "category": "Cereal Grains and Pasta",
+      "base_unit": "grams",
+      "publication_date": "2020-10-30",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 358.0,
+          "p": 8.75,
+          "c": 77.2,
+          "f": 1.64,
+          "fiber": null
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Flour",
+        "Flour, pastry, unenriched, unbleached"
+      ]
+    },
+    {
+      "id": "usda_1104962",
+      "fdc_id": 1104962,
+      "name_en": "Onions, white, raw",
+      "category": "Vegetables and Vegetable Products",
+      "base_unit": "grams",
+      "publication_date": "2020-10-30",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 35.0,
+          "p": 0.89,
+          "c": 7.68,
+          "f": 0.13,
+          "fiber": 1.2
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Onions",
+        "Onions, white, raw"
+      ]
+    },
+    {
+      "id": "usda_1105073",
+      "fdc_id": 1105073,
+      "name_en": "Bananas, overripe, raw",
+      "category": "Fruits and Fruit Juices",
+      "base_unit": "grams",
+      "publication_date": "2020-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 85.0,
+          "p": 0.73,
+          "c": 20.1,
+          "f": 0.22,
+          "fiber": 1.7
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Bananas",
+        "Bananas, overripe, raw"
+      ]
+    },
+    {
+      "id": "usda_1105314",
+      "fdc_id": 1105314,
+      "name_en": "Bananas, ripe and slightly ripe, raw",
+      "category": "Fruits and Fruit Juices",
+      "base_unit": "grams",
+      "publication_date": "2020-04-01",
+      "portions": [
+        {
+          "label": "100 g",
+          "weight": 100,
+          "kcal": 97.0,
+          "p": 0.74,
+          "c": 23.0,
+          "f": 0.29,
+          "fiber": 1.7
+        }
+      ],
+      "modifiers": {},
+      "aliases": [
+        "Bananas",
+        "Bananas, ripe and slightly ripe, raw"
+      ]
+    }
+  ]
+}
