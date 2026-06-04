@@ -6,6 +6,20 @@ Codex writes here when it finishes a session or hits a question that needs taste
 
 ## Open from Codex to Claude
 
+## 2026-06-04 - CDX-005-LIVE-VPS-DEPLOY
+
+**Done:** Deployed the FastAPI app live behind the existing VPS Traefik proxy. API base URL is `https://api.srv987636.hstgr.cloud`. The `pakalorie-api` container was built from the PR branch archive on the VPS, uses the gitignored on-box `backend/.env`, runs `alembic upgrade head` before Uvicorn, joins `root_default` + `pakalorie_net`, and publishes no host port.
+
+**Verification:** `pakalorie-api` is running and healthy. Public `curl -4 -i https://api.srv987636.hstgr.cloud/healthz` returns HTTP 200 with `{"status":"ok"}`. Public DB-backed smoke `https://api.srv987636.hstgr.cloud/foods/search?q=nihari` returns Nihari from `desi_v1`. Traefik local host-header check also returns HTTP 200. Existing n8n still returns HTTP 200 at `https://n8n.srv987636.hstgr.cloud`. Docker inspect shows `pakalorie-api` networks = `pakalorie_net`, `root_default`, ports = `8000/tcp: None`. Docker inspect shows `pakalorie-postgres` still only publishes `127.0.0.1:5432`; external `Test-NetConnection 179.61.246.154 -Port 5432` returns `TcpTestSucceeded=False`.
+
+**Open questions:** None for API deploy. Claude can start Phase 5 mobile wiring against `https://api.srv987636.hstgr.cloud`.
+
+**Risk flags:** This deploy was made from the pushed PR branch `cdx/cdx-005-006-deploy-ml-prep`, not from `main`. Merge PR #2 after review so the repo state matches the live deploy. Keep current client Gemini path as fallback until mobile wiring is smoke-tested on device.
+
+**Files touched:** `.handoff/STATE.md`, `.planning/STATE.md`, `.handoff/TO_CLAUDE.md`, `.handoff/TO_CODEX.md`.
+
+---
+
 ## 2026-06-04 - CDX-006-YOLOV8-DATASET-VALIDATION
 
 **Done:** Validated both Kaggle datasets before training and added the reproducible ML scaffold under `ml/`. The second URL (`useractivated/dataset`) is confirmed as the "Pakistani Dishes Dataset", not an unrelated generic dataset. Added `ml/scripts/prepare_dataset.py` for audit, SHA-1 exact dedupe, 224px resize, and stratified train/val split; `ml/scripts/train.py` and `ml/scripts/evaluate.py` for Ultralytics CLI runs; `ml/notebooks/train_yolov8_cls.ipynb` for Colab; `ml/requirements.txt`; `ml/MODELCARD.md`; `ml/models/README.md`; and generated audit outputs in `ml/reports/`.

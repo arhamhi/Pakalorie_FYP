@@ -15,10 +15,10 @@ last_updated: 2026-06-04
 
 ## Current Position
 
-Phase: **Phase 1 - Food Database API** (implementation DONE and **verified against a live VPS Postgres**: migrated, seeded 160 rows, every endpoint smoke-tested, live-DB integration suite added. CDX-005 deploy config/runbook is now ready; only the actual VPS execution + public HTTPS verification remains).
+Phase: **Phase 1 - Food Database API** (implementation DONE, live API deployed, and verified against the live VPS Postgres).
 Plan: `.planning/ROADMAP.md`
-Status: Backend on branch `cdx/p1final-foodbackend`, **verified against a live pgvector Postgres on the VPS** (127.0.0.1-only, reached via SSH tunnel). `alembic upgrade head` succeeds; seed = `foods=160, desi_v1=30, usda=130` (idempotent); all endpoints return correct real-data responses (incl. `gemini_grounded` + `local_grounded_fallback` + both 422s). `ruff` clean; `pytest` green (9 unit + 8 live-DB integration). A Gemini thinking-token truncation bug was found + fixed. Local Docker Desktop is no longer on the critical path. CDX-005 now has `backend/docker-compose.prod.yml`, `backend/docs/DEPLOY.md`, and `backend/.dockerignore`; compose config validates locally with env resolution disabled. CDX-006 datasets are validated and `ml/` training scaffold exists; training is pending.
-Last activity: 2026-06-04 - Codex added the production API compose file and VPS deploy runbook for CDX-005, then validated both Kaggle datasets for CDX-006 and added the reproducible ML scaffold. Dataset audit: merged normalized set = 218 classes, 8,660 images, 473.2 MB image bytes, 14.58x imbalance. Public HTTPS verification is still pending actual VPS execution and API subdomain confirmation. YOLOv8 training is still pending a Colab/GPU run plus Arham's own held-out food photos.
+Status: Backend on branch `cdx/p1final-foodbackend`, **verified against a live pgvector Postgres on the VPS** (127.0.0.1-only, reached via SSH tunnel). `alembic upgrade head` succeeds; seed = `foods=160, desi_v1=30, usda=130` (idempotent); all endpoints return correct real-data responses (incl. `gemini_grounded` + `local_grounded_fallback` + both 422s). `ruff` clean; `pytest` green (9 unit + 8 live-DB integration). A Gemini thinking-token truncation bug was found + fixed. Local Docker Desktop is no longer on the critical path. CDX-005 API is live at `https://api.srv987636.hstgr.cloud`; public `/healthz` and `/foods/search?q=nihari` checks pass; n8n remains healthy; Postgres remains private. CDX-006 datasets are validated and `ml/` training scaffold exists; training is pending.
+Last activity: 2026-06-04 - Codex deployed the FastAPI app behind the existing VPS Traefik proxy at `https://api.srv987636.hstgr.cloud`, verified public HTTPS health, DB-backed search, n8n health, and private Postgres. Earlier in the same branch, Codex added the production API compose/runbook and validated both Kaggle datasets for CDX-006. YOLOv8 training is still pending a Colab/GPU run plus Arham's own held-out food photos.
 
 ## Accumulated Context
 
@@ -33,13 +33,13 @@ Last activity: 2026-06-04 - Codex added the production API compose file and VPS 
 
 ### Blockers / inputs needed from Arham
 - **Kaggle dataset URL(s)** for YOLOv8 (CDX-006 / Phase 3) - PROVIDED and validated. Full per-class counts are in `ml/reports/dataset_audit.md`; training is pending.
-- **VPS deploy execution** (CDX-005 / Phase 1 deploy): confirm `api.srv987636.hstgr.cloud` or choose another API subdomain, then run `backend/docs/DEPLOY.md` on the VPS or grant Codex SSH approval. Config/runbook are ready; public HTTPS acceptance is not done.
+- **VPS deploy execution** (CDX-005 / Phase 1 deploy): DONE. API base URL is `https://api.srv987636.hstgr.cloud`.
 - **Live-demo confirmation with Sir Hamza** (Arham answered "live demo + report + metrics"); plan accordingly.
 
 ### Pending todos
-- **Codex (priority order):** Execute/verify CDX-005 once Arham confirms the subdomain/access; run CDX-006 Colab `yolov8n-cls` training/eval from `ml/notebooks/train_yolov8_cls.ipynb`; CDX-007 remains last/minimal.
-- **Claude (Phase 5):** wire `src/lib/api.ts` to the VPS endpoints + update Results to show the real pipeline once the API is live; keep Gemini fallback. Prepare SDS material + demo.
-- **Arham:** VPS deploy access + subdomain; gather own food test photos (held-out YOLO test set); keep smoke-testing Expo Go.
+- **Claude (Phase 5):** wire `src/lib/api.ts` to `https://api.srv987636.hstgr.cloud` + update Results to show the real pipeline; keep Gemini fallback. Prepare SDS material + demo.
+- **Codex (priority order):** run CDX-006 Colab `yolov8n-cls` training/eval from `ml/notebooks/train_yolov8_cls.ipynb`; CDX-007 remains last/minimal.
+- **Arham:** gather own food test photos (held-out YOLO test set); keep smoke-testing Expo Go.
 
 ### Carryover from v1.0 (submitted, do not re-do)
 - Auth (Firebase JS SDK / Expo Go), Capture/Results UI, Food Recognition (Gemini stub). Captureâ†’results works today via `src/lib/gemini.ts`; food logs save to Supabase. Both stay live as the fallback until the real pipeline is proven.
