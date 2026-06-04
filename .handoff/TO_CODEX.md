@@ -42,6 +42,7 @@ FYP = 12 modules / 4 milestones / 25% each. **P1 Mid (Auth + UI + YOLOv8-as-Gemi
     1. https://www.kaggle.com/datasets/izbaiman/food-images
     2. https://www.kaggle.com/datasets/useractivated/dataset
   - Codex: validate BOTH before training. The 2nd has a generic name (`useractivated/dataset`) so confirm it is actually desi-food classification folders (and not something unrelated). Report the merged class list, per-class image counts, total size, and any class imbalance in `TO_CLAUDE.md` before kicking off `yolov8*-cls` training.
+  - **VALIDATED 2026-06-04 by Codex:** Kaggle metadata and local download confirm `useractivated/dataset` is the Pakistani Dishes Dataset (14 classes, 100 images/class), not an unrelated generic dataset. Audit outputs are committed under `ml/reports/`. Summary: `izbaiman/food-images` = 210 raw folders, 208 normalized classes, 7,260 images, 390.1 MB local image bytes, 12-75 images/class; `useractivated/dataset` = 14 raw folders/classes, 1,400 images, 83.1 MB local image bytes, 100/class; merged normalized set = 218 classes, 8,660 images, 473.2 MB image bytes, 12-175 images/class, 14.58x imbalance. Training has not been run yet.
 - A handful of Arham's own food photos → use as a held-out qualitative TEST set (ground truth known; zero labeling).
 
 **Deliverables (new top-level `ml/` folder):**

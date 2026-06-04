@@ -6,6 +6,32 @@ Codex writes here when it finishes a session or hits a question that needs taste
 
 ## Open from Codex to Claude
 
+## 2026-06-04 - CDX-006-YOLOV8-DATASET-VALIDATION
+
+**Done:** Validated both Kaggle datasets before training and added the reproducible ML scaffold under `ml/`. The second URL (`useractivated/dataset`) is confirmed as the "Pakistani Dishes Dataset", not an unrelated generic dataset. Added `ml/scripts/prepare_dataset.py` for audit, SHA-1 exact dedupe, 224px resize, and stratified train/val split; `ml/scripts/train.py` and `ml/scripts/evaluate.py` for Ultralytics CLI runs; `ml/notebooks/train_yolov8_cls.ipynb` for Colab; `ml/requirements.txt`; `ml/MODELCARD.md`; `ml/models/README.md`; and generated audit outputs in `ml/reports/`.
+
+**Dataset audit summary:** `izbaiman/food-images` = 210 raw class folders, 208 normalized classes, 7,260 images, 390.1 MB local image bytes, 12-75 images/class. `useractivated/dataset` = 14 raw class folders/classes, 1,400 images, 83.1 MB local image bytes, exactly 100 images/class. Merged normalized set = 218 classes, 8,660 images, 473.2 MB local image bytes, min 12 (`white_boiled_rice`), max 175 (`butter_chicken`), 14.58x imbalance. Exact normalized overlaps: `biryani`, `butter_chicken`, `chapati`, `chicken_tikka`. Full merged per-class counts are in `ml/reports/dataset_audit.md`, `ml/reports/dataset_audit.json`, and `ml/reports/class_counts.csv`.
+
+**Open questions:** Need Arham's own food photos for held-out qualitative predictions after training. Decide after the first `yolov8n-cls.pt` run whether to prune noisy/non-Pakistani classes from `izbaiman/food-images` or keep the broad 218-class classifier for the report. Training should start with the full audited set so the baseline is honest.
+
+**Risk flags:** Training has not been run yet; no `best.pt`, `best.onnx`, top-1/top-5, or confusion matrix exists yet. The first dataset is broad/noisy and includes typos/near-duplicates, so model accuracy may be dragged down by class quality and imbalance. Do not wire this into mobile; Gemini remains the live app path.
+
+**Files touched:** `ml/**`, `.handoff/STATE.md`, `.handoff/TO_CODEX.md`, `.planning/STATE.md`, `.handoff/TO_CLAUDE.md`.
+
+---
+
+## 2026-06-04 - CDX-005-VPS-PROD-DEPLOY-PREP
+
+**Done:** Added the production deploy artifacts for the FastAPI app tier. `backend/docker-compose.prod.yml` defines only the `api` service, builds from `backend/Dockerfile`, reads secrets from the on-box `backend/.env`, runs `alembic upgrade head` before production Uvicorn, joins both external Docker networks (`root_default` for Traefik and `pakalorie_net` for the existing Postgres), publishes no host port, applies memory/CPU/PID limits, and adds Traefik labels for `Host(\`api.srv987636.hstgr.cloud\`)` with TLS resolver `mytlschallenge`. Added `backend/docs/DEPLOY.md` with clone/pull, on-box `.env`, deploy, redeploy, health, n8n, and public Postgres-closed checks. Added `backend/.dockerignore` so the on-box `.env` is not copied into the Docker image. Updated `backend/.env.example` with the production internal-DB URL shape. Validation: `docker compose -f docker-compose.prod.yml config --quiet --no-env-resolution` passes.
+
+**Open questions:** Confirm the API subdomain before live deploy. I used `api.srv987636.hstgr.cloud` because it mirrors the existing n8n host pattern, but Arham should verify it resolves to `179.61.246.154` or choose a different host before certificate issuance. Arham also needs to either run `backend/docs/DEPLOY.md` on the VPS or grant Codex SSH approval for the actual deploy.
+
+**Risk flags:** The API is not live yet. Acceptance still requires an outside-box `curl https://api.srv987636.hstgr.cloud/healthz` returning 200, `pakalorie-postgres` still closed to the public internet, and `root-n8n-1`/`root-traefik-1` still healthy after deploy. Do not wire the mobile app to this base URL until that HTTPS check passes.
+
+**Files touched:** `backend/docker-compose.prod.yml`, `backend/docs/DEPLOY.md`, `backend/.dockerignore`, `backend/.env.example`, `.handoff/STATE.md`, `.planning/STATE.md`, `.handoff/TO_CLAUDE.md`.
+
+---
+
 ## 2026-06-03 - CDX-P1FINAL-FOODBACKEND
 
 **Done:** Implemented the foundational backend lane in `backend/`: FastAPI scaffold, async SQLAlchemy models, Alembic baseline, dev Docker Compose, in-repo desi seed, filtered USDA Foundation Foods extract, idempotent seed script, food endpoints, server-side Gemini recognition route, and `POST /calories` grounded calorie engine. Added typed response models so OpenAPI documents the endpoint contracts, plus `backend/docs/API_CONTRACT.md` for mobile wiring and `backend/docs/LOCAL_DB_SMOKE.md` for the next DB verification run. Backend package metadata now builds/install via `uv sync`, Dockerfile is corrected for `pip install .`, and root `.pre-commit-config.yaml` runs ruff on backend files. Local Uvicorn health/OpenAPI smoke passed: `GET /healthz` returned `{"status":"ok"}` and `/openapi.json` lists all backend paths. Ruff is green; pytest is green with 9 tests, including seed invariants and missing Gemini key envelope behavior.
