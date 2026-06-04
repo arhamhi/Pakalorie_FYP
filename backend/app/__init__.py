@@ -1,0 +1,1 @@
+"""Pakalorie FastAPI backend."""

@@ -1,0 +1,558 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-12-31",
+  "dishes": [
+    {
+      "id": "rice_01",
+      "name_en": "Chicken Biryani",
+      "name_ur": "چکن بریانی",
+      "category": "Rice",
+      "base_unit": "grams",
+      "portions": [
+        {
+          "label": "Small",
+          "weight": 100,
+          "kcal": 140,
+          "p": 7,
+          "c": 19,
+          "f": 4
+        },
+        {
+          "label": "Medium",
+          "weight": 200,
+          "kcal": 271,
+          "p": 18,
+          "c": 38,
+          "f": 8
+        },
+        {
+          "label": "Large",
+          "weight": 300,
+          "kcal": 407,
+          "p": 27,
+          "c": 57,
+          "f": 12
+        },
+        {
+          "label": "Restaurant",
+          "weight": 350,
+          "kcal": 575,
+          "p": 29,
+          "c": 58,
+          "f": 19
+        }
+      ],
+      "modifiers": {
+        "low_oil": -30,
+        "high_oil": 80,
+        "homemade": -20,
+        "restaurant": 50
+      }
+    },
+    {
+      "id": "meat_01",
+      "name_en": "Nihari (Beef/Mutton)",
+      "name_ur": "نہاری",
+      "category": "Meat Gravy",
+      "base_unit": "grams",
+      "portions": [
+        {
+          "label": "Standard Bowl",
+          "weight": 300,
+          "kcal": 255,
+          "p": 38,
+          "c": 4,
+          "f": 17
+        }
+      ],
+      "modifiers": { "extra_tarri": 60, "nalli": 45 }
+    },
+    {
+      "id": "meat_02",
+      "name_en": "Haleem",
+      "name_ur": "حلیم",
+      "category": "Meat Gravy",
+      "base_unit": "cups",
+      "portions": [
+        {
+          "label": "Standard Cup",
+          "weight": 200,
+          "kcal": 300,
+          "p": 22,
+          "c": 28,
+          "f": 14
+        }
+      ],
+      "modifiers": { "fried_onion": 35, "extra_oil": 50 }
+    },
+    {
+      "id": "meat_03",
+      "name_en": "Chicken Karahi",
+      "name_ur": "چکن کڑاہی",
+      "category": "Meat Gravy",
+      "base_unit": "grams",
+      "portions": [
+        {
+          "label": "Bowl",
+          "weight": 250,
+          "kcal": 400,
+          "p": 38,
+          "c": 5,
+          "f": 21
+        }
+      ],
+      "modifiers": { "extra_oil": 120, "homemade": -40 }
+    },
+    {
+      "id": "meat_04",
+      "name_en": "Paya",
+      "name_ur": "پائے",
+      "category": "Meat Gravy",
+      "base_unit": "grams",
+      "portions": [
+        {
+          "label": "Bowl",
+          "weight": 200,
+          "kcal": 350,
+          "p": 30,
+          "c": 0,
+          "f": 25
+        }
+      ]
+    },
+    {
+      "id": "bread_01",
+      "name_en": "Chapati/Roti",
+      "name_ur": "روٹی",
+      "category": "Bread",
+      "base_unit": "pieces",
+      "portions": [
+        {
+          "label": "Small",
+          "weight": 30,
+          "kcal": 78,
+          "p": 2.5,
+          "c": 15,
+          "f": 0.5
+        },
+        {
+          "label": "Medium",
+          "weight": 40,
+          "kcal": 110,
+          "p": 3.1,
+          "c": 18.5,
+          "f": 3.7
+        },
+        {
+          "label": "Large",
+          "weight": 50,
+          "kcal": 142,
+          "p": 4.5,
+          "c": 24,
+          "f": 1.2
+        }
+      ],
+      "modifiers": { "with_ghee": 40, "with_butter": 70 }
+    },
+    {
+      "id": "bread_02",
+      "name_en": "Aloo Paratha",
+      "name_ur": "آلو پراٹھا",
+      "category": "Bread",
+      "base_unit": "pieces",
+      "portions": [
+        {
+          "label": "Medium",
+          "weight": 150,
+          "kcal": 250,
+          "p": 4.5,
+          "c": 35,
+          "f": 6.5
+        }
+      ],
+      "modifiers": { "restaurant": 150, "with_butter": 100 }
+    },
+    {
+      "id": "bread_03",
+      "name_en": "Plain Paratha",
+      "name_ur": "پراٹھا",
+      "category": "Bread",
+      "base_unit": "pieces",
+      "portions": [
+        {
+          "label": "Medium",
+          "weight": 50,
+          "kcal": 170,
+          "p": 3,
+          "c": 20,
+          "f": 8
+        }
+      ],
+      "modifiers": { "pan_fried_ghee": 180 }
+    },
+    {
+      "id": "bread_04",
+      "name_en": "Naan",
+      "name_ur": "نان",
+      "category": "Bread",
+      "base_unit": "pieces",
+      "portions": [
+        {
+          "label": "Standard",
+          "weight": 80,
+          "kcal": 260,
+          "p": 8,
+          "c": 45,
+          "f": 4
+        }
+      ],
+      "modifiers": { "roghni": 120, "garlic_butter": 90 }
+    },
+    {
+      "id": "lentil_01",
+      "name_en": "Masoor Daal",
+      "name_ur": "مسور دال",
+      "category": "Lentils",
+      "base_unit": "ml",
+      "portions": [
+        { "label": "Bowl", "weight": 200, "kcal": 150, "p": 9, "c": 20, "f": 4 }
+      ],
+      "modifiers": { "tadka_extra": 50 }
+    },
+    {
+      "id": "lentil_02",
+      "name_en": "Chana Daal",
+      "name_ur": "چنا دال",
+      "category": "Lentils",
+      "base_unit": "ml",
+      "portions": [
+        {
+          "label": "Bowl",
+          "weight": 200,
+          "kcal": 180,
+          "p": 10,
+          "c": 24,
+          "f": 5
+        }
+      ]
+    },
+    {
+      "id": "street_01",
+      "name_en": "Samosa (Vegetable)",
+      "name_ur": "سموسہ",
+      "category": "Street Food",
+      "base_unit": "pieces",
+      "portions": [
+        {
+          "label": "Medium",
+          "weight": 40,
+          "kcal": 160,
+          "p": 2,
+          "c": 14,
+          "f": 9
+        }
+      ]
+    },
+    {
+      "id": "street_02",
+      "name_en": "Pakora",
+      "name_ur": "پکوڑا",
+      "category": "Street Food",
+      "base_unit": "pieces",
+      "portions": [
+        {
+          "label": "Medium",
+          "weight": 25,
+          "kcal": 45,
+          "p": 1,
+          "c": 3.5,
+          "f": 2
+        }
+      ]
+    },
+    {
+      "id": "street_03",
+      "name_en": "Bun Kebab",
+      "name_ur": "بن کباب",
+      "category": "Street Food",
+      "base_unit": "pieces",
+      "portions": [
+        {
+          "label": "Standard",
+          "weight": 165,
+          "kcal": 306,
+          "p": 9,
+          "c": 33,
+          "f": 15
+        }
+      ]
+    },
+    {
+      "id": "street_04",
+      "name_en": "Gol Gappa",
+      "name_ur": "گول گپہ",
+      "category": "Street Food",
+      "base_unit": "servings",
+      "portions": [
+        {
+          "label": "6 pieces",
+          "weight": 120,
+          "kcal": 300,
+          "p": 4,
+          "c": 45,
+          "f": 8
+        }
+      ]
+    },
+    {
+      "id": "street_05",
+      "name_en": "Dahi Bhalla",
+      "name_ur": "دہی بھلے",
+      "category": "Street Food",
+      "base_unit": "servings",
+      "portions": [
+        {
+          "label": "Plate",
+          "weight": 250,
+          "kcal": 280,
+          "p": 8,
+          "c": 40,
+          "f": 10
+        }
+      ]
+    },
+    {
+      "id": "mithai_01",
+      "name_en": "Gulab Jamun",
+      "name_ur": "گلاب جامن",
+      "category": "Sweets",
+      "base_unit": "pieces",
+      "portions": [
+        {
+          "label": "Medium",
+          "weight": 45,
+          "kcal": 170,
+          "p": 2,
+          "c": 25,
+          "f": 7
+        }
+      ]
+    },
+    {
+      "id": "mithai_02",
+      "name_en": "Jalebi",
+      "name_ur": "جلیبی",
+      "category": "Sweets",
+      "base_unit": "grams",
+      "portions": [
+        {
+          "label": "Standard (50g)",
+          "weight": 50,
+          "kcal": 160,
+          "p": 0.5,
+          "c": 35,
+          "f": 5
+        }
+      ]
+    },
+    {
+      "id": "mithai_03",
+      "name_en": "Barfi",
+      "name_ur": "برفی",
+      "category": "Sweets",
+      "base_unit": "pieces",
+      "portions": [
+        {
+          "label": "Piece (30g)",
+          "weight": 30,
+          "kcal": 130,
+          "p": 2,
+          "c": 15,
+          "f": 6
+        }
+      ]
+    },
+    {
+      "id": "mithai_04",
+      "name_en": "Gajar ka Halwa",
+      "name_ur": "گاجر کا حلوہ",
+      "category": "Sweets",
+      "base_unit": "servings",
+      "portions": [
+        {
+          "label": "Bowl (100g)",
+          "weight": 100,
+          "kcal": 250,
+          "p": 4,
+          "c": 30,
+          "f": 12
+        }
+      ]
+    },
+    {
+      "id": "bev_01",
+      "name_en": "Doodh Patti Chai",
+      "name_ur": "دودھ پتی",
+      "category": "Beverage",
+      "base_unit": "ml",
+      "portions": [
+        { "label": "Cup", "weight": 240, "kcal": 130, "p": 8, "c": 18, "f": 5 }
+      ],
+      "modifiers": { "no_sugar": -35, "extra_sugar": 35 }
+    },
+    {
+      "id": "bev_02",
+      "name_en": "Lassi (Sweet)",
+      "name_ur": "میٹھی لسی",
+      "category": "Beverage",
+      "base_unit": "ml",
+      "portions": [
+        {
+          "label": "Glass",
+          "weight": 200,
+          "kcal": 160,
+          "p": 6,
+          "c": 24,
+          "f": 4
+        }
+      ],
+      "modifiers": { "with_malai": 80 }
+    },
+    {
+      "id": "bev_03",
+      "name_en": "Sugarcane Juice",
+      "name_ur": "گنے کا رس",
+      "category": "Beverage",
+      "base_unit": "ml",
+      "portions": [
+        {
+          "label": "Glass",
+          "weight": 250,
+          "kcal": 170,
+          "p": 0,
+          "c": 40,
+          "f": 0
+        }
+      ]
+    },
+    {
+      "id": "breakfast_01",
+      "name_en": "Halwa Puri (Complete)",
+      "name_ur": "حلوہ پوری",
+      "category": "Breakfast",
+      "base_unit": "servings",
+      "portions": [
+        {
+          "label": "Standard Plate",
+          "weight": 240,
+          "kcal": 530,
+          "p": 12,
+          "c": 50,
+          "f": 30
+        }
+      ]
+    },
+    {
+      "id": "snack_01",
+      "name_en": "Nimko Mix",
+      "name_ur": "نمکو",
+      "category": "Snacks",
+      "base_unit": "grams",
+      "portions": [
+        {
+          "label": "Small Cup",
+          "weight": 50,
+          "kcal": 280,
+          "p": 8,
+          "c": 28,
+          "f": 16
+        }
+      ]
+    },
+    {
+      "id": "snack_02",
+      "name_en": "Fruit Chaat",
+      "name_ur": "فروٹ چاٹ",
+      "category": "Snacks",
+      "base_unit": "servings",
+      "portions": [
+        {
+          "label": "Bowl",
+          "weight": 150,
+          "kcal": 120,
+          "p": 1,
+          "c": 28,
+          "f": 0.5
+        }
+      ]
+    },
+    {
+      "id": "meat_05",
+      "name_en": "Seekh Kebab (Beef)",
+      "name_ur": "سیخ کباب",
+      "category": "Meat Gravy",
+      "base_unit": "pieces",
+      "portions": [
+        {
+          "label": "1 Skewer",
+          "weight": 60,
+          "kcal": 150,
+          "p": 15,
+          "c": 2,
+          "f": 9
+        }
+      ]
+    },
+    {
+      "id": "rice_02",
+      "name_en": "Pulao (Chicken)",
+      "name_ur": "پلاؤ",
+      "category": "Rice",
+      "base_unit": "grams",
+      "portions": [
+        {
+          "label": "Medium Plate",
+          "weight": 200,
+          "kcal": 240,
+          "p": 15,
+          "c": 35,
+          "f": 6
+        }
+      ]
+    },
+    {
+      "id": "rice_03",
+      "name_en": "Boiled Rice",
+      "name_ur": "ابلتے ہوئے چاول",
+      "category": "Rice",
+      "base_unit": "grams",
+      "portions": [
+        {
+          "label": "Medium Plate",
+          "weight": 200,
+          "kcal": 200,
+          "p": 4,
+          "c": 44,
+          "f": 0.5
+        }
+      ]
+    },
+    {
+      "id": "meat_06",
+      "name_en": "Chicken Tikka (Leg)",
+      "name_ur": "چکن تکہ",
+      "category": "Meat Gravy",
+      "base_unit": "pieces",
+      "portions": [
+        {
+          "label": "Leg Piece",
+          "weight": 150,
+          "kcal": 220,
+          "p": 30,
+          "c": 1,
+          "f": 10
+        }
+      ]
+    }
+  ]
+}
