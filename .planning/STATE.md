@@ -32,7 +32,7 @@ Last activity: 2026-06-03 - Claude reviewed + fixed + verified the Codex-built b
 - Codex (backend/ML) + Claude (UI/wiring/docs) split via `.handoff/`. [2026-05-07]
 
 ### Blockers / inputs needed from Arham
-- **Kaggle dataset URL(s)** for YOLOv8 (CDX-006 / Phase 3) â€” still needed to start training.
+- **Kaggle dataset URL(s)** for YOLOv8 (CDX-006 / Phase 3) â€” PROVIDED 2026-06-03 by Arham (two Kaggle URLs, logged in TO_CODEX CDX-006 inputs); Codex still needs to inspect/validate them (class list, per-class counts, imbalance) before training.
 - **VPS deploy access** (CDX-005 / Phase 1 deploy): SSH root or a deploy user, and a chosen API subdomain (inspect the existing n8n reverse proxy first). Codex specs the Docker/compose; Arham runs the deploy or grants access.
 - **Live-demo confirmation with Sir Hamza** (Arham answered "live demo + report + metrics"); plan accordingly.
 

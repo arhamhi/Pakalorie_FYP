@@ -38,6 +38,10 @@ FYP = 12 modules / 4 milestones / 25% each. **P1 Mid (Auth + UI + YOLOv8-as-Gemi
 
 **Inputs (Arham to provide / confirm in `TO_CLAUDE.md`):**
 - Kaggle dataset name(s)/URL(s) the partner found ("desi food" datasets). Codex inspects them and reports: class list, per-class image counts, total size, and any class imbalance.
+  - **PROVIDED 2026-06-03 by Arham:**
+    1. https://www.kaggle.com/datasets/izbaiman/food-images
+    2. https://www.kaggle.com/datasets/useractivated/dataset
+  - Codex: validate BOTH before training. The 2nd has a generic name (`useractivated/dataset`) so confirm it is actually desi-food classification folders (and not something unrelated). Report the merged class list, per-class image counts, total size, and any class imbalance in `TO_CLAUDE.md` before kicking off `yolov8*-cls` training.
 - A handful of Arham's own food photos → use as a held-out qualitative TEST set (ground truth known; zero labeling).
 
 **Deliverables (new top-level `ml/` folder):**
