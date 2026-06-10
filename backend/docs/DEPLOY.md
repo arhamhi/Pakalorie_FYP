@@ -99,6 +99,27 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000
 
 `alembic upgrade head` is idempotent. The compose file does not publish an API host port; Traefik routes to port `8000` over `root_default`.
 
+### 4b. Install The MiDaS Depth Model (one-time, enables POST /portion)
+
+The `/portion` endpoint needs the MiDaS v2.1 small ONNX model (~64 MB). It is
+gitignored and lives on the host at `backend/models/`, bind-mounted into the
+container, so rebuilds do not re-download it. Until installed, `/portion`
+returns a clear 503 and every other endpoint works normally.
+
+```sh
+cd /opt/pakalorie-fyp/backend
+docker compose -f docker-compose.prod.yml run --rm api python -m scripts.download_midas
+docker compose -f docker-compose.prod.yml up -d
+```
+
+Verify from outside the VPS:
+
+```sh
+curl -i -X POST https://api.srv987636.hstgr.cloud/portion -F "image=@some_food_photo.jpg"
+```
+
+Expect HTTP 200 with `{"success":true,"data":{"bucket":...,"multiplier":...}}`.
+
 ## 5. Verify
 
 Check the container and logs:

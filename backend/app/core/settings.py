@@ -18,6 +18,7 @@ class Settings(BaseSettings):
         alias="GEMINI_API_URL",
     )
     gemini_timeout_seconds: float = Field(default=20.0, alias="GEMINI_TIMEOUT_SECONDS")
+    midas_model_path: str = Field(default="models/midas_small_256.onnx", alias="MIDAS_MODEL_PATH")
     cors_origins: str = Field(
         default="https://*.expo.dev,exp://*,http://localhost:8081,http://localhost:19006",
         alias="CORS_ORIGINS",

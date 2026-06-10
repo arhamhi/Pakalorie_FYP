@@ -7,6 +7,18 @@ CDX-006 trains a YOLOv8 classification model on the two Kaggle food datasets Arh
 
 The live app still uses the server-side Gemini recognition path until this model is trained, evaluated, reviewed, and intentionally wired later.
 
+## Recommended path: Colab (any group member can run it)
+
+`ml/notebooks/train_yolov8_cls.ipynb` is fully self-contained: GPU check, Kaggle
+token upload, private-repo clone, dataset prep, the full 218-class
+`yolov8n-cls` baseline, eval + confusion matrix + per-class error analysis,
+qualitative predictions on our own photos, and an auto-generated model-card
+block. Checkpoints persist to Google Drive, so a Colab disconnect costs
+nothing — there is a dedicated resume cell. The step-by-step walkthrough for
+team members is in [`docs/TEAM_GUIDE.md`](../docs/TEAM_GUIDE.md).
+
+The commands below are the local/CLI equivalent of what the notebook does.
+
 ## Dataset Audit
 
 Download the Kaggle datasets into a scratch folder, not into git:

@@ -42,7 +42,7 @@ class CalorieEngine:
         calories = nutrition.calories_kcal + modifier_kcal
 
         if self.gemini.configured:
-            return await self._gemini_breakdown(
+            breakdown = await self._gemini_breakdown(
                 request=request,
                 food=primary_food,
                 portion=primary_portion,
@@ -51,15 +51,16 @@ class CalorieEngine:
                 calories=calories,
                 source_rows=source_rows,
             )
-
-        return _fallback_breakdown(
-            food=primary_food,
-            portion=primary_portion,
-            applied=applied,
-            ignored=ignored,
-            calories=calories,
-            source_rows=source_rows,
-        )
+        else:
+            breakdown = _fallback_breakdown(
+                food=primary_food,
+                portion=primary_portion,
+                applied=applied,
+                ignored=ignored,
+                calories=calories,
+                source_rows=source_rows,
+            )
+        return _apply_portion_multiplier(breakdown, request.portion_multiplier)
 
     async def _gemini_breakdown(
         self,
@@ -146,6 +147,34 @@ def _fallback_breakdown(
         why=_why(food, portion, applied, ignored),
         model_used="local_grounded_fallback",
         source_rows=source_rows,
+    )
+
+
+def _apply_portion_multiplier(
+    breakdown: CalorieBreakdown, multiplier: float | None
+) -> CalorieBreakdown:
+    """Scale the grounded result by the MiDaS portion bucket, deterministically.
+
+    Applied AFTER grounding (never inside the LLM prompt) so the arithmetic is
+    exact and the un-scaled numbers stay visible in source_rows.
+    """
+    if multiplier is None or multiplier == 1.0:
+        return breakdown
+    return breakdown.model_copy(
+        update={
+            "calories_kcal": round(breakdown.calories_kcal * multiplier, 1),
+            "protein_g": round(breakdown.protein_g * multiplier, 1),
+            "carbs_g": round(breakdown.carbs_g * multiplier, 1),
+            "fat_g": round(breakdown.fat_g * multiplier, 1),
+            "fiber_g": (
+                round(breakdown.fiber_g * multiplier, 1) if breakdown.fiber_g is not None else None
+            ),
+            "applied_portion_multiplier": multiplier,
+            "why": (
+                f"{breakdown.why} Scaled by x{multiplier:g} from the estimated "
+                "portion size (depth-based bucket)."
+            ),
+        }
     )
 
 

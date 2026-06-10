@@ -31,3 +31,7 @@ GoogleService-Info.plist
 
 expo-env.d.ts
 # @end expo-cli
+
+# MiDaS depth model (downloaded via backend/scripts/download_midas.py)
+backend/models/*.onnx
+backend/models/*.onnx.part
