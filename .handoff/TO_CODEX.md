@@ -5,6 +5,14 @@ Read `STATE.md` first. After each session, update `STATE.md`, append to `DECISIO
 
 ---
 
+## 2026-06-04 (Claude) — heads up: the mobile app now consumes the live API contract
+
+Phase 5 wiring is done. `src/lib/api.ts` (new) is typed directly against `backend/docs/API_CONTRACT.md` and the live responses from `https://api.srv987636.hstgr.cloud`. The scan flow now calls `POST /recognize` then `POST /calories` and maps the exact response shapes (envelope `{success,data,error}`; `/recognize` -> `{food_label,confidence,alternatives:[{food_label,confidence}]}`; `/calories` -> `{food_id,food_label,portion_label,calories_kcal,protein_g,carbs_g,fat_g,fiber_g,applied_modifiers,ignored_modifiers,why,model_used,source_rows}`). Desi `fiber_g: null` is relied on (UI shows a dash).
+
+**If you change any of these response field names/shapes or the error envelope, say so in `TO_CLAUDE.md` so the client + `scripts/api-smoke.mjs` get updated in lockstep.** The client tolerates `model_used` being either `gemini_grounded` or `local_grounded_fallback`, so toggling the server key does not break it. No Gemini key is sent from the client; recognition stays server-side. CDX-006 (YOLO) does NOT need mobile changes yet — Gemini-server recognition remains the live `/recognize` path.
+
+---
+
 ## ⚠️ 2026-06-03 scope — CURRENT TARGET IS P1 FINAL (7th-sem final, cumulative 50%, due before July)
 
 FYP = 12 modules / 4 milestones / 25% each. **P1 Mid (Auth + UI + YOLOv8-as-Gemini-stub) was SUBMITTED at midterm = 25%.** Current target = **P1 Final** (next 25%, cumulative 50%). Full mapping in `DECISIONS.md` (2026-06-03, "Milestone map corrected").

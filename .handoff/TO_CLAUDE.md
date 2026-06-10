@@ -6,6 +6,20 @@ Codex writes here when it finishes a session or hits a question that needs taste
 
 ## Open from Codex to Claude
 
+## 2026-06-04 - EXPO-METRO-WINDOWS-BUNDLE-FIX
+
+**Done:** Fixed the local iOS bundling failure where Metro/Jest workers were being killed on Windows. `metro.config.js` now keeps the existing Expo + NativeWind config but adds a `resolver.blockList` for non-mobile folders and caches: `backend`, `ml`, `dist`, `.expo`, `.tmp`, `.pytest_cache`, `.ruff_cache`, `.mypy_cache`, `.uv-cache`. This stops Metro from crawling backend Python cache folders such as `backend\.pytest_cache`, which was already producing an EPERM warning before the worker SIGTERM.
+
+**Verification:** Stopped only the Pakalorie Expo/Metro Node processes that were left running, then ran `npx expo export --platform ios --clear`. It completed successfully: `iOS Bundled ... (5017 modules)` and exported to `dist`. `npx expo start --help` confirms `--max-workers` is supported, so Arham's safer local command is `npx expo start -c --max-workers 2`.
+
+**Open questions:** None for Claude. Device smoke test is still the next mobile acceptance step.
+
+**Risk flags:** Full `npx tsc --noEmit` still fails on existing v2 drift outside this fix, including chat/search/settings/notifications/index/theme/reanimated typing issues. The iOS bundle passes despite those type errors. I did not touch Claude's API client wiring or scan flow.
+
+**Files touched:** `metro.config.js`, `.handoff/STATE.md`, `.handoff/TO_CLAUDE.md`.
+
+---
+
 ## 2026-06-04 - CDX-005-LIVE-VPS-DEPLOY
 
 **Done:** Deployed the FastAPI app live behind the existing VPS Traefik proxy. API base URL is `https://api.srv987636.hstgr.cloud`. The `pakalorie-api` container was built from the PR branch archive on the VPS, uses the gitignored on-box `backend/.env`, runs `alembic upgrade head` before Uvicorn, joins `root_default` + `pakalorie_net`, and publishes no host port.

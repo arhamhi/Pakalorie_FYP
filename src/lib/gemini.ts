@@ -23,7 +23,10 @@ export interface FoodIdentificationResult {
   confidence: number;
   alternatives?: {
     name: string;
-    calories: number;
+    // Gemini fallback supplies a calorie estimate; the backend /recognize path
+    // supplies a confidence score instead. Either (or neither) may be present.
+    calories?: number;
+    confidence?: number;
   }[];
   notes?: string;
 }
