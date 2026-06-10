@@ -9,6 +9,12 @@ class CalorieRequest(BaseModel):
     )
     modifiers: list[str] = Field(default_factory=list)
     top_k: int = Field(default=3, ge=1, le=10)
+    portion_multiplier: float | None = Field(
+        default=None,
+        gt=0,
+        le=3,
+        description="Optional scale from the MiDaS /portion bucket (e.g. 0.75/1.0/1.3).",
+    )
 
 
 class RetrievedSourceRow(BaseModel):
@@ -38,6 +44,7 @@ class CalorieBreakdown(BaseModel):
     fiber_g: float | None = None
     applied_modifiers: list[str]
     ignored_modifiers: list[str]
+    applied_portion_multiplier: float | None = None
     why: str
     model_used: str
     source_rows: list[RetrievedSourceRow]

@@ -183,7 +183,9 @@ Request body:
 }
 ```
 
-`portion` can also be a future MiDaS bucket: `small`, `medium`, or `large`. If the exact label is not found, the calorie engine picks a best available portion from retrieved rows.
+`portion` can also be a MiDaS bucket: `small`, `medium`, or `large` (maps to the smallest/middle/largest labeled portion row). If the exact label is not found, the calorie engine picks a best available portion from retrieved rows.
+
+`portion_multiplier` (optional, `0 < x <= 3`) scales the final kcal and macros — pass the `multiplier` returned by `POST /portion`. Useful for single-portion desi dishes where small/medium/large all resolve to the same row. When applied, the response carries `applied_portion_multiplier` and the `why` mentions the scaling; `source_rows` keep the unscaled facts.
 
 Response data:
 
@@ -222,6 +224,42 @@ Response data:
 ```
 
 When `GEMINI_API_KEY` is missing, `model_used` is `local_grounded_fallback` and the output is still based only on retrieved source rows.
+
+## Portion Estimate (MiDaS depth)
+
+`POST /portion`
+
+Multipart form-data:
+
+- `image`: uploaded food image
+
+Runs the pretrained MiDaS v2.1 small ONNX model on the server (CPU) and maps
+the RELATIVE depth map to a coarse portion bucket via a documented heuristic.
+Returns 503 with a clear message if the model file is not installed
+(`python -m scripts.download_midas`). Methodology + limitations:
+[`DEPTH_NOTES.md`](./DEPTH_NOTES.md).
+
+Response data:
+
+```json
+{
+  "bucket": "medium",
+  "multiplier": 1.0,
+  "depth_stats": {
+    "center_mean": 0.61,
+    "border_mean": 0.22,
+    "prominence": 0.39,
+    "near_fill_fraction": 0.18,
+    "score": 0.26
+  },
+  "why": "Relative depth shows a mound prominence of 0.39 and 18% of pixels in the nearest depth band, scoring 0.26 -> medium portion.",
+  "limitations": "MiDaS gives RELATIVE depth from one uncalibrated photo: no absolute scale, no grams. ...",
+  "model_used": "midas_v21_small_256"
+}
+```
+
+Feed `bucket` into `/calories.portion` and/or `multiplier` into
+`/calories.portion_multiplier`.
 
 ## Data sources
 

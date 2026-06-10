@@ -12,9 +12,14 @@ services:
       - /bin/sh
       - -c
       - alembic upgrade head && exec uvicorn app.main:app --host 0.0.0.0 --port 8000
-    mem_limit: 768m
+    # 1g (was 768m): headroom for onnxruntime + the ~64MB MiDaS model.
+    mem_limit: 1g
     cpus: "1.00"
     pids_limit: 256
+    volumes:
+      # MiDaS ONNX model lives on the host so image rebuilds don't re-download it.
+      # One-time on the VPS: docker compose -f docker-compose.prod.yml run --rm api python -m scripts.download_midas
+      - ./models:/app/models
     healthcheck:
       test:
         - CMD-SHELL
