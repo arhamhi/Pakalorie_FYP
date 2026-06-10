@@ -1,7 +1,7 @@
 ﻿# STATE â€” single source of truth on current code state
 
-**Last updated:** 2026-06-04 by Codex (Metro Windows/OneDrive bundler fix: `metro.config.js` now blocks backend/ML/cache/output folders from Metro crawling; `npx expo export --platform ios --clear` completed successfully)
-**Next action owner:** Arham (on-device smoke test of the scan -> backend result flow in Expo Go — see "What Arham needs to test on device" below); Codex (next ML step is Colab YOLOv8n-cls training from `ml/notebooks/train_yolov8_cls.ipynb`, then CDX-007 MiDaS); Arham also still to provide own held-out food photos for YOLO qualitative tests.
+**Last updated:** 2026-06-10 by Claude (CDX-007 MiDaS built+tested+merged; Colab notebook hardened; calorie eval 12/12 on live API; TEAM_GUIDE + SDS written; PRs #2/#3/#4 merged to main)
+**Next action owner:** Arham (1. run `backend/docs/DEPLOY.md` §4b + redeploy on the VPS to take `/portion` + `portion_multiplier` live — or grant SSH and ask Claude/Codex; 2. on-device Expo Go smoke test — see below; 3. hand a group member `docs/TEAM_GUIDE.md` §2 to run the Colab training; 4. provide held-out food photos for the notebook's qualitative cell).
 
 ---
 
@@ -16,6 +16,14 @@
 
 ## What works
 
+- **NEW (2026-06-10 Claude) — CDX-007 MiDaS depth module DONE (code+tests merged to main; VPS redeploy pending):**
+  - `backend/app/services/depth.py`: MiDaS v2.1 small ONNX (official isl-org release, CPU via onnxruntime) -> relative depth -> documented heuristic (mound prominence + near-band fill) -> `small/medium/large` bucket with multipliers 0.75/1.0/1.3. `POST /portion` endpoint (multipart, standard envelope, threadpool). Missing model -> clear 503 pointing at `python -m scripts.download_midas`.
+  - `/calories` gained optional `portion_multiplier` (additive, backward-compatible): scales the grounded result deterministically AFTER Gemini grounding; response carries `applied_portion_multiplier`; `source_rows` stay unscaled.
+  - **Verified locally:** 16 pytest green incl. real ONNX inference; ruff clean; real Haleem photo (`test_food.webp`) -> `medium` bucket, prominence 0.24, sane stats. Methodology + honest limitations: `backend/docs/DEPTH_NOTES.md`. Deploy step documented in `DEPLOY.md` §4b (model download into a host-mounted `models/` volume; api mem bumped 768m->1g).
+- **NEW (2026-06-10 Claude) — Calorie engine eval VERIFIED on the live API:** `node scripts/calorie-eval.mjs` -> **12/12 exact, MAE 0.0 kcal** across multi-portion dishes, additive + negative modifiers, and fuzzy queries, all on the real `gemini_grounded` path. Table: `backend/docs/CALORIE_EVAL.md`. This closes Phase 2 success criterion 4.
+- **NEW (2026-06-10 Claude) — CDX-006 Colab notebook hardened for any group member:** `ml/notebooks/train_yolov8_cls.ipynb` is now fully self-contained (GPU assert, Kaggle token upload, private-repo clone via PAT, Drive checkpointing + dedicated resume cell, full 218-class `yolov8n-cls` baseline per the logged decision, eval + confusion matrix + per-class worst-15 error analysis, qualitative predictions on own photos, auto-generated MODELCARD block). Walkthrough: `docs/TEAM_GUIDE.md` §2. JSON validated. **The actual T4 run is the remaining step.**
+- **NEW (2026-06-10 Claude) — Docs for the 50% submission:** `docs/TEAM_GUIDE.md` (Colab walkthrough, run app+backend locally, report material map, demo-day runbook with failure playbook) and `docs/SDS.md` (architecture diagram, module breakdown, RAG methodology, results incl. the live eval, security posture, honest gaps list).
+- **NEW (2026-06-10 Claude) — Git housekeeping:** PR #2 (Codex deploy/ML-prep), PR #3 (Phase 5 wiring + metro fix), and PR #4 (MiDaS + notebook + guides) merged; `main` is current and the working tree is clean.
 - **NEW (2026-06-04 Claude) — Phase 5 mobile wiring to the live backend (code-complete, device test pending):**
   - Added `src/lib/api.ts`: a typed client for the live API base URL `https://api.srv987636.hstgr.cloud` (reads `EXPO_PUBLIC_API_BASE_URL`, falls back to that same URL). Includes request timeout + `AbortController` (20s default, 30s for recognition), envelope unwrapping (`{success,data,error}`), an `ApiError` type, and a wrapper per documented endpoint: `checkHealth()`, `recognizeFood()`, `searchFoods()`, `getFood()`, `getAdjustedNutrition()`, `groundCalories()`, plus the orchestrator `recognizeAndGroundFood()` (image -> `POST /recognize` -> `POST /calories`, mapped into the screen's `FoodIdentificationResult` shape + `grounded` provenance). **No Gemini key is sent from the client** — recognition is server-side.
   - `app/(tabs)/scan.tsx` `runAnalysis()` now tries the real pipeline first and **automatically falls back to the existing client-side Gemini path** (`src/lib/gemini.ts` `identifyFood`) on any backend failure/timeout/"Unknown". The Gemini fallback is unchanged and still present (guardrail).
@@ -104,11 +112,12 @@ Full mapping + rationale: `DECISIONS.md` (2026-06-03).
 
 ## What's next (immediate)
 
-1. **DONE 2026-06-03:** `.planning/{PROJECT,REQUIREMENTS,ROADMAP,STATE}.md` re-baselined to **v1.1 P1 Final** (Food DB API + Calorie Engine/RAG + MiDaS + YOLOv8 carryover + wiring/demo/docs). Hand-edited, no `/gsd-*`. Deploy switched Renderâ†’VPS; seed corrected to 30 desi + USDA; CDX-002..005 updated for pgvector/labeled-portions/VPS.
-2. **Arham (inputs that unblock Codex):** gather own food test photos (held-out YOLO test set); keep smoke-testing Expo Go.
-3. **Codex (priority order):** _Updated 2026-06-04 (Codex): CDX-002/003/004/005/008 are DONE and verified, with the API live at `https://api.srv987636.hstgr.cloud`. CDX-006 dataset validation + training scaffold is done; training itself is still pending._ Next: run Colab `yolov8n-cls` training/eval for CDX-006; CDX-007 remains last/minimal.
-4. **DONE 2026-06-04 (Claude, Phase 5), code-complete; on-device test pending:** wired `src/lib/api.ts` to `https://api.srv987636.hstgr.cloud` + update the Results screen to show the real pipeline (recognition â†’ portion â†’ grounded calorie breakdown + "why" + sources); keep Gemini as fallback until proven. Then SDS material + demo prep.
-5. **Open:** Google OAuth dev-build need for the live demo vs. email/password through Expo Go.
+1. **Arham — VPS redeploy (takes `/portion` live):** on the VPS, `git pull` + `DEPLOY.md` §4b (one-time MiDaS model download) + `docker compose -f docker-compose.prod.yml up -d --build`, then `curl -X POST .../portion -F "image=@photo.jpg"`. Or grant SSH approval and hand it to Claude/Codex.
+2. **Any group member — run the Colab training** (`docs/TEAM_GUIDE.md` §2, ~90 min on a free T4) and send back the Drive artifacts; paste `modelcard_block.md` into `ml/MODELCARD.md`. This closes CDX-006/Phase 3.
+3. **Arham — on-device Expo Go smoke test** (unchanged, see "What Arham needs to test on device" below) + own held-out food photos for the notebook's qualitative cell.
+4. **Optional (Claude, after redeploy + device test):** wire `/portion` into the mobile scan flow (call it alongside `/recognize`, pass `multiplier` to `/calories.portion_multiplier`); record the backup demo video.
+5. **Open:** Google OAuth dev-build need for the live demo vs. email/password through Expo Go (unchanged).
+6. **DONE earlier:** planning re-baseline (2026-06-03); CDX-002..005 + CDX-008 live (2026-06-03/04); Phase 5 wiring code-complete (2026-06-04); CDX-007 MiDaS code+tests, calorie eval 12/12, Colab notebook hardening, TEAM_GUIDE + SDS, PRs #2-#4 merged (2026-06-10).
 
 ## What Arham needs to test on device (Phase 5 backend wiring)
 

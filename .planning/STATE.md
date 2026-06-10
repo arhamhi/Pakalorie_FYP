@@ -2,23 +2,23 @@
 milestone: v1.1
 name: P1 Final
 status: in_progress
-phase_current: 1
+phase_current: 3
 phase_total: 5
 progress:
   requirements_total: 26
-  requirements_done: 0
-  phases_done: 0
-last_updated: 2026-06-04
+  requirements_done: 20
+  phases_done: 2
+last_updated: 2026-06-10
 ---
 
 # STATE â€” Pakalorie FYP (v1.1 P1 Final)
 
 ## Current Position
 
-Phase: **Phase 1 - Food Database API** (implementation DONE, live API deployed, and verified against the live VPS Postgres).
+Phase: **Phases 1+2 complete and live; Phase 4 (MiDaS) code-complete awaiting redeploy; Phase 3 (YOLO) awaiting one Colab run; Phase 5 docs done, device test pending.**
 Plan: `.planning/ROADMAP.md`
-Status: Backend on branch `cdx/p1final-foodbackend`, **verified against a live pgvector Postgres on the VPS** (127.0.0.1-only, reached via SSH tunnel). `alembic upgrade head` succeeds; seed = `foods=160, desi_v1=30, usda=130` (idempotent); all endpoints return correct real-data responses (incl. `gemini_grounded` + `local_grounded_fallback` + both 422s). `ruff` clean; `pytest` green (9 unit + 8 live-DB integration). A Gemini thinking-token truncation bug was found + fixed. Local Docker Desktop is no longer on the critical path. CDX-005 API is live at `https://api.srv987636.hstgr.cloud`; public `/healthz` and `/foods/search?q=nihari` checks pass; n8n remains healthy; Postgres remains private. CDX-006 datasets are validated and `ml/` training scaffold exists; training is pending.
-Last activity: 2026-06-04 - Codex deployed the FastAPI app behind the existing VPS Traefik proxy at `https://api.srv987636.hstgr.cloud`, verified public HTTPS health, DB-backed search, n8n health, and private Postgres. Earlier in the same branch, Codex added the production API compose/runbook and validated both Kaggle datasets for CDX-006. YOLOv8 training is still pending a Colab/GPU run plus Arham's own held-out food photos.
+Status: Phases 1+2 LIVE and verified at `https://api.srv987636.hstgr.cloud` (160-row seed, all endpoints, `gemini_grounded` path; calorie eval **12/12 exact, MAE 0.0** via `scripts/calorie-eval.mjs` -> `backend/docs/CALORIE_EVAL.md`, closing CALC-04). Phase 5: mobile wiring code-complete (10/10 api-smoke), SDS material written (`docs/SDS.md`), team guide written (`docs/TEAM_GUIDE.md`); on-device Expo Go smoke test + demo video still pending. Phase 4 (CDX-007): MiDaS `POST /portion` + `/calories.portion_multiplier` implemented + tested (16 pytest incl. real ONNX inference; real Haleem photo -> medium bucket) and merged; VPS redeploy (`DEPLOY.md` §4b) pending, so DEPTH-01..03 are code-done but not live. Phase 3 (CDX-006): notebook fully self-contained for any group member (`docs/TEAM_GUIDE.md` §2); only the T4 training run + MODELCARD paste remain. All work merged to `main` (PRs #2/#3/#4); working tree clean.
+Last activity: 2026-06-10 - Claude built CDX-007 MiDaS end-to-end, ran the live calorie engine eval (12/12 exact), hardened the Colab notebook (Drive checkpointing + resume + error analysis + auto model-card), wrote `docs/TEAM_GUIDE.md` + `docs/SDS.md`, and cleaned git (PRs #2/#3/#4 merged).
 
 ## Accumulated Context
 
@@ -37,9 +37,10 @@ Last activity: 2026-06-04 - Codex deployed the FastAPI app behind the existing V
 - **Live-demo confirmation with Sir Hamza** (Arham answered "live demo + report + metrics"); plan accordingly.
 
 ### Pending todos
-- **Claude (Phase 5):** wire `src/lib/api.ts` to `https://api.srv987636.hstgr.cloud` + update Results to show the real pipeline; keep Gemini fallback. Prepare SDS material + demo.
-- **Codex (priority order):** run CDX-006 Colab `yolov8n-cls` training/eval from `ml/notebooks/train_yolov8_cls.ipynb`; CDX-007 remains last/minimal.
-- **Arham:** gather own food test photos (held-out YOLO test set); keep smoke-testing Expo Go.
+- **Arham:** VPS redeploy + `DEPLOY.md` §4b to take `/portion` live (or grant SSH); on-device Expo Go smoke test; own held-out food photos.
+- **Any group member:** run the Colab training (`docs/TEAM_GUIDE.md` §2, ~90 min) and return the Drive artifacts; paste `modelcard_block.md` into `ml/MODELCARD.md`.
+- **Claude (after redeploy + device test):** optionally wire `/portion` into the scan flow; backup demo video.
+- ~~Claude Phase 5 wiring~~ DONE 2026-06-04. ~~CDX-007 MiDaS~~ code DONE 2026-06-10.
 
 ### Carryover from v1.0 (submitted, do not re-do)
 - Auth (Firebase JS SDK / Expo Go), Capture/Results UI, Food Recognition (Gemini stub). Captureâ†’results works today via `src/lib/gemini.ts`; food logs save to Supabase. Both stay live as the fallback until the real pipeline is proven.
