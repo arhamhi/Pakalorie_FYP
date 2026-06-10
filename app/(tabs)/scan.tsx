@@ -30,11 +30,18 @@ import {
   ForkKnifeIcon,
   BowlFoodIcon,
   IceCreamIcon,
+  DatabaseIcon,
+  SparkleIcon,
 } from 'phosphor-react-native';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { supabase } from '../../src/lib/supabase';
-import { identifyFood, FoodIdentificationResult } from '../../src/lib/gemini';
+import { identifyFood } from '../../src/lib/gemini';
+import {
+  recognizeAndGroundFood,
+  type GroundedScanResult,
+  type GroundedMeta,
+} from '../../src/lib/api';
 import { FOOD_MODIFIERS } from '../../src/constants/nutrition';
 import { Type, FontFamily } from '../../src/constants/fonts';
 import { Spacing, Radius } from '../../src/constants/spacing';
@@ -42,7 +49,7 @@ import { Spacing, Radius } from '../../src/constants/spacing';
 type ScanState = 'camera' | 'preview' | 'result';
 type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
 
-interface ScanResult extends FoodIdentificationResult {}
+type ScanResult = GroundedScanResult;
 
 const CONFIDENCE_LOW_THRESHOLD = 0.7;
 
@@ -90,8 +97,22 @@ export default function ScanScreen() {
   const runAnalysis = async (uri: string) => {
     setIsAnalyzing(true);
     try {
-      const scanResult = await identifyFood(uri);
-      if (scanResult && scanResult.name) {
+      let scanResult: ScanResult;
+      try {
+        // Primary path: live FastAPI pipeline (recognize -> grounded calories).
+        scanResult = await recognizeAndGroundFood(uri);
+      } catch (backendError) {
+        // Fallback: keep the demo alive with the on-device Gemini path until the
+        // backend pipeline is smoke-tested on device (Phase 5 guardrail). The
+        // result carries no `grounded` provenance, which the UI surfaces as an
+        // "AI estimate" badge instead of the DB-grounded card.
+        console.warn('[scan] backend pipeline failed, using Gemini fallback:', backendError);
+        scanResult = await identifyFood(uri);
+      }
+
+      const identified =
+        !!scanResult?.name && scanResult.name.toLowerCase() !== 'unknown';
+      if (identified) {
         setResult(scanResult);
         setState('result');
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -486,6 +507,7 @@ export default function ScanScreen() {
   const baseCalories = calculateFinalCalories(false);
   const confidence = result?.confidence ?? 0;
   const isLowConfidence = confidence > 0 && confidence < CONFIDENCE_LOW_THRESHOLD;
+  const grounded = result?.grounded;
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.surface.secondary }}>
@@ -562,6 +584,7 @@ export default function ScanScreen() {
                   {result.nameUrdu}
                 </Text>
               )}
+              <SourcePill isGrounded={!!grounded} accent={accent} colors={colors} />
             </View>
             {confidence > 0 && (
               <ConfidencePill confidence={confidence} accent={accent} colors={colors} />
@@ -666,6 +689,11 @@ export default function ScanScreen() {
           />
         </View>
 
+        {/* Grounding card — shows the real RAG pipeline output (backend path only) */}
+        {grounded && (
+          <GroundedSourceCard grounded={grounded} accent={accent} colors={colors} />
+        )}
+
         {/* Alternatives card — shown when confidence is shaky */}
         {isLowConfidence && result?.alternatives && result.alternatives.length > 0 && (
           <View
@@ -702,7 +730,11 @@ export default function ScanScreen() {
               >
                 <Text style={{ ...Type.bodyMd, color: colors.text.primary }}>{alt.name}</Text>
                 <Text style={{ ...Type.bodyMd, color: colors.text.tertiary }}>
-                  ~{alt.calories} kcal
+                  {alt.calories != null
+                    ? `~${alt.calories} kcal`
+                    : alt.confidence != null
+                      ? `${Math.round(alt.confidence * 100)}% match`
+                      : ''}
                 </Text>
               </View>
             ))}
@@ -1024,6 +1056,148 @@ function ConfidencePill({ confidence, accent, colors }: ConfidencePillProps) {
         }}
       >
         {pct}% sure
+      </Text>
+    </View>
+  );
+}
+
+interface SourcePillProps {
+  isGrounded: boolean;
+  accent: string;
+  colors: ReturnType<typeof useTheme>['colors'];
+}
+
+// Small provenance badge under the dish name: backend = DB-grounded, Gemini
+// fallback = on-device AI estimate. Keeps the demo honest about which path ran.
+function SourcePill({ isGrounded, accent, colors }: SourcePillProps) {
+  const tint = isGrounded ? accent : colors.text.tertiary;
+  const bg = isGrounded ? accent + '14' : colors.surface.tertiary;
+  const label = isGrounded ? 'DB-grounded' : 'AI estimate';
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'flex-start',
+        gap: 4,
+        marginTop: Spacing.xs,
+        paddingHorizontal: Spacing.sm,
+        paddingVertical: 4,
+        borderRadius: Radius.pill,
+        backgroundColor: bg,
+      }}
+    >
+      {isGrounded ? (
+        <DatabaseIcon size={12} color={tint} weight="duotone" />
+      ) : (
+        <SparkleIcon size={12} color={tint} weight="duotone" />
+      )}
+      <Text
+        style={{
+          ...Type.caption,
+          color: tint,
+          textTransform: 'uppercase',
+          letterSpacing: 0.4,
+        }}
+      >
+        {label}
+      </Text>
+    </View>
+  );
+}
+
+interface GroundedSourceCardProps {
+  grounded: GroundedMeta;
+  accent: string;
+  colors: ReturnType<typeof useTheme>['colors'];
+}
+
+function dataSourceLabel(source: string | null): string {
+  if (source === 'desi_v1') return 'Pakistani food database';
+  if (source === 'usda') return 'USDA reference';
+  return source ? source : 'Food database';
+}
+
+function modelLabel(model: string): string {
+  if (model === 'gemini_grounded') return 'AI grounded in DB';
+  if (model === 'local_grounded_fallback') return 'DB lookup';
+  return model;
+}
+
+// Shows the real RAG output: which DB row the calories were grounded in, the
+// data source, the model that did the grounding, and the engine's "why".
+function GroundedSourceCard({ grounded, accent, colors }: GroundedSourceCardProps) {
+  return (
+    <View
+      style={{
+        backgroundColor: colors.surface.primary,
+        borderRadius: Radius.card,
+        borderWidth: 1,
+        borderColor: colors.surface.tertiary,
+        padding: Spacing.md,
+        marginBottom: Spacing.lg,
+      }}
+    >
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: Spacing.sm }}>
+        <DatabaseIcon size={18} color={accent} weight="duotone" />
+        <Text
+          style={{
+            ...Type.bodySm,
+            fontFamily: FontFamily.geistMedium,
+            color: colors.text.secondary,
+            marginLeft: Spacing.xs,
+          }}
+        >
+          How we got this
+        </Text>
+      </View>
+
+      {grounded.matchedLabel && (
+        <Text style={{ ...Type.bodyMd, color: colors.text.primary, marginBottom: Spacing.xxs }}>
+          Matched{' '}
+          <Text style={{ fontFamily: FontFamily.geistSemiBold }}>{grounded.matchedLabel}</Text>
+          {grounded.portionLabel ? ` · ${grounded.portionLabel}` : ''}
+        </Text>
+      )}
+
+      {grounded.why ? (
+        <Text style={{ ...Type.bodySm, color: colors.text.tertiary, marginBottom: Spacing.sm }}>
+          {grounded.why}
+        </Text>
+      ) : null}
+
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.xs }}>
+        <GroundedTag label={dataSourceLabel(grounded.dataSource)} accent={accent} colors={colors} />
+        <GroundedTag label={modelLabel(grounded.modelUsed)} accent={accent} colors={colors} />
+      </View>
+    </View>
+  );
+}
+
+interface GroundedTagProps {
+  label: string;
+  accent: string;
+  colors: ReturnType<typeof useTheme>['colors'];
+}
+
+function GroundedTag({ label, accent, colors }: GroundedTagProps) {
+  return (
+    <View
+      style={{
+        paddingHorizontal: Spacing.sm,
+        paddingVertical: 4,
+        borderRadius: Radius.pill,
+        backgroundColor: accent + '12',
+      }}
+    >
+      <Text
+        style={{
+          ...Type.caption,
+          color: accent,
+          letterSpacing: 0.2,
+        }}
+      >
+        {label}
       </Text>
     </View>
   );

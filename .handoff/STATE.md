@@ -1,7 +1,7 @@
 ﻿# STATE â€” single source of truth on current code state
 
-**Last updated:** 2026-06-04 by Codex (CDX-005 API deployed live at `https://api.srv987636.hstgr.cloud` and verified over public HTTPS; CDX-006 Kaggle datasets downloaded/validated and ML scaffold added)
-**Next action owner:** Claude (Phase 5 mobile wiring to the live API base URL); Codex (next ML step is Colab YOLOv8n-cls training from `ml/notebooks/train_yolov8_cls.ipynb`, then CDX-007 MiDaS); Arham (provide own held-out food photos for YOLO qualitative tests and keep smoke-testing Expo Go).
+**Last updated:** 2026-06-04 by Codex (Metro Windows/OneDrive bundler fix: `metro.config.js` now blocks backend/ML/cache/output folders from Metro crawling; `npx expo export --platform ios --clear` completed successfully)
+**Next action owner:** Arham (on-device smoke test of the scan -> backend result flow in Expo Go — see "What Arham needs to test on device" below); Codex (next ML step is Colab YOLOv8n-cls training from `ml/notebooks/train_yolov8_cls.ipynb`, then CDX-007 MiDaS); Arham also still to provide own held-out food photos for YOLO qualitative tests.
 
 ---
 
@@ -15,6 +15,19 @@
 - `app.json` keeps Google Web/iOS client IDs for the AuthSession path. Native Firebase/Google config plugins were removed.
 
 ## What works
+
+- **NEW (2026-06-04 Claude) — Phase 5 mobile wiring to the live backend (code-complete, device test pending):**
+  - Added `src/lib/api.ts`: a typed client for the live API base URL `https://api.srv987636.hstgr.cloud` (reads `EXPO_PUBLIC_API_BASE_URL`, falls back to that same URL). Includes request timeout + `AbortController` (20s default, 30s for recognition), envelope unwrapping (`{success,data,error}`), an `ApiError` type, and a wrapper per documented endpoint: `checkHealth()`, `recognizeFood()`, `searchFoods()`, `getFood()`, `getAdjustedNutrition()`, `groundCalories()`, plus the orchestrator `recognizeAndGroundFood()` (image -> `POST /recognize` -> `POST /calories`, mapped into the screen's `FoodIdentificationResult` shape + `grounded` provenance). **No Gemini key is sent from the client** — recognition is server-side.
+  - `app/(tabs)/scan.tsx` `runAnalysis()` now tries the real pipeline first and **automatically falls back to the existing client-side Gemini path** (`src/lib/gemini.ts` `identifyFood`) on any backend failure/timeout/"Unknown". The Gemini fallback is unchanged and still present (guardrail).
+  - Results UI shows the real pipeline output without a redesign: a `DB-grounded` vs `AI estimate` source pill under the dish name, and a "How we got this" card (backend path only) surfacing the matched DB row + portion, the engine's `why`, the data source (`desi_v1` -> "Pakistani food database" / `usda` -> "USDA reference"), and `model_used`. Null fiber still renders as "—" (tolerated). Alternatives now tolerate the recognize shape (confidence `% match` when calorie estimate is absent).
+  - `.env.example` `EXPO_PUBLIC_API_BASE_URL` corrected from the stale Render placeholder to the live VPS URL.
+  - **Verified locally:** `node scripts/api-smoke.mjs` (new) = **10/10 PASS** against the live API (health, search, detail + null fiber, nutrition modifier math 255+60=315, grounded `/calories` with `why`/`model_used`/`source_rows`). `npx tsc --noEmit` shows **no errors in `api.ts`, `gemini.ts`, or `scan.tsx`** (the 4 remaining tsc errors are pre-existing v2 drift in `notifications.tsx`/`notifications.ts`/`FadeInView.tsx`/`ThemeContext.tsx`, untouched by this work). `POST /recognize` (multipart image) is the only path not exercisable headless — it needs the on-device test below.
+
+- **NEW (2026-06-04 Codex) — Expo/Metro bundling unblocked on Windows/OneDrive:**
+  - `metro.config.js` now excludes non-mobile project folders from Metro's file crawl: `backend`, `ml`, `dist`, `.expo`, `.tmp`, `.pytest_cache`, `.ruff_cache`, `.mypy_cache`, `.uv-cache`.
+  - This fixes the local `backend\.pytest_cache` EPERM crawl warning and the likely source of the `jest-worker ... signal=SIGTERM` iOS bundling failure.
+  - **Verified locally:** `npx expo export --platform ios --clear` completed successfully: `iOS Bundled ... (5017 modules)` and exported to `dist`. No Pakalorie Expo/Metro Node workers were left running after verification.
+  - If Windows still kills workers while using Expo Go, start with fewer Metro workers: `npx expo start -c --max-workers 2`.
 
 - **VERIFIED (2026-06-03 Claude) — backend is now proven against a real Postgres, not just mocks:**
   - A dedicated **pgvector Postgres 16 container runs on the Hostinger VPS** (`pakalorie-postgres`), isolated on its own Docker network + volume, **bound to `127.0.0.1:5432` only** (not public), strong generated password, `--restart unless-stopped`. n8n + Traefik confirmed unaffected. Laptop reaches it via an SSH tunnel (`localhost:5432 → VPS`).
@@ -60,7 +73,7 @@
 
 ## What's broken / stubbed
 
-- Scan/auth flows haven't been smoke-tested end-to-end on device yet â€” Arham to run `npx expo start -c`, scan with Expo Go, and exercise: welcome â†’ signup/login with email â†’ scan â†’ result â†’ save â†’ history.
+- Scan/auth flows haven't been smoke-tested end-to-end on device yet â€” Arham to run `npx expo start -c --max-workers 2`, scan with Expo Go, and exercise: welcome â†’ signup/login with email â†’ scan â†’ result â†’ save â†’ history.
 - Google OAuth is code-wired but not an Expo Go acceptance item. Test it in a dev/production build only if it must appear in the P1 Mid live demo.
 - Save-to-history STILL writes to Supabase `food_logs`, not Firestore. The v2 read paths in `app/(tabs)/index.tsx` and `app/(tabs)/calendar-log.tsx` still read from Supabase, so flipping save in isolation breaks history. Migration paired with CDX-001 (Codex's Firestore migration spec).
 - AuthContext methods `signInWithApple`, `signInWithPhone`, `verifyOtp` throw `not-implemented` â€” deferred to P1 Final / P2.
@@ -94,8 +107,20 @@ Full mapping + rationale: `DECISIONS.md` (2026-06-03).
 1. **DONE 2026-06-03:** `.planning/{PROJECT,REQUIREMENTS,ROADMAP,STATE}.md` re-baselined to **v1.1 P1 Final** (Food DB API + Calorie Engine/RAG + MiDaS + YOLOv8 carryover + wiring/demo/docs). Hand-edited, no `/gsd-*`. Deploy switched Renderâ†’VPS; seed corrected to 30 desi + USDA; CDX-002..005 updated for pgvector/labeled-portions/VPS.
 2. **Arham (inputs that unblock Codex):** gather own food test photos (held-out YOLO test set); keep smoke-testing Expo Go.
 3. **Codex (priority order):** _Updated 2026-06-04 (Codex): CDX-002/003/004/005/008 are DONE and verified, with the API live at `https://api.srv987636.hstgr.cloud`. CDX-006 dataset validation + training scaffold is done; training itself is still pending._ Next: run Colab `yolov8n-cls` training/eval for CDX-006; CDX-007 remains last/minimal.
-4. **Claude (Phase 5):** wire `src/lib/api.ts` to `https://api.srv987636.hstgr.cloud` + update the Results screen to show the real pipeline (recognition â†’ portion â†’ grounded calorie breakdown + "why" + sources); keep Gemini as fallback until proven. Then SDS material + demo prep.
+4. **DONE 2026-06-04 (Claude, Phase 5), code-complete; on-device test pending:** wired `src/lib/api.ts` to `https://api.srv987636.hstgr.cloud` + update the Results screen to show the real pipeline (recognition â†’ portion â†’ grounded calorie breakdown + "why" + sources); keep Gemini as fallback until proven. Then SDS material + demo prep.
 5. **Open:** Google OAuth dev-build need for the live demo vs. email/password through Expo Go.
+
+## What Arham needs to test on device (Phase 5 backend wiring)
+
+The scan flow is wired to the live backend in code and the API contract is verified (10/10 smoke via `node scripts/api-smoke.mjs`, touched-file typecheck clean), but the `POST /recognize` multipart image upload can only be exercised on a real device. Run `npx expo start -c --max-workers 2`, open in Expo Go, and check:
+
+1. Camera or gallery -> take/pick a desi food photo -> the result screen appears.
+2. The result shows a green "DB-grounded" pill under the dish name (the live pipeline ran). Calories/macros come from the backend, and the "How we got this" card shows the matched DB row + portion, the engine's "why", the data source ("Pakistani food database"), and the model.
+3. A null-fiber dish (most desi dishes) shows a dash in the Fiber card, no crash.
+4. Turn off Wi-Fi/data (or point `EXPO_PUBLIC_API_BASE_URL` at a dead host) and scan again: it should fall back to the on-device Gemini path and show an "AI estimate" pill instead, still producing a full result. The fallback needs `EXPO_PUBLIC_GEMINI_API_KEY` in `.env`.
+5. "Save to history" still works (still writes to Supabase until CDX-001).
+
+If recognition returns "Unknown" on a clear food photo, note the dish + photo so the prompt/model can be tuned. Report results in `TO_CLAUDE.md`.
 
 ## Plan reference
 
