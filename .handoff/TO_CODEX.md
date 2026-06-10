@@ -5,6 +5,18 @@ Read `STATE.md` first. After each session, update `STATE.md`, append to `DECISIO
 
 ---
 
+## 2026-06-10 (Claude) — CDX-007 is DONE (Arham-authorized lane crossover); contract addition on /calories
+
+Arham asked Claude to close out P1 Final, including MiDaS. **CDX-007 is implemented, tested, and merged to `main` (PR #4)** — do not re-implement. `POST /portion` (MiDaS v2.1 small ONNX, CPU) returns `{bucket, multiplier, depth_stats, why, limitations, model_used}`; methodology + limitations in `backend/docs/DEPTH_NOTES.md`.
+
+**Contract change you should know about (additive, backward-compatible):** `POST /calories` now accepts optional `portion_multiplier` (float, 0 < x <= 3) and the response gained `applied_portion_multiplier: float | null`. Scaling happens deterministically after grounding; `source_rows` stay unscaled. `API_CONTRACT.md` is updated. `scripts/api-smoke.mjs` is untouched (no shape it checks changed); `scripts/calorie-eval.mjs` (new) proved 12/12 exact on the live API.
+
+**Deploy note:** the live VPS does NOT have `/portion` yet — next `git pull` + rebuild + `DEPLOY.md` §4b (one-time model download into the host-mounted `backend/models/`; api `mem_limit` bumped 768m -> 1g in `docker-compose.prod.yml`). Arham executes or grants SSH.
+
+**CDX-006:** the Colab notebook is now fully self-contained for any group member (Drive checkpointing + resume, full 218-class baseline, error analysis, auto MODELCARD block — see `docs/TEAM_GUIDE.md` §2). The T4 run itself is the only remaining step; if you run it, follow the notebook as-is and paste the generated block into `ml/MODELCARD.md`.
+
+---
+
 ## 2026-06-04 (Claude) — heads up: the mobile app now consumes the live API contract
 
 Phase 5 wiring is done. `src/lib/api.ts` (new) is typed directly against `backend/docs/API_CONTRACT.md` and the live responses from `https://api.srv987636.hstgr.cloud`. The scan flow now calls `POST /recognize` then `POST /calories` and maps the exact response shapes (envelope `{success,data,error}`; `/recognize` -> `{food_label,confidence,alternatives:[{food_label,confidence}]}`; `/calories` -> `{food_id,food_label,portion_label,calories_kcal,protein_g,carbs_g,fat_g,fiber_g,applied_modifiers,ignored_modifiers,why,model_used,source_rows}`). Desi `fiber_g: null` is relied on (UI shows a dash).
@@ -188,7 +200,9 @@ Acceptance: `curl https://<api-subdomain>/healthz` returns 200 over HTTPS from o
 
 ---
 
-### CDX-007 — MiDaS volume & depth (P1 Final, MINIMAL effort) 🟡
+### CDX-007 — MiDaS volume & depth (P1 Final, MINIMAL effort) ✅ DONE 2026-06-10 by Claude
+**Status:** Implemented, tested (16 pytest incl. real ONNX inference), and merged (PR #4). See the 2026-06-10 block at the top. Remaining: VPS redeploy (`DEPLOY.md` §4b). Original spec below for reference.
+
 **Goal:** Server-side portion/volume estimation from the food photo using a pretrained **MiDaS** monocular-depth model. **Deliberately scoped minimal** — accept partial marks (Arham's call; see `DECISIONS.md`).
 
 **Honest scope:** running pretrained MiDaS to get a relative depth map is easy; converting that to absolute grams from one uncalibrated phone photo is not. So deliver: (a) MiDaS depth-map inference in the backend, (b) a documented heuristic mapping depth + plate-area → a portion-size bucket (small/medium/large multiplier), (c) a clear limitations write-up for the report. Do NOT chase calibrated absolute grams.
