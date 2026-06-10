@@ -1,7 +1,9 @@
 ﻿# STATE â€” single source of truth on current code state
 
-**Last updated:** 2026-06-10 by Claude (CDX-007 MiDaS built+tested+merged; Colab notebook hardened; calorie eval 12/12 on live API; TEAM_GUIDE + SDS written; PRs #2/#3/#4 merged to main)
-**Next action owner:** Arham (1. run `backend/docs/DEPLOY.md` §4b + redeploy on the VPS to take `/portion` + `portion_multiplier` live — or grant SSH and ask Claude/Codex; 2. on-device Expo Go smoke test — see below; 3. hand a group member `docs/TEAM_GUIDE.md` §2 to run the Colab training; 4. provide held-out food photos for the notebook's qualitative cell).
+**Last updated:** 2026-06-10 by Claude (CDX-007 MiDaS **DEPLOYED LIVE** with Arham's explicit permission; Colab notebook hardened; calorie eval 12/12 on live API; TEAM_GUIDE + SDS written; PRs #2-#5 merged)
+**Next action owner:** Arham (1. on-device Expo Go smoke test — see below; 2. hand a group member `docs/TEAM_GUIDE.md` §2 to run the Colab training; 3. provide held-out food photos for the notebook's qualitative cell).
+
+**LIVE DEPLOY 2026-06-10 (Claude, Arham-authorized):** VPS now runs `main` @ 9d30fd7. `/opt/pakalorie-fyp` converted to a real git checkout using a **repo-scoped read-only GitHub deploy key** generated on the box (`/root/.ssh/pakalorie_deploy`, registered as "vps-deploy-readonly") — future deploys are `git pull` + compose build/up, no account tokens involved. MiDaS model downloaded on-box (sha256 matches local). **Verified from outside:** `/healthz` 200; `POST /portion` with the real Haleem photo -> `medium` bucket (identical to local); `POST /calories` with `portion_multiplier:1.3` -> 409.5 kcal (315 x 1.3 exact, `gemini_grounded`, source rows unscaled); n8n 200; Postgres external probe still False. Container healthy at 1g mem limit.
 
 ---
 

@@ -37,7 +37,8 @@ Last activity: 2026-06-10 - Claude built CDX-007 MiDaS end-to-end, ran the live 
 - **Live-demo confirmation with Sir Hamza** (Arham answered "live demo + report + metrics"); plan accordingly.
 
 ### Pending todos
-- **Arham:** VPS redeploy + `DEPLOY.md` §4b to take `/portion` live (or grant SSH); on-device Expo Go smoke test; own held-out food photos.
+- ~~VPS redeploy~~ **DONE 2026-06-10 (Claude, Arham-authorized): `/portion` + `portion_multiplier` are LIVE and verified from outside (medium bucket on the real photo; 315 x 1.3 = 409.5 exact).** DEPTH-01..03 now live.
+- **Arham:** on-device Expo Go smoke test; own held-out food photos.
 - **Any group member:** run the Colab training (`docs/TEAM_GUIDE.md` §2, ~90 min) and return the Drive artifacts; paste `modelcard_block.md` into `ml/MODELCARD.md`.
 - **Claude (after redeploy + device test):** optionally wire `/portion` into the scan flow; backup demo video.
 - ~~Claude Phase 5 wiring~~ DONE 2026-06-04. ~~CDX-007 MiDaS~~ code DONE 2026-06-10.
