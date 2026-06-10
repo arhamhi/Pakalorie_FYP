@@ -39,21 +39,23 @@ Do not paste the password into chat or commit it. Use it only in the on-box `bac
 
 ## 2. Put The Repo On The VPS
 
-Use the existing private GitHub repo access, or copy the repo by another secure method:
+**Already set up (2026-06-10):** `/opt/pakalorie-fyp` is a git checkout of
+`origin/main` authenticated with a repo-scoped **read-only deploy key**
+(`/root/.ssh/pakalorie_deploy`, registered on GitHub as `vps-deploy-readonly`,
+wired via `git config core.sshCommand`). No account tokens live on the box.
 
-```sh
-mkdir -p /opt
-git clone https://github.com/arhamhi/Pakalorie_FYP.git /opt/pakalorie-fyp
-cd /opt/pakalorie-fyp/backend
-```
-
-For redeploys, update the existing checkout instead:
+Redeploys are just:
 
 ```sh
 cd /opt/pakalorie-fyp
 git pull --ff-only
 cd backend
 ```
+
+If the checkout is ever lost, recreate it the same way: generate an ed25519
+key on the box, add the public key as a read-only deploy key on the GitHub
+repo (`gh repo deploy-key add`), then clone `git@github.com:arhamhi/Pakalorie_FYP.git`
+with `GIT_SSH_COMMAND` pointing at that key.
 
 ## 3. Create The On-Box Env File
 
