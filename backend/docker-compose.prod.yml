@@ -1,0 +1,50 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pakalorie-api:latest
+    container_name: pakalorie-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    command:
+      - /bin/sh
+      - -c
+      - alembic upgrade head && exec uvicorn app.main:app --host 0.0.0.0 --port 8000
+    mem_limit: 768m
+    cpus: "1.00"
+    pids_limit: 256
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=3).read()"
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - root_default
+      - pakalorie_net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=root_default"
+      - "traefik.http.routers.pakalorie.rule=Host(`api.srv987636.hstgr.cloud`)"
+      - "traefik.http.routers.pakalorie.entrypoints=websecure"
+      - "traefik.http.routers.pakalorie.tls=true"
+      - "traefik.http.routers.pakalorie.tls.certresolver=mytlschallenge"
+      - "traefik.http.routers.pakalorie.middlewares=pakalorie-headers@docker"
+      - "traefik.http.services.pakalorie.loadbalancer.server.port=8000"
+      - "traefik.http.middlewares.pakalorie-headers.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.pakalorie-headers.headers.browserXssFilter=true"
+      - "traefik.http.middlewares.pakalorie-headers.headers.forceSTSHeader=true"
+      - "traefik.http.middlewares.pakalorie-headers.headers.stsSeconds=31536000"
+      - "traefik.http.middlewares.pakalorie-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.pakalorie-headers.headers.stsPreload=true"
+      - "traefik.http.middlewares.pakalorie-headers.headers.referrerPolicy=no-referrer"
+
+networks:
+  root_default:
+    external: true
+  pakalorie_net:
+    external: true

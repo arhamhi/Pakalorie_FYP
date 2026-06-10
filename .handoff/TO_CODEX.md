@@ -21,7 +21,7 @@ FYP = 12 modules / 4 milestones / 25% each. **P1 Mid (Auth + UI + YOLOv8-as-Gemi
 - **Deploy = Hostinger VPS via Docker, NOT Render.** Always-on (live demo is graded). See CDX-005. Postgres self-hosted in a container on the same box.
 - **Seed reality = 30 desi dishes (not "100+") + USDA augmentation to ≥150.** Exact v1 JSON schema + fiber/portion/modifier rules in CDX-003. Use a **pgvector** Postgres image (CDX-002) for CDX-008's RAG.
 - **Live demo is required** for the P1 Final defense → the app must call the real pipeline end-to-end (Claude's Phase 5).
-- **Still blocked:** CDX-006 (YOLOv8) needs Arham's Kaggle dataset URL(s); CDX-005 deploy needs Arham's VPS access + chosen API subdomain.
+- **Still blocked:** CDX-006 training needs a Colab/GPU run and Arham's own held-out food photos. CDX-005 deploy is done and live.
 
 ---
 
@@ -42,6 +42,7 @@ FYP = 12 modules / 4 milestones / 25% each. **P1 Mid (Auth + UI + YOLOv8-as-Gemi
     1. https://www.kaggle.com/datasets/izbaiman/food-images
     2. https://www.kaggle.com/datasets/useractivated/dataset
   - Codex: validate BOTH before training. The 2nd has a generic name (`useractivated/dataset`) so confirm it is actually desi-food classification folders (and not something unrelated). Report the merged class list, per-class image counts, total size, and any class imbalance in `TO_CLAUDE.md` before kicking off `yolov8*-cls` training.
+  - **VALIDATED 2026-06-04 by Codex:** Kaggle metadata and local download confirm `useractivated/dataset` is the Pakistani Dishes Dataset (14 classes, 100 images/class), not an unrelated generic dataset. Audit outputs are committed under `ml/reports/`. Summary: `izbaiman/food-images` = 210 raw folders, 208 normalized classes, 7,260 images, 390.1 MB local image bytes, 12-75 images/class; `useractivated/dataset` = 14 raw folders/classes, 1,400 images, 83.1 MB local image bytes, 100/class; merged normalized set = 218 classes, 8,660 images, 473.2 MB image bytes, 12-175 images/class, 14.58x imbalance. Training has not been run yet.
 - A handful of Arham's own food photos → use as a held-out qualitative TEST set (ground truth known; zero labeling).
 
 **Deliverables (new top-level `ml/` folder):**
@@ -144,6 +145,8 @@ Acceptance: All 4 endpoints documented in OpenAPI (auto-generated). Claude wires
 ---
 
 ### CDX-005 — VPS Docker deploy (was Render — CHANGED 2026-06-03)
+**DONE 2026-06-04 by Codex:** API is live at `https://api.srv987636.hstgr.cloud`. Public `/healthz` returns HTTP 200 `{"status":"ok"}`; public `/foods/search?q=nihari` returns live DB results; `pakalorie-api` is healthy, attached to `root_default` + `pakalorie_net`, and publishes no host port; n8n remains HTTP 200; Postgres remains private (`TcpTestSucceeded=False` externally on port 5432). Claude can wire mobile to the live API base URL.
+
 **RESCOPED 2026-06-03 (Claude) — the Postgres half is already DONE.** A seeded pgvector Postgres (`pakalorie-postgres`) is live on the VPS: `pgvector/pgvector:pg16`, its own Docker network (`pakalorie_net`) + named volume (`pakalorie_pgdata`), **published only on `127.0.0.1:5432`** (not public), `--restart unless-stopped`, strong password in the on-box env. It is migrated, seeded (160 rows), and fully verified. n8n + Traefik are unaffected. **Codex's remaining job is only the app tier + proxy:**
 1. Containerize the FastAPI app (the `Dockerfile` exists; `docker-compose.yml`'s `api` service already runs `alembic upgrade head` before uvicorn — adapt it into a prod compose or run alongside the existing container).
 2. Attach the app to the **existing** Postgres container's private network (`--network pakalorie_net`) and point `DATABASE_URL` at the internal Docker hostname `pakalorie-postgres:5432` (NOT `localhost`/the tunnel — that is laptop-only).

@@ -1,0 +1,2703 @@
+{
+  "generated_at": "2026-06-04T06:09:13.163200+00:00",
+  "image_extensions": [
+    ".bmp",
+    ".jpeg",
+    ".jpg",
+    ".png",
+    ".webp"
+  ],
+  "ignored_parts": [
+    ".ipynb_checkpoints",
+    "__MACOSX"
+  ],
+  "sources": {
+    "izbaiman/food-images": {
+      "root": ".tmp\\kaggle\\izbaiman-food-images\\dataset",
+      "raw_class_count": 210,
+      "class_count": 208,
+      "image_count": 7260,
+      "total_bytes": 409065121,
+      "min_count": 12,
+      "max_count": 75,
+      "classes": {
+        "adhirasam": 50,
+        "aloo_gobi": 50,
+        "aloo_matar": 50,
+        "aloo_methi": 50,
+        "aloo_shimla_mirch": 50,
+        "aloo_tikki": 50,
+        "amulet_fahita": 25,
+        "anarsa": 50,
+        "arika": 25,
+        "ariselu": 50,
+        "arugula_salad": 24,
+        "bandar_laddu": 50,
+        "barbecue_chicken": 25,
+        "basundi": 50,
+        "beaf_burger": 25,
+        "beaf_peanut_butter": 25,
+        "beaf_stake_sandwitch": 25,
+        "beef_bashamel": 25,
+        "beef_bashamil": 25,
+        "beef_fahita": 25,
+        "beef_fahita_removebg_preview": 25,
+        "beef_kabsa": 25,
+        "beef_kufta": 25,
+        "beef_pesto_with_rice": 25,
+        "beef_roll": 25,
+        "beef_sati": 25,
+        "beef_syraih": 25,
+        "bhatura": 50,
+        "bhindi_masala": 50,
+        "biryani": 50,
+        "boondi": 50,
+        "brownies": 25,
+        "buffalo_chicken": 25,
+        "buffalo_sandwich": 25,
+        "burgarice_beef": 25,
+        "burgarice_chicken": 25,
+        "butter_chicken": 75,
+        "ceasar_salad": 25,
+        "chak_hao_kheer": 50,
+        "cham_cham": 50,
+        "chana_masala": 50,
+        "chapati": 50,
+        "cheese_cake": 25,
+        "chhena_kheeri": 50,
+        "chicken_biryani": 25,
+        "chicken_burger": 25,
+        "chicken_crunchy_oats2": 25,
+        "chicken_fahita_sandwich": 25,
+        "chicken_fajita": 25,
+        "chicken_fingers": 25,
+        "chicken_kabab": 25,
+        "chicken_kabsa": 25,
+        "chicken_mandi": 25,
+        "chicken_mashroam_white_rice": 25,
+        "chicken_mushroam_sandwich": 25,
+        "chicken_peanut_butter": 25,
+        "chicken_pizza": 25,
+        "chicken_razala": 50,
+        "chicken_scallop": 25,
+        "chicken_shreded": 25,
+        "chicken_sweat_and_sour": 25,
+        "chicken_tandory": 25,
+        "chicken_tikka": 50,
+        "chicken_tikka_masala": 50,
+        "chicken_tortila_sandwich": 25,
+        "chicken_turyaki": 25,
+        "chikki": 50,
+        "chinees_fish": 25,
+        "chinese_chicken_with_rice": 25,
+        "chocolate_cornflake": 25,
+        "clair": 25,
+        "creamy_chicken": 25,
+        "daal_baati_churma": 50,
+        "daal_puri": 50,
+        "dal_makhani": 50,
+        "dal_tadka": 50,
+        "dawood_basha": 25,
+        "dharwad_pedha": 50,
+        "doodhpak": 50,
+        "double_ka_meetha": 50,
+        "dum_aloo": 50,
+        "egg_and_spinach_croissant": 25,
+        "egg_sandwich": 25,
+        "falafel": 25,
+        "fettuccine_chicken": 25,
+        "fish_fillet_with_limon_sauce": 25,
+        "fool": 25,
+        "fruit_salad": 50,
+        "gajar_ka_halwa": 50,
+        "gavvalu": 50,
+        "ghevar": 50,
+        "granula_yoghort": 25,
+        "greek_chicken": 25,
+        "greek_salad": 25,
+        "gulab_jamun": 50,
+        "high_protine_pizza": 25,
+        "honey_chicken": 25,
+        "imarti": 50,
+        "jalebi": 50,
+        "kabab_kshkash": 25,
+        "kachori": 50,
+        "kadai_paneer": 50,
+        "kadhi_pakoda": 50,
+        "kajjikaya": 50,
+        "kakinada_khaja": 50,
+        "kalakand": 50,
+        "karela_bharta": 50,
+        "kino_salad": 25,
+        "kinoa_salad": 25,
+        "kofta": 50,
+        "koshari": 25,
+        "koskosi_fish": 25,
+        "kuzhi_paniyaram": 50,
+        "labnah_pie": 25,
+        "lasagna_bolins_beef": 25,
+        "lassi": 50,
+        "lazy_cake": 25,
+        "ledikeni": 50,
+        "litti_chokha": 50,
+        "lyangcha": 50,
+        "maach_jhol": 50,
+        "makki_di_roti_sarson_da_saag": 50,
+        "malapua": 50,
+        "malukiah": 25,
+        "maqluba": 24,
+        "meatballs_with_mushroom": 25,
+        "meatballs_with_nodels": 25,
+        "misi_roti": 50,
+        "misti_doi": 50,
+        "mix_salad": 25,
+        "mixixi_sandwich": 25,
+        "modak": 50,
+        "muffin_tin_mini_apple_pies": 25,
+        "mushrooms_chicken": 25,
+        "mysore_pak": 50,
+        "naan": 50,
+        "navrattan_korma": 50,
+        "nicoise_salad": 25,
+        "okra_chicken": 25,
+        "omellet_pie": 25,
+        "palak_paneer": 50,
+        "pancakce_banana": 25,
+        "paneer_butter_masala": 50,
+        "parmesan_chicken": 25,
+        "penna_arabiata": 25,
+        "pesto_chicken_sandwich": 25,
+        "pesto_haloom_sandwich": 25,
+        "pesto_pasta_chicken": 25,
+        "pesto_with_rice2": 25,
+        "phirni": 50,
+        "pink_pasta": 25,
+        "pistachio_cake": 25,
+        "pithe": 50,
+        "pizza_tortilla": 25,
+        "poha": 50,
+        "poornalu": 50,
+        "pootharekulu": 50,
+        "poreto": 25,
+        "prawn_and_rice": 25,
+        "pumkin_salad": 50,
+        "qubani_ka_meetha": 50,
+        "qusadrilla_beef": 25,
+        "qusadrilla_chicken": 25,
+        "rabri": 50,
+        "ras_malai": 50,
+        "rasgulla": 50,
+        "red_shawerma": 25,
+        "roast_beef": 25,
+        "saffaran": 25,
+        "salamon": 25,
+        "salmon_fillet": 25,
+        "sandesh": 50,
+        "sayadia_fish": 25,
+        "scrambel_egg": 25,
+        "shankarpali": 50,
+        "sheer_korma": 50,
+        "sheera": 50,
+        "shesh_tawok": 25,
+        "shrikhand": 50,
+        "sieryeh_chicken": 25,
+        "smoked_salamon_salad": 25,
+        "sofle_beef": 25,
+        "sofle_chicken": 25,
+        "sohan_halwa": 50,
+        "sohan_papdi": 50,
+        "sombrero_salad": 25,
+        "spheghati_beef_pasta": 25,
+        "spheghati_chicken_ball": 25,
+        "steak_with_maish_potato": 25,
+        "strawberries_pudding": 25,
+        "sushi_with_crab_and_fruits": 25,
+        "sutar_feni": 50,
+        "sweet_fish_fillet": 25,
+        "sweet_potato_chips": 25,
+        "tabolah": 25,
+        "teramisu": 25,
+        "teriyaki_beef": 25,
+        "thyme_manakish": 25,
+        "tuna_sandwich": 25,
+        "turkey_eggs": 25,
+        "turkey_roast_croissant": 25,
+        "tuscan_chicken": 25,
+        "unni_appam": 50,
+        "vegetables_chicken_lasagna": 25,
+        "waffle_with_fruits": 25,
+        "white_boiled_rice": 12,
+        "white_shawerma": 25,
+        "zukini_penna_pasta": 25
+      },
+      "raw_classes": {
+        "Arugula_salad": 24,
+        "Barbecue_chicken": 25,
+        "Beaf Peanut butter": 25,
+        "Beaf stake sandwitch": 25,
+        "Beef Bashamel": 25,
+        "Beef Kufta": 25,
+        "Beef bashamil": 25,
+        "Beef roll": 25,
+        "Beef syraih": 25,
+        "Beef_fahita-removebg-preview": 25,
+        "Brownies": 25,
+        "Buffalo_chicken": 25,
+        "BurgaRice_Beef": 25,
+        "BurgaRice_chicken": 25,
+        "Butter_Chicken": 75,
+        "Cheese Cake": 25,
+        "Chicken Mashroam white rice": 25,
+        "Chicken_Biryani": 25,
+        "Chicken_Crunchy_Oats2": 25,
+        "Chicken_Fahita_sandwich": 25,
+        "Chicken_Fajita": 25,
+        "Chicken_Scallop": 25,
+        "Chocolate Cornflake": 25,
+        "Dawood_Basha": 25,
+        "Egg_Sandwich": 25,
+        "Egg_and_Spinach_Croissant": 25,
+        "Fettuccine_Chicken": 25,
+        "Granula Yoghort": 25,
+        "Greek_Chicken": 25,
+        "Greek_Salad": 25,
+        "Kabab_Kshkash": 25,
+        "KosKosi_fish": 25,
+        "Koshari": 25,
+        "Lasagna_Bolins_Beef": 25,
+        "Lazy Cake": 25,
+        "Muffin_Tin_Mini_Apple_Pies": 25,
+        "Mushrooms_Chicken": 25,
+        "Nicoise_salad": 25,
+        "Parmesan_Chicken": 25,
+        "Pesto_Haloom_Sandwich": 25,
+        "Pesto_Pasta_Chicken": 25,
+        "Pistachio Cake": 25,
+        "Qusadrilla_Beef": 25,
+        "Qusadrilla_chicken": 25,
+        "Roast Beef": 25,
+        "Salmon_Fillet": 25,
+        "Sayadia_Fish": 25,
+        "Smoked_salamon_salad": 25,
+        "Sombrero_salad": 25,
+        "Sushi_with_Crab_and_Fruits": 25,
+        "Sweet potato chips": 25,
+        "Teramisu": 25,
+        "Teriyaki_Beef": 25,
+        "Thyme manakish": 25,
+        "Turkey_Roast_Croissant": 25,
+        "Waffle_with_fruits": 25,
+        "_fish_fillet_with_limon_sauce": 25,
+        "adhirasam": 50,
+        "aloo_gobi": 50,
+        "aloo_matar": 50,
+        "aloo_methi": 50,
+        "aloo_shimla_mirch": 50,
+        "aloo_tikki": 50,
+        "amulet_fahita": 25,
+        "anarsa": 50,
+        "arika": 25,
+        "ariselu": 50,
+        "bandar_laddu": 50,
+        "basundi": 50,
+        "beaf burger": 25,
+        "beef pesto with rice": 25,
+        "beef sati": 25,
+        "beef_fahita": 25,
+        "beef_kabsa": 25,
+        "bhatura": 50,
+        "bhindi_masala": 50,
+        "biryani": 50,
+        "boondi": 50,
+        "buffalo sandwich": 25,
+        "ceasar salad": 25,
+        "chak_hao_kheer": 50,
+        "cham_cham": 50,
+        "chana_masala": 50,
+        "chapati": 50,
+        "chhena_kheeri": 50,
+        "chicken burger": 25,
+        "chicken kabab": 25,
+        "chicken_Tandory": 25,
+        "chicken_fingers": 25,
+        "chicken_kabsa": 25,
+        "chicken_mandi": 25,
+        "chicken_mushroam_sandwich": 25,
+        "chicken_peanut_butter": 25,
+        "chicken_pizza": 25,
+        "chicken_razala": 50,
+        "chicken_shreded": 25,
+        "chicken_sweat_and_sour": 25,
+        "chicken_tikka": 50,
+        "chicken_tikka_masala": 50,
+        "chicken_tortila_sandwich": 25,
+        "chicken_turyaki": 25,
+        "chikki": 50,
+        "chinees_fish": 25,
+        "chinese_chicken_with_rice": 25,
+        "creamy_chicken": 25,
+        "daal_baati_churma": 50,
+        "daal_puri": 50,
+        "dal_makhani": 50,
+        "dal_tadka": 50,
+        "dharwad_pedha": 50,
+        "doodhpak": 50,
+        "double_ka_meetha": 50,
+        "dum_aloo": 50,
+        "falafel": 25,
+        "fool": 25,
+        "fruit salad_": 25,
+        "fruit_salad": 25,
+        "gajar_ka_halwa": 50,
+        "gavvalu": 50,
+        "ghevar": 50,
+        "gulab_jamun": 50,
+        "high_protine_pizza": 25,
+        "honey_chicken": 25,
+        "imarti": 50,
+        "jalebi": 50,
+        "kachori": 50,
+        "kadai_paneer": 50,
+        "kadhi_pakoda": 50,
+        "kajjikaya": 50,
+        "kakinada_khaja": 50,
+        "kalakand": 50,
+        "karela_bharta": 50,
+        "kino salad": 25,
+        "kinoa_salad": 25,
+        "kofta": 50,
+        "kuzhi_paniyaram": 50,
+        "labnah_Pie": 25,
+        "lassi": 50,
+        "ledikeni": 50,
+        "litti_chokha": 50,
+        "lyangcha": 50,
+        "maach_jhol": 50,
+        "makki_di_roti_sarson_da_saag": 50,
+        "malapua": 50,
+        "malukiah": 25,
+        "maqluba": 24,
+        "meatballs_with_mushroom": 25,
+        "meatballs_with_nodels": 25,
+        "misi_roti": 50,
+        "misti_doi": 50,
+        "mix_salad": 25,
+        "mixixi_sandwich": 25,
+        "modak": 50,
+        "mysore_pak": 50,
+        "naan": 50,
+        "navrattan_korma": 50,
+        "okra_chicken": 25,
+        "omellet_pie": 25,
+        "palak_paneer": 50,
+        "pancakce_banana": 25,
+        "paneer_butter_masala": 50,
+        "penna_arabiata": 25,
+        "pesto_chicken_sandwich": 25,
+        "pesto_with_rice2": 25,
+        "phirni": 50,
+        "pink pasta": 25,
+        "pithe": 50,
+        "pizza_tortilla": 25,
+        "poha": 50,
+        "poornalu": 50,
+        "pootharekulu": 50,
+        "poreto": 25,
+        "prawn and rice": 25,
+        "pumkin_salad": 25,
+        "pumkin_salad_": 25,
+        "qubani_ka_meetha": 50,
+        "rabri": 50,
+        "ras_malai": 50,
+        "rasgulla": 50,
+        "red_shawerma": 25,
+        "saffaran": 25,
+        "salamon": 25,
+        "sandesh": 50,
+        "scrambel_egg": 25,
+        "shankarpali": 50,
+        "sheer_korma": 50,
+        "sheera": 50,
+        "shesh_tawok": 25,
+        "shrikhand": 50,
+        "sieryeh_chicken": 25,
+        "sofle beef": 25,
+        "sofle_chicken": 25,
+        "sohan_halwa": 50,
+        "sohan_papdi": 50,
+        "spheghati_beef_pasta": 25,
+        "spheghati_chicken_ball": 25,
+        "steak_with_maish_potato": 25,
+        "strawberries Pudding": 25,
+        "sutar_feni": 50,
+        "sweet_fish_Fillet": 25,
+        "tabolah": 25,
+        "tuna_sandwich": 25,
+        "turkey_eggs": 25,
+        "tuscan_chicken": 25,
+        "unni_appam": 50,
+        "vegetables_chicken_lasagna": 25,
+        "white_boiled_rice": 12,
+        "white_shawerma": 25,
+        "zukini_penna_pasta": 25,
+        "Éclair": 25
+      }
+    },
+    "useractivated/dataset": {
+      "root": ".tmp\\kaggle\\useractivated-dataset\\dataset\\dataset",
+      "raw_class_count": 14,
+      "class_count": 14,
+      "image_count": 1400,
+      "total_bytes": 87087551,
+      "min_count": 100,
+      "max_count": 100,
+      "classes": {
+        "bbq": 100,
+        "biryani": 100,
+        "brownie": 100,
+        "butter_chicken": 100,
+        "chai": 100,
+        "chapati": 100,
+        "chicken_tikka": 100,
+        "french_fries": 100,
+        "fried_rice": 100,
+        "haleem": 100,
+        "omelette": 100,
+        "paratha": 100,
+        "paratha_roll": 100,
+        "samosa": 100
+      },
+      "raw_classes": {
+        "bbq": 100,
+        "biryani": 100,
+        "brownie": 100,
+        "butter_chicken": 100,
+        "chai": 100,
+        "chapati": 100,
+        "chicken_tikka": 100,
+        "french_fries": 100,
+        "fried_rice": 100,
+        "haleem": 100,
+        "omelette": 100,
+        "paratha": 100,
+        "paratha_roll": 100,
+        "samosa": 100
+      }
+    }
+  },
+  "merged": {
+    "class_count": 218,
+    "image_count": 8660,
+    "total_bytes": 496152672,
+    "min_count": 12,
+    "max_count": 175,
+    "imbalance_ratio": 14.58,
+    "overlap_classes": {
+      "biryani": {
+        "izbaiman/food-images": 50,
+        "useractivated/dataset": 100
+      },
+      "butter_chicken": {
+        "izbaiman/food-images": 75,
+        "useractivated/dataset": 100
+      },
+      "chapati": {
+        "izbaiman/food-images": 50,
+        "useractivated/dataset": 100
+      },
+      "chicken_tikka": {
+        "izbaiman/food-images": 50,
+        "useractivated/dataset": 100
+      }
+    },
+    "classes": {
+      "adhirasam": {
+        "count": 50,
+        "total_bytes": 4091421,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "adhirasam"
+        ]
+      },
+      "aloo_gobi": {
+        "count": 50,
+        "total_bytes": 5367437,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "aloo_gobi"
+        ]
+      },
+      "aloo_matar": {
+        "count": 50,
+        "total_bytes": 5405569,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "aloo_matar"
+        ]
+      },
+      "aloo_methi": {
+        "count": 50,
+        "total_bytes": 4966863,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "aloo_methi"
+        ]
+      },
+      "aloo_shimla_mirch": {
+        "count": 50,
+        "total_bytes": 3846235,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "aloo_shimla_mirch"
+        ]
+      },
+      "aloo_tikki": {
+        "count": 50,
+        "total_bytes": 4783767,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "aloo_tikki"
+        ]
+      },
+      "amulet_fahita": {
+        "count": 25,
+        "total_bytes": 251156,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "amulet_fahita"
+        ]
+      },
+      "anarsa": {
+        "count": 50,
+        "total_bytes": 4403148,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "anarsa"
+        ]
+      },
+      "arika": {
+        "count": 25,
+        "total_bytes": 205803,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "arika"
+        ]
+      },
+      "ariselu": {
+        "count": 50,
+        "total_bytes": 5913351,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "ariselu"
+        ]
+      },
+      "arugula_salad": {
+        "count": 24,
+        "total_bytes": 295485,
+        "source_counts": {
+          "izbaiman/food-images": 24
+        },
+        "raw_labels": [
+          "Arugula_salad"
+        ]
+      },
+      "bandar_laddu": {
+        "count": 50,
+        "total_bytes": 2349663,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "bandar_laddu"
+        ]
+      },
+      "barbecue_chicken": {
+        "count": 25,
+        "total_bytes": 248306,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Barbecue_chicken"
+        ]
+      },
+      "basundi": {
+        "count": 50,
+        "total_bytes": 2994452,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "basundi"
+        ]
+      },
+      "bbq": {
+        "count": 100,
+        "total_bytes": 6910809,
+        "source_counts": {
+          "useractivated/dataset": 100
+        },
+        "raw_labels": [
+          "bbq"
+        ]
+      },
+      "beaf_burger": {
+        "count": 25,
+        "total_bytes": 211040,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "beaf burger"
+        ]
+      },
+      "beaf_peanut_butter": {
+        "count": 25,
+        "total_bytes": 247330,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Beaf Peanut butter"
+        ]
+      },
+      "beaf_stake_sandwitch": {
+        "count": 25,
+        "total_bytes": 215914,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Beaf stake sandwitch"
+        ]
+      },
+      "beef_bashamel": {
+        "count": 25,
+        "total_bytes": 250294,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Beef Bashamel"
+        ]
+      },
+      "beef_bashamil": {
+        "count": 25,
+        "total_bytes": 252541,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Beef bashamil"
+        ]
+      },
+      "beef_fahita": {
+        "count": 25,
+        "total_bytes": 254587,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "beef_fahita"
+        ]
+      },
+      "beef_fahita_removebg_preview": {
+        "count": 25,
+        "total_bytes": 263252,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Beef_fahita-removebg-preview"
+        ]
+      },
+      "beef_kabsa": {
+        "count": 25,
+        "total_bytes": 281963,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "beef_kabsa"
+        ]
+      },
+      "beef_kufta": {
+        "count": 25,
+        "total_bytes": 233650,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Beef Kufta"
+        ]
+      },
+      "beef_pesto_with_rice": {
+        "count": 25,
+        "total_bytes": 252104,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "beef pesto with rice"
+        ]
+      },
+      "beef_roll": {
+        "count": 25,
+        "total_bytes": 279840,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Beef roll"
+        ]
+      },
+      "beef_sati": {
+        "count": 25,
+        "total_bytes": 251034,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "beef sati"
+        ]
+      },
+      "beef_syraih": {
+        "count": 25,
+        "total_bytes": 272939,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Beef syraih"
+        ]
+      },
+      "bhatura": {
+        "count": 50,
+        "total_bytes": 2707090,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "bhatura"
+        ]
+      },
+      "bhindi_masala": {
+        "count": 50,
+        "total_bytes": 6971426,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "bhindi_masala"
+        ]
+      },
+      "biryani": {
+        "count": 150,
+        "total_bytes": 18791510,
+        "source_counts": {
+          "izbaiman/food-images": 50,
+          "useractivated/dataset": 100
+        },
+        "raw_labels": [
+          "biryani"
+        ]
+      },
+      "boondi": {
+        "count": 50,
+        "total_bytes": 2843409,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "boondi"
+        ]
+      },
+      "brownie": {
+        "count": 100,
+        "total_bytes": 7951526,
+        "source_counts": {
+          "useractivated/dataset": 100
+        },
+        "raw_labels": [
+          "brownie"
+        ]
+      },
+      "brownies": {
+        "count": 25,
+        "total_bytes": 211668,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Brownies"
+        ]
+      },
+      "buffalo_chicken": {
+        "count": 25,
+        "total_bytes": 259068,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Buffalo_chicken"
+        ]
+      },
+      "buffalo_sandwich": {
+        "count": 25,
+        "total_bytes": 181683,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "buffalo sandwich"
+        ]
+      },
+      "burgarice_beef": {
+        "count": 25,
+        "total_bytes": 245085,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "BurgaRice_Beef"
+        ]
+      },
+      "burgarice_chicken": {
+        "count": 25,
+        "total_bytes": 246711,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "BurgaRice_chicken"
+        ]
+      },
+      "butter_chicken": {
+        "count": 175,
+        "total_bytes": 14021668,
+        "source_counts": {
+          "izbaiman/food-images": 75,
+          "useractivated/dataset": 100
+        },
+        "raw_labels": [
+          "Butter_Chicken",
+          "butter_chicken"
+        ]
+      },
+      "ceasar_salad": {
+        "count": 25,
+        "total_bytes": 256067,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "ceasar salad"
+        ]
+      },
+      "chai": {
+        "count": 100,
+        "total_bytes": 5886174,
+        "source_counts": {
+          "useractivated/dataset": 100
+        },
+        "raw_labels": [
+          "chai"
+        ]
+      },
+      "chak_hao_kheer": {
+        "count": 50,
+        "total_bytes": 8036927,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "chak_hao_kheer"
+        ]
+      },
+      "cham_cham": {
+        "count": 50,
+        "total_bytes": 4543139,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "cham_cham"
+        ]
+      },
+      "chana_masala": {
+        "count": 50,
+        "total_bytes": 7111688,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "chana_masala"
+        ]
+      },
+      "chapati": {
+        "count": 150,
+        "total_bytes": 9430731,
+        "source_counts": {
+          "izbaiman/food-images": 50,
+          "useractivated/dataset": 100
+        },
+        "raw_labels": [
+          "chapati"
+        ]
+      },
+      "cheese_cake": {
+        "count": 25,
+        "total_bytes": 226635,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Cheese Cake"
+        ]
+      },
+      "chhena_kheeri": {
+        "count": 50,
+        "total_bytes": 1839711,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "chhena_kheeri"
+        ]
+      },
+      "chicken_biryani": {
+        "count": 25,
+        "total_bytes": 249507,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Chicken_Biryani"
+        ]
+      },
+      "chicken_burger": {
+        "count": 25,
+        "total_bytes": 192237,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "chicken burger"
+        ]
+      },
+      "chicken_crunchy_oats2": {
+        "count": 25,
+        "total_bytes": 284408,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Chicken_Crunchy_Oats2"
+        ]
+      },
+      "chicken_fahita_sandwich": {
+        "count": 25,
+        "total_bytes": 215735,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Chicken_Fahita_sandwich"
+        ]
+      },
+      "chicken_fajita": {
+        "count": 25,
+        "total_bytes": 285220,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Chicken_Fajita"
+        ]
+      },
+      "chicken_fingers": {
+        "count": 25,
+        "total_bytes": 280632,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "chicken_fingers"
+        ]
+      },
+      "chicken_kabab": {
+        "count": 25,
+        "total_bytes": 287776,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "chicken kabab"
+        ]
+      },
+      "chicken_kabsa": {
+        "count": 25,
+        "total_bytes": 296695,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "chicken_kabsa"
+        ]
+      },
+      "chicken_mandi": {
+        "count": 25,
+        "total_bytes": 290889,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "chicken_mandi"
+        ]
+      },
+      "chicken_mashroam_white_rice": {
+        "count": 25,
+        "total_bytes": 233926,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Chicken Mashroam white rice"
+        ]
+      },
+      "chicken_mushroam_sandwich": {
+        "count": 25,
+        "total_bytes": 206783,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "chicken_mushroam_sandwich"
+        ]
+      },
+      "chicken_peanut_butter": {
+        "count": 25,
+        "total_bytes": 248898,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "chicken_peanut_butter"
+        ]
+      },
+      "chicken_pizza": {
+        "count": 25,
+        "total_bytes": 303524,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "chicken_pizza"
+        ]
+      },
+      "chicken_razala": {
+        "count": 50,
+        "total_bytes": 7023603,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "chicken_razala"
+        ]
+      },
+      "chicken_scallop": {
+        "count": 25,
+        "total_bytes": 247275,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Chicken_Scallop"
+        ]
+      },
+      "chicken_shreded": {
+        "count": 25,
+        "total_bytes": 292890,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "chicken_shreded"
+        ]
+      },
+      "chicken_sweat_and_sour": {
+        "count": 25,
+        "total_bytes": 271066,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "chicken_sweat_and_sour"
+        ]
+      },
+      "chicken_tandory": {
+        "count": 25,
+        "total_bytes": 239436,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "chicken_Tandory"
+        ]
+      },
+      "chicken_tikka": {
+        "count": 150,
+        "total_bytes": 14422987,
+        "source_counts": {
+          "izbaiman/food-images": 50,
+          "useractivated/dataset": 100
+        },
+        "raw_labels": [
+          "chicken_tikka"
+        ]
+      },
+      "chicken_tikka_masala": {
+        "count": 50,
+        "total_bytes": 9268084,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "chicken_tikka_masala"
+        ]
+      },
+      "chicken_tortila_sandwich": {
+        "count": 25,
+        "total_bytes": 197885,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "chicken_tortila_sandwich"
+        ]
+      },
+      "chicken_turyaki": {
+        "count": 25,
+        "total_bytes": 270682,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "chicken_turyaki"
+        ]
+      },
+      "chikki": {
+        "count": 50,
+        "total_bytes": 4173483,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "chikki"
+        ]
+      },
+      "chinees_fish": {
+        "count": 25,
+        "total_bytes": 299629,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "chinees_fish"
+        ]
+      },
+      "chinese_chicken_with_rice": {
+        "count": 25,
+        "total_bytes": 226801,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "chinese_chicken_with_rice"
+        ]
+      },
+      "chocolate_cornflake": {
+        "count": 25,
+        "total_bytes": 233886,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Chocolate Cornflake"
+        ]
+      },
+      "clair": {
+        "count": 25,
+        "total_bytes": 252547,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Éclair"
+        ]
+      },
+      "creamy_chicken": {
+        "count": 25,
+        "total_bytes": 230166,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "creamy_chicken"
+        ]
+      },
+      "daal_baati_churma": {
+        "count": 50,
+        "total_bytes": 4427216,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "daal_baati_churma"
+        ]
+      },
+      "daal_puri": {
+        "count": 50,
+        "total_bytes": 4394658,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "daal_puri"
+        ]
+      },
+      "dal_makhani": {
+        "count": 50,
+        "total_bytes": 6154057,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "dal_makhani"
+        ]
+      },
+      "dal_tadka": {
+        "count": 50,
+        "total_bytes": 5368110,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "dal_tadka"
+        ]
+      },
+      "dawood_basha": {
+        "count": 25,
+        "total_bytes": 250803,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Dawood_Basha"
+        ]
+      },
+      "dharwad_pedha": {
+        "count": 50,
+        "total_bytes": 3514945,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "dharwad_pedha"
+        ]
+      },
+      "doodhpak": {
+        "count": 50,
+        "total_bytes": 7103298,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "doodhpak"
+        ]
+      },
+      "double_ka_meetha": {
+        "count": 50,
+        "total_bytes": 3057825,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "double_ka_meetha"
+        ]
+      },
+      "dum_aloo": {
+        "count": 50,
+        "total_bytes": 5474578,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "dum_aloo"
+        ]
+      },
+      "egg_and_spinach_croissant": {
+        "count": 25,
+        "total_bytes": 229749,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Egg_and_Spinach_Croissant"
+        ]
+      },
+      "egg_sandwich": {
+        "count": 25,
+        "total_bytes": 223024,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Egg_Sandwich"
+        ]
+      },
+      "falafel": {
+        "count": 25,
+        "total_bytes": 209152,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "falafel"
+        ]
+      },
+      "fettuccine_chicken": {
+        "count": 25,
+        "total_bytes": 254784,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Fettuccine_Chicken"
+        ]
+      },
+      "fish_fillet_with_limon_sauce": {
+        "count": 25,
+        "total_bytes": 225565,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "_fish_fillet_with_limon_sauce"
+        ]
+      },
+      "fool": {
+        "count": 25,
+        "total_bytes": 285156,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "fool"
+        ]
+      },
+      "french_fries": {
+        "count": 100,
+        "total_bytes": 6076362,
+        "source_counts": {
+          "useractivated/dataset": 100
+        },
+        "raw_labels": [
+          "french_fries"
+        ]
+      },
+      "fried_rice": {
+        "count": 100,
+        "total_bytes": 7792252,
+        "source_counts": {
+          "useractivated/dataset": 100
+        },
+        "raw_labels": [
+          "fried_rice"
+        ]
+      },
+      "fruit_salad": {
+        "count": 50,
+        "total_bytes": 414653,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "fruit salad_",
+          "fruit_salad"
+        ]
+      },
+      "gajar_ka_halwa": {
+        "count": 50,
+        "total_bytes": 4031576,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "gajar_ka_halwa"
+        ]
+      },
+      "gavvalu": {
+        "count": 50,
+        "total_bytes": 3889836,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "gavvalu"
+        ]
+      },
+      "ghevar": {
+        "count": 50,
+        "total_bytes": 4689737,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "ghevar"
+        ]
+      },
+      "granula_yoghort": {
+        "count": 25,
+        "total_bytes": 189520,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Granula Yoghort"
+        ]
+      },
+      "greek_chicken": {
+        "count": 25,
+        "total_bytes": 298892,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Greek_Chicken"
+        ]
+      },
+      "greek_salad": {
+        "count": 25,
+        "total_bytes": 236100,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Greek_Salad"
+        ]
+      },
+      "gulab_jamun": {
+        "count": 50,
+        "total_bytes": 2676101,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "gulab_jamun"
+        ]
+      },
+      "haleem": {
+        "count": 100,
+        "total_bytes": 5411220,
+        "source_counts": {
+          "useractivated/dataset": 100
+        },
+        "raw_labels": [
+          "haleem"
+        ]
+      },
+      "high_protine_pizza": {
+        "count": 25,
+        "total_bytes": 315141,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "high_protine_pizza"
+        ]
+      },
+      "honey_chicken": {
+        "count": 25,
+        "total_bytes": 298781,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "honey_chicken"
+        ]
+      },
+      "imarti": {
+        "count": 50,
+        "total_bytes": 3358442,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "imarti"
+        ]
+      },
+      "jalebi": {
+        "count": 50,
+        "total_bytes": 4621898,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "jalebi"
+        ]
+      },
+      "kabab_kshkash": {
+        "count": 25,
+        "total_bytes": 263584,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Kabab_Kshkash"
+        ]
+      },
+      "kachori": {
+        "count": 50,
+        "total_bytes": 4730012,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "kachori"
+        ]
+      },
+      "kadai_paneer": {
+        "count": 50,
+        "total_bytes": 4783174,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "kadai_paneer"
+        ]
+      },
+      "kadhi_pakoda": {
+        "count": 50,
+        "total_bytes": 4521586,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "kadhi_pakoda"
+        ]
+      },
+      "kajjikaya": {
+        "count": 50,
+        "total_bytes": 3672326,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "kajjikaya"
+        ]
+      },
+      "kakinada_khaja": {
+        "count": 50,
+        "total_bytes": 2688060,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "kakinada_khaja"
+        ]
+      },
+      "kalakand": {
+        "count": 50,
+        "total_bytes": 3650827,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "kalakand"
+        ]
+      },
+      "karela_bharta": {
+        "count": 50,
+        "total_bytes": 3377668,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "karela_bharta"
+        ]
+      },
+      "kino_salad": {
+        "count": 25,
+        "total_bytes": 274643,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "kino salad"
+        ]
+      },
+      "kinoa_salad": {
+        "count": 25,
+        "total_bytes": 274643,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "kinoa_salad"
+        ]
+      },
+      "kofta": {
+        "count": 50,
+        "total_bytes": 4764960,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "kofta"
+        ]
+      },
+      "koshari": {
+        "count": 25,
+        "total_bytes": 323664,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Koshari"
+        ]
+      },
+      "koskosi_fish": {
+        "count": 25,
+        "total_bytes": 257871,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "KosKosi_fish"
+        ]
+      },
+      "kuzhi_paniyaram": {
+        "count": 50,
+        "total_bytes": 5518477,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "kuzhi_paniyaram"
+        ]
+      },
+      "labnah_pie": {
+        "count": 25,
+        "total_bytes": 250077,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "labnah_Pie"
+        ]
+      },
+      "lasagna_bolins_beef": {
+        "count": 25,
+        "total_bytes": 235134,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Lasagna_Bolins_Beef"
+        ]
+      },
+      "lassi": {
+        "count": 50,
+        "total_bytes": 2792216,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "lassi"
+        ]
+      },
+      "lazy_cake": {
+        "count": 25,
+        "total_bytes": 236328,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Lazy Cake"
+        ]
+      },
+      "ledikeni": {
+        "count": 50,
+        "total_bytes": 3843560,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "ledikeni"
+        ]
+      },
+      "litti_chokha": {
+        "count": 50,
+        "total_bytes": 3268968,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "litti_chokha"
+        ]
+      },
+      "lyangcha": {
+        "count": 50,
+        "total_bytes": 5930966,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "lyangcha"
+        ]
+      },
+      "maach_jhol": {
+        "count": 50,
+        "total_bytes": 4684731,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "maach_jhol"
+        ]
+      },
+      "makki_di_roti_sarson_da_saag": {
+        "count": 50,
+        "total_bytes": 5439787,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "makki_di_roti_sarson_da_saag"
+        ]
+      },
+      "malapua": {
+        "count": 50,
+        "total_bytes": 3540957,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "malapua"
+        ]
+      },
+      "malukiah": {
+        "count": 25,
+        "total_bytes": 242424,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "malukiah"
+        ]
+      },
+      "maqluba": {
+        "count": 24,
+        "total_bytes": 298237,
+        "source_counts": {
+          "izbaiman/food-images": 24
+        },
+        "raw_labels": [
+          "maqluba"
+        ]
+      },
+      "meatballs_with_mushroom": {
+        "count": 25,
+        "total_bytes": 227713,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "meatballs_with_mushroom"
+        ]
+      },
+      "meatballs_with_nodels": {
+        "count": 25,
+        "total_bytes": 336372,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "meatballs_with_nodels"
+        ]
+      },
+      "misi_roti": {
+        "count": 50,
+        "total_bytes": 3149313,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "misi_roti"
+        ]
+      },
+      "misti_doi": {
+        "count": 50,
+        "total_bytes": 2929297,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "misti_doi"
+        ]
+      },
+      "mix_salad": {
+        "count": 25,
+        "total_bytes": 267990,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "mix_salad"
+        ]
+      },
+      "mixixi_sandwich": {
+        "count": 25,
+        "total_bytes": 205222,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "mixixi_sandwich"
+        ]
+      },
+      "modak": {
+        "count": 50,
+        "total_bytes": 4117225,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "modak"
+        ]
+      },
+      "muffin_tin_mini_apple_pies": {
+        "count": 25,
+        "total_bytes": 221049,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Muffin_Tin_Mini_Apple_Pies"
+        ]
+      },
+      "mushrooms_chicken": {
+        "count": 25,
+        "total_bytes": 232555,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Mushrooms_Chicken"
+        ]
+      },
+      "mysore_pak": {
+        "count": 50,
+        "total_bytes": 2624090,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "mysore_pak"
+        ]
+      },
+      "naan": {
+        "count": 50,
+        "total_bytes": 6798996,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "naan"
+        ]
+      },
+      "navrattan_korma": {
+        "count": 50,
+        "total_bytes": 5986972,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "navrattan_korma"
+        ]
+      },
+      "nicoise_salad": {
+        "count": 25,
+        "total_bytes": 237600,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Nicoise_salad"
+        ]
+      },
+      "okra_chicken": {
+        "count": 25,
+        "total_bytes": 250138,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "okra_chicken"
+        ]
+      },
+      "omelette": {
+        "count": 100,
+        "total_bytes": 4116306,
+        "source_counts": {
+          "useractivated/dataset": 100
+        },
+        "raw_labels": [
+          "omelette"
+        ]
+      },
+      "omellet_pie": {
+        "count": 25,
+        "total_bytes": 240899,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "omellet_pie"
+        ]
+      },
+      "palak_paneer": {
+        "count": 50,
+        "total_bytes": 4260234,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "palak_paneer"
+        ]
+      },
+      "pancakce_banana": {
+        "count": 25,
+        "total_bytes": 240353,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "pancakce_banana"
+        ]
+      },
+      "paneer_butter_masala": {
+        "count": 50,
+        "total_bytes": 7480365,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "paneer_butter_masala"
+        ]
+      },
+      "paratha": {
+        "count": 100,
+        "total_bytes": 4542068,
+        "source_counts": {
+          "useractivated/dataset": 100
+        },
+        "raw_labels": [
+          "paratha"
+        ]
+      },
+      "paratha_roll": {
+        "count": 100,
+        "total_bytes": 3780497,
+        "source_counts": {
+          "useractivated/dataset": 100
+        },
+        "raw_labels": [
+          "paratha_roll"
+        ]
+      },
+      "parmesan_chicken": {
+        "count": 25,
+        "total_bytes": 226836,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Parmesan_Chicken"
+        ]
+      },
+      "penna_arabiata": {
+        "count": 25,
+        "total_bytes": 261899,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "penna_arabiata"
+        ]
+      },
+      "pesto_chicken_sandwich": {
+        "count": 25,
+        "total_bytes": 222842,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "pesto_chicken_sandwich"
+        ]
+      },
+      "pesto_haloom_sandwich": {
+        "count": 25,
+        "total_bytes": 215888,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Pesto_Haloom_Sandwich"
+        ]
+      },
+      "pesto_pasta_chicken": {
+        "count": 25,
+        "total_bytes": 281708,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Pesto_Pasta_Chicken"
+        ]
+      },
+      "pesto_with_rice2": {
+        "count": 25,
+        "total_bytes": 300682,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "pesto_with_rice2"
+        ]
+      },
+      "phirni": {
+        "count": 50,
+        "total_bytes": 4361315,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "phirni"
+        ]
+      },
+      "pink_pasta": {
+        "count": 25,
+        "total_bytes": 327701,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "pink pasta"
+        ]
+      },
+      "pistachio_cake": {
+        "count": 25,
+        "total_bytes": 249907,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Pistachio Cake"
+        ]
+      },
+      "pithe": {
+        "count": 50,
+        "total_bytes": 3512802,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "pithe"
+        ]
+      },
+      "pizza_tortilla": {
+        "count": 25,
+        "total_bytes": 248330,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "pizza_tortilla"
+        ]
+      },
+      "poha": {
+        "count": 50,
+        "total_bytes": 5523295,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "poha"
+        ]
+      },
+      "poornalu": {
+        "count": 50,
+        "total_bytes": 9916952,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "poornalu"
+        ]
+      },
+      "pootharekulu": {
+        "count": 50,
+        "total_bytes": 3386330,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "pootharekulu"
+        ]
+      },
+      "poreto": {
+        "count": 25,
+        "total_bytes": 220023,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "poreto"
+        ]
+      },
+      "prawn_and_rice": {
+        "count": 25,
+        "total_bytes": 262341,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "prawn and rice"
+        ]
+      },
+      "pumkin_salad": {
+        "count": 50,
+        "total_bytes": 523453,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "pumkin_salad",
+          "pumkin_salad_"
+        ]
+      },
+      "qubani_ka_meetha": {
+        "count": 50,
+        "total_bytes": 5412257,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "qubani_ka_meetha"
+        ]
+      },
+      "qusadrilla_beef": {
+        "count": 25,
+        "total_bytes": 259706,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Qusadrilla_Beef"
+        ]
+      },
+      "qusadrilla_chicken": {
+        "count": 25,
+        "total_bytes": 270534,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Qusadrilla_chicken"
+        ]
+      },
+      "rabri": {
+        "count": 50,
+        "total_bytes": 2727737,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "rabri"
+        ]
+      },
+      "ras_malai": {
+        "count": 50,
+        "total_bytes": 4865838,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "ras_malai"
+        ]
+      },
+      "rasgulla": {
+        "count": 50,
+        "total_bytes": 4000691,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "rasgulla"
+        ]
+      },
+      "red_shawerma": {
+        "count": 25,
+        "total_bytes": 223033,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "red_shawerma"
+        ]
+      },
+      "roast_beef": {
+        "count": 25,
+        "total_bytes": 231056,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Roast Beef"
+        ]
+      },
+      "saffaran": {
+        "count": 25,
+        "total_bytes": 229021,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "saffaran"
+        ]
+      },
+      "salamon": {
+        "count": 25,
+        "total_bytes": 241275,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "salamon"
+        ]
+      },
+      "salmon_fillet": {
+        "count": 25,
+        "total_bytes": 252026,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Salmon_Fillet"
+        ]
+      },
+      "samosa": {
+        "count": 100,
+        "total_bytes": 5696873,
+        "source_counts": {
+          "useractivated/dataset": 100
+        },
+        "raw_labels": [
+          "samosa"
+        ]
+      },
+      "sandesh": {
+        "count": 50,
+        "total_bytes": 4054422,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "sandesh"
+        ]
+      },
+      "sayadia_fish": {
+        "count": 25,
+        "total_bytes": 255749,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Sayadia_Fish"
+        ]
+      },
+      "scrambel_egg": {
+        "count": 25,
+        "total_bytes": 170417,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "scrambel_egg"
+        ]
+      },
+      "shankarpali": {
+        "count": 50,
+        "total_bytes": 2628287,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "shankarpali"
+        ]
+      },
+      "sheer_korma": {
+        "count": 50,
+        "total_bytes": 4233827,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "sheer_korma"
+        ]
+      },
+      "sheera": {
+        "count": 50,
+        "total_bytes": 4457398,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "sheera"
+        ]
+      },
+      "shesh_tawok": {
+        "count": 25,
+        "total_bytes": 277344,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "shesh_tawok"
+        ]
+      },
+      "shrikhand": {
+        "count": 50,
+        "total_bytes": 5389856,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "shrikhand"
+        ]
+      },
+      "sieryeh_chicken": {
+        "count": 25,
+        "total_bytes": 253727,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "sieryeh_chicken"
+        ]
+      },
+      "smoked_salamon_salad": {
+        "count": 25,
+        "total_bytes": 240996,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Smoked_salamon_salad"
+        ]
+      },
+      "sofle_beef": {
+        "count": 25,
+        "total_bytes": 198605,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "sofle beef"
+        ]
+      },
+      "sofle_chicken": {
+        "count": 25,
+        "total_bytes": 179889,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "sofle_chicken"
+        ]
+      },
+      "sohan_halwa": {
+        "count": 50,
+        "total_bytes": 4392431,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "sohan_halwa"
+        ]
+      },
+      "sohan_papdi": {
+        "count": 50,
+        "total_bytes": 4350890,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "sohan_papdi"
+        ]
+      },
+      "sombrero_salad": {
+        "count": 25,
+        "total_bytes": 245972,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Sombrero_salad"
+        ]
+      },
+      "spheghati_beef_pasta": {
+        "count": 25,
+        "total_bytes": 225490,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "spheghati_beef_pasta"
+        ]
+      },
+      "spheghati_chicken_ball": {
+        "count": 25,
+        "total_bytes": 286911,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "spheghati_chicken_ball"
+        ]
+      },
+      "steak_with_maish_potato": {
+        "count": 25,
+        "total_bytes": 237898,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "steak_with_maish_potato"
+        ]
+      },
+      "strawberries_pudding": {
+        "count": 25,
+        "total_bytes": 197199,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "strawberries Pudding"
+        ]
+      },
+      "sushi_with_crab_and_fruits": {
+        "count": 25,
+        "total_bytes": 169294,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Sushi_with_Crab_and_Fruits"
+        ]
+      },
+      "sutar_feni": {
+        "count": 50,
+        "total_bytes": 5176067,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "sutar_feni"
+        ]
+      },
+      "sweet_fish_fillet": {
+        "count": 25,
+        "total_bytes": 225033,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "sweet_fish_Fillet"
+        ]
+      },
+      "sweet_potato_chips": {
+        "count": 25,
+        "total_bytes": 271468,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Sweet potato chips"
+        ]
+      },
+      "tabolah": {
+        "count": 25,
+        "total_bytes": 297777,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "tabolah"
+        ]
+      },
+      "teramisu": {
+        "count": 25,
+        "total_bytes": 206474,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Teramisu"
+        ]
+      },
+      "teriyaki_beef": {
+        "count": 25,
+        "total_bytes": 260851,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Teriyaki_Beef"
+        ]
+      },
+      "thyme_manakish": {
+        "count": 25,
+        "total_bytes": 324402,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Thyme manakish"
+        ]
+      },
+      "tuna_sandwich": {
+        "count": 25,
+        "total_bytes": 238805,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "tuna_sandwich"
+        ]
+      },
+      "turkey_eggs": {
+        "count": 25,
+        "total_bytes": 245962,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "turkey_eggs"
+        ]
+      },
+      "turkey_roast_croissant": {
+        "count": 25,
+        "total_bytes": 187765,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Turkey_Roast_Croissant"
+        ]
+      },
+      "tuscan_chicken": {
+        "count": 25,
+        "total_bytes": 284030,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "tuscan_chicken"
+        ]
+      },
+      "unni_appam": {
+        "count": 50,
+        "total_bytes": 4884496,
+        "source_counts": {
+          "izbaiman/food-images": 50
+        },
+        "raw_labels": [
+          "unni_appam"
+        ]
+      },
+      "vegetables_chicken_lasagna": {
+        "count": 25,
+        "total_bytes": 229348,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "vegetables_chicken_lasagna"
+        ]
+      },
+      "waffle_with_fruits": {
+        "count": 25,
+        "total_bytes": 255715,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "Waffle_with_fruits"
+        ]
+      },
+      "white_boiled_rice": {
+        "count": 12,
+        "total_bytes": 40611,
+        "source_counts": {
+          "izbaiman/food-images": 12
+        },
+        "raw_labels": [
+          "white_boiled_rice"
+        ]
+      },
+      "white_shawerma": {
+        "count": 25,
+        "total_bytes": 187686,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "white_shawerma"
+        ]
+      },
+      "zukini_penna_pasta": {
+        "count": 25,
+        "total_bytes": 265145,
+        "source_counts": {
+          "izbaiman/food-images": 25
+        },
+        "raw_labels": [
+          "zukini_penna_pasta"
+        ]
+      }
+    }
+  }
+}

@@ -8,17 +8,17 @@ progress:
   requirements_total: 26
   requirements_done: 0
   phases_done: 0
-last_updated: 2026-06-03
+last_updated: 2026-06-04
 ---
 
 # STATE â€” Pakalorie FYP (v1.1 P1 Final)
 
 ## Current Position
 
-Phase: **Phase 1 - Food Database API** (implementation DONE and **verified against a live VPS Postgres**: migrated, seeded 160 rows, every endpoint smoke-tested, live-DB integration suite added. Only the public app deploy remains = CDX-005, now narrowed since the DB is already up + seeded on the VPS).
+Phase: **Phase 1 - Food Database API** (implementation DONE, live API deployed, and verified against the live VPS Postgres).
 Plan: `.planning/ROADMAP.md`
-Status: Backend on branch `cdx/p1final-foodbackend`, **verified against a live pgvector Postgres on the VPS** (127.0.0.1-only, reached via SSH tunnel). `alembic upgrade head` succeeds; seed = `foods=160, desi_v1=30, usda=130` (idempotent); all endpoints return correct real-data responses (incl. `gemini_grounded` + `local_grounded_fallback` + both 422s). `ruff` clean; `pytest` green (9 unit + 8 live-DB integration). A Gemini thinking-token truncation bug was found + fixed. Local Docker Desktop is no longer on the critical path.
-Last activity: 2026-06-03 - Claude reviewed + fixed + verified the Codex-built backend: provisioned the VPS Postgres, migrated + seeded + smoke-tested every endpoint, added the integration suite, fixed the Gemini JSON truncation, renamed `per_g`->`portion_weight_g`, unified the trigram threshold, and documented USDA-as-reference. Earlier (Codex): implemented the FastAPI scaffold, schema, seed path, endpoints, recognition, calorie engine, OpenAPI models, packaging, and tests.
+Status: Backend on branch `cdx/p1final-foodbackend`, **verified against a live pgvector Postgres on the VPS** (127.0.0.1-only, reached via SSH tunnel). `alembic upgrade head` succeeds; seed = `foods=160, desi_v1=30, usda=130` (idempotent); all endpoints return correct real-data responses (incl. `gemini_grounded` + `local_grounded_fallback` + both 422s). `ruff` clean; `pytest` green (9 unit + 8 live-DB integration). A Gemini thinking-token truncation bug was found + fixed. Local Docker Desktop is no longer on the critical path. CDX-005 API is live at `https://api.srv987636.hstgr.cloud`; public `/healthz` and `/foods/search?q=nihari` checks pass; n8n remains healthy; Postgres remains private. CDX-006 datasets are validated and `ml/` training scaffold exists; training is pending.
+Last activity: 2026-06-04 - Codex deployed the FastAPI app behind the existing VPS Traefik proxy at `https://api.srv987636.hstgr.cloud`, verified public HTTPS health, DB-backed search, n8n health, and private Postgres. Earlier in the same branch, Codex added the production API compose/runbook and validated both Kaggle datasets for CDX-006. YOLOv8 training is still pending a Colab/GPU run plus Arham's own held-out food photos.
 
 ## Accumulated Context
 
@@ -32,14 +32,14 @@ Last activity: 2026-06-03 - Claude reviewed + fixed + verified the Codex-built b
 - Codex (backend/ML) + Claude (UI/wiring/docs) split via `.handoff/`. [2026-05-07]
 
 ### Blockers / inputs needed from Arham
-- **Kaggle dataset URL(s)** for YOLOv8 (CDX-006 / Phase 3) â€” PROVIDED 2026-06-03 by Arham (two Kaggle URLs, logged in TO_CODEX CDX-006 inputs); Codex still needs to inspect/validate them (class list, per-class counts, imbalance) before training.
-- **VPS deploy access** (CDX-005 / Phase 1 deploy): SSH root or a deploy user, and a chosen API subdomain (inspect the existing n8n reverse proxy first). Codex specs the Docker/compose; Arham runs the deploy or grants access.
+- **Kaggle dataset URL(s)** for YOLOv8 (CDX-006 / Phase 3) - PROVIDED and validated. Full per-class counts are in `ml/reports/dataset_audit.md`; training is pending.
+- **VPS deploy execution** (CDX-005 / Phase 1 deploy): DONE. API base URL is `https://api.srv987636.hstgr.cloud`.
 - **Live-demo confirmation with Sir Hamza** (Arham answered "live demo + report + metrics"); plan accordingly.
 
 ### Pending todos
-- **Codex (priority order):** Retry Docker/Postgres DB smoke (`docker compose up db -d`, `alembic upgrade head`, `python -m scripts.seed_foods`) once Docker Desktop is stable; then continue CDX-005 VPS runbook/deploy prep. CDX-006 still waits on Kaggle URLs; CDX-007 remains last/minimal.
-- **Claude (Phase 5):** wire `src/lib/api.ts` to the VPS endpoints + update Results to show the real pipeline once the API is live; keep Gemini fallback. Prepare SDS material + demo.
-- **Arham:** Kaggle URL(s); VPS deploy access + subdomain; gather own food test photos (held-out YOLO test set); keep smoke-testing Expo Go.
+- **Claude (Phase 5):** wire `src/lib/api.ts` to `https://api.srv987636.hstgr.cloud` + update Results to show the real pipeline; keep Gemini fallback. Prepare SDS material + demo.
+- **Codex (priority order):** run CDX-006 Colab `yolov8n-cls` training/eval from `ml/notebooks/train_yolov8_cls.ipynb`; CDX-007 remains last/minimal.
+- **Arham:** gather own food test photos (held-out YOLO test set); keep smoke-testing Expo Go.
 
 ### Carryover from v1.0 (submitted, do not re-do)
 - Auth (Firebase JS SDK / Expo Go), Capture/Results UI, Food Recognition (Gemini stub). Captureâ†’results works today via `src/lib/gemini.ts`; food logs save to Supabase. Both stay live as the fallback until the real pipeline is proven.
