@@ -34,6 +34,16 @@ def create_app() -> FastAPI:
     app.add_exception_handler(RequestValidationError, validation_exception_handler)
     app.add_exception_handler(Exception, generic_exception_handler)
 
+    @app.get("/", tags=["health"], include_in_schema=False)
+    async def root() -> dict[str, str]:
+        # Friendly landing for anyone opening the bare API URL in a browser.
+        return {
+            "service": "pakalorie-api",
+            "status": "ok",
+            "docs": "/docs",
+            "health": "/healthz",
+        }
+
     @app.get("/healthz", tags=["health"])
     async def healthz() -> dict[str, str]:
         return {"status": "ok"}

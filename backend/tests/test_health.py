@@ -12,6 +12,16 @@ def test_healthz_returns_raw_status() -> None:
     assert response.json() == {"status": "ok"}
 
 
+def test_root_returns_service_landing() -> None:
+    client = TestClient(create_app())
+    response = client.get("/")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["service"] == "pakalorie-api"
+    assert body["docs"] == "/docs"
+
+
 def test_recognize_returns_error_envelope_when_gemini_key_missing(monkeypatch) -> None:
     # Force the no-key condition regardless of the ambient .env, so this stays
     # deterministic on machines that do have a real GEMINI_API_KEY configured.
