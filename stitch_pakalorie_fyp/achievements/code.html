@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#e9f0e7",
+                    "surface-container-low": "#eef6ec",
+                    "on-surface-variant": "#3d4a40",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#8c1520",
+                    "on-tertiary-fixed": "#261a00",
+                    "inverse-on-surface": "#ecf3ea",
+                    "secondary-container": "#ff6b6b",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-secondary-container": "#6d0010",
+                    "on-surface": "#161d18",
+                    "surface-dim": "#d5dcd3",
+                    "secondary": "#ae2f34",
+                    "tertiary": "#785900",
+                    "outline": "#6d7a6f",
+                    "on-tertiary-fixed-variant": "#5b4300",
+                    "tertiary-fixed-dim": "#fabd00",
+                    "on-secondary-fixed": "#410006",
+                    "surface-container-high": "#e3eae1",
+                    "secondary-fixed": "#ffdad8",
+                    "on-primary-fixed": "#00210f",
+                    "primary": "#006d3d",
+                    "primary-container": "#1bad66",
+                    "tertiary-fixed": "#ffdf9e",
+                    "surface-tint": "#006d3d",
+                    "on-error": "#ffffff",
+                    "tertiary-container": "#bf9000",
+                    "primary-fixed-dim": "#5cde91",
+                    "background": "#f4fbf2",
+                    "surface": "#f4fbf2",
+                    "on-primary-fixed-variant": "#00522c",
+                    "inverse-primary": "#5cde91",
+                    "outline-variant": "#bccabd",
+                    "surface-bright": "#f4fbf2",
+                    "inverse-surface": "#2b322c",
+                    "primary-fixed": "#7afbab",
+                    "surface-variant": "#dde4db",
+                    "on-primary": "#ffffff",
+                    "surface-container-highest": "#dde4db",
+                    "on-secondary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#00381d",
+                    "on-tertiary-container": "#3e2d00",
+                    "secondary-fixed-dim": "#ffb3b0",
+                    "on-background": "#161d18"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "container-padding": "24px",
+                    "section-margin": "40px",
+                    "card-gap": "16px"
+            },
+            "fontFamily": {
+                    "body-md": ["Geist Sans"],
+                    "headline-md": ["Instrument Serif"],
+                    "label-caps": ["Geist Sans"],
+                    "headline-sm": ["Instrument Serif"],
+                    "display-lg": ["Instrument Serif"],
+                    "body-lg": ["Geist Sans"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "1.2", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-sm": ["24px", {"lineHeight": "1.2", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Geist Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .jali-pattern {
+            background-image: radial-gradient(circle at 2px 2px, #dde4db 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface selection:bg-primary-container selection:text-on-primary-container min-h-screen pb-32">
+<!-- Top App Bar -->
+<header class="flex justify-between items-center px-container-padding py-4 w-full bg-background dark:bg-background sticky top-0 z-40">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional portrait of a modern, health-conscious man in soft daylight. The photography style is minimalist and high-end, featuring a clean, out-of-focus natural background that aligns with a light-mode, serene aesthetic. The lighting is diffused and flattering, emphasizing a healthy lifestyle and premium digital wellness experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLj_vK1Vb-UBXKtCHz5oOfCBaWe-5FI07tv7v0SIQvBVTY6wgK36r750n232Ie3KhgsQbJ-yht2qGcIKhgAXGvcucE9hkRhgzsl1TSjlEB6otS8CYpuepObM2i_1LHCp2xYjO08fjOO1jxKUZJYfh7tfQ0GojfYiYCw0EAVENIXu_2x7HF_YS3Spr8ZnHMaE78AOc9QqChkntC0FDqoUbzpmltFw1-Y0oobDPqvLrJPY4KYUUmY8pud4bEu9Y1GydBGERiBcpPg9V_"/>
+</div>
+<h1 class="font-headline-md text-headline-md text-on-surface dark:text-on-surface font-bold tracking-tight">Nourish</h1>
+</div>
+<div class="hover:opacity-80 transition-opacity cursor-pointer">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed text-3xl">bubble_chart</span>
+</div>
+</header>
+<main class="max-w-2xl mx-auto px-container-padding pt-8">
+<!-- Hero Section / Title -->
+<section class="mb-section-margin">
+<h2 class="font-display-lg text-display-lg text-on-surface mb-2">Your Trophies</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-md">Celebrating every healthy choice and milestone on your journey to wellness.</p>
+</section>
+<!-- Current Streak Card -->
+<section class="mb-section-margin">
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_12px_40px_rgba(0,0,0,0.04)] relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-8 opacity-5">
+<span class="material-symbols-outlined text-9xl scale-150" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</div>
+<div class="relative z-10">
+<p class="font-label-caps text-label-caps text-secondary uppercase mb-2">Ongoing Momentum</p>
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-secondary-container">14</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Day Streak</span>
+</div>
+<div class="mt-6 flex items-center gap-2">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full bg-secondary-container border-2 border-surface-container-lowest flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div class="w-8 h-8 rounded-full bg-primary-container border-2 border-surface-container-lowest"></div>
+<div class="w-8 h-8 rounded-full bg-tertiary-container border-2 border-surface-container-lowest"></div>
+</div>
+<p class="font-body-md text-body-md text-outline">You're in the top 5% this month!</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Achievement Bento Grid -->
+<section class="mb-section-margin">
+<div class="grid grid-cols-2 gap-card-gap">
+<!-- Badge 1: Protein Pathan -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_12px_40px_rgba(0,0,0,0.04)] text-center hover:scale-[0.98] transition-transform duration-200 cursor-pointer">
+<div class="w-24 h-24 mx-auto mb-4 rounded-full bg-primary-container/10 flex items-center justify-center relative">
+<div class="absolute inset-0 jali-pattern opacity-10 rounded-full"></div>
+<span class="material-symbols-outlined text-5xl text-primary-container" style="font-variation-settings: 'FILL' 1;">fitness_center</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">Protein Pathan</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Hit your protein goal 7 days in a row.</p>
+</div>
+<!-- Badge 2: Biryani Buster -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_12px_40px_rgba(0,0,0,0.04)] text-center hover:scale-[0.98] transition-transform duration-200 cursor-pointer">
+<div class="w-24 h-24 mx-auto mb-4 rounded-full bg-secondary-container/10 flex items-center justify-center relative">
+<div class="absolute inset-0 jali-pattern opacity-10 rounded-full"></div>
+<span class="material-symbols-outlined text-5xl text-secondary-container" style="font-variation-settings: 'FILL' 1;">no_meals</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">Biryani Buster</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Stayed under calories on a heavy weekend.</p>
+</div>
+<!-- Badge 3: Early Morning Masala -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_12px_40px_rgba(0,0,0,0.04)] text-center hover:scale-[0.98] transition-transform duration-200 cursor-pointer col-span-2 flex items-center gap-6 text-left">
+<div class="w-32 h-32 rounded-full bg-tertiary-container/10 flex-shrink-0 flex items-center justify-center relative">
+<div class="absolute inset-0 jali-pattern opacity-10 rounded-full"></div>
+<span class="material-symbols-outlined text-6xl text-tertiary-container" style="font-variation-settings: 'FILL' 1;">wb_sunny</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">Early Morning Masala</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Log your breakfast before 8:00 AM for 5 consecutive days.</p>
+<div class="mt-4 h-1.5 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-container w-3/5"></div>
+</div>
+<p class="mt-2 font-label-caps text-label-caps text-outline">3/5 MORNINGS COMPLETE</p>
+</div>
+</div>
+<!-- Badge 4: Fiber Fakir -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_12px_40px_rgba(0,0,0,0.04)] text-center hover:scale-[0.98] transition-transform duration-200 cursor-pointer">
+<div class="w-24 h-24 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center relative">
+<div class="absolute inset-0 jali-pattern opacity-10 rounded-full"></div>
+<span class="material-symbols-outlined text-5xl text-primary" style="font-variation-settings: 'FILL' 1;">eco</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">Fiber Fakir</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Reach 30g of daily fiber.</p>
+</div>
+<!-- Badge 5: Chai Chaser -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_12px_40px_rgba(0,0,0,0.04)] text-center hover:scale-[0.98] transition-transform duration-200 cursor-pointer grayscale opacity-40">
+<div class="w-24 h-24 mx-auto mb-4 rounded-full bg-surface-variant flex items-center justify-center relative">
+<span class="material-symbols-outlined text-5xl text-outline">lock</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">Chai Chaser</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Log 10 cups of green tea.</p>
+</div>
+</div>
+</section>
+<!-- Cultural Motif Detail -->
+<footer class="py-12 flex flex-col items-center justify-center opacity-20 select-none pointer-events-none">
+<svg class="text-outline" fill="none" height="60" viewbox="0 0 100 100" width="60" xmlns="http://www.w3.org/2000/svg">
+<path d="M50 0L61.2257 38.7743L100 50L61.2257 61.2257L50 100L38.7743 61.2257L0 50L38.7743 38.7743L50 0Z" stroke="currentColor" stroke-width="0.5"></path>
+<circle cx="50" cy="50" r="15" stroke="currentColor" stroke-width="0.5"></circle>
+</svg>
+<p class="mt-4 font-label-caps text-label-caps tracking-widest uppercase">Nourish Heritage Collection</p>
+</footer>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-8 pb-8 pt-4 bg-surface-container-lowest/80 backdrop-blur-md shadow-[0_-4px_40px_rgba(0,0,0,0.04)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">camera_enhance</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">restaurant</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed scale-110 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+</a>
+</nav>
+</body></html>

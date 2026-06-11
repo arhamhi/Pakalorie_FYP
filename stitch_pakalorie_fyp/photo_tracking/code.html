@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nourish - AI Photo Tracking</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#e9f0e7",
+                    "surface-container-low": "#eef6ec",
+                    "on-surface-variant": "#3d4a40",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#8c1520",
+                    "on-tertiary-fixed": "#261a00",
+                    "inverse-on-surface": "#ecf3ea",
+                    "secondary-container": "#ff6b6b",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-secondary-container": "#6d0010",
+                    "on-surface": "#161d18",
+                    "surface-dim": "#d5dcd3",
+                    "secondary": "#ae2f34",
+                    "tertiary": "#785900",
+                    "outline": "#6d7a6f",
+                    "on-tertiary-fixed-variant": "#5b4300",
+                    "tertiary-fixed-dim": "#fabd00",
+                    "on-secondary-fixed": "#410006",
+                    "surface-container-high": "#e3eae1",
+                    "secondary-fixed": "#ffdad8",
+                    "on-primary-fixed": "#00210f",
+                    "primary": "#006d3d",
+                    "primary-container": "#1bad66",
+                    "tertiary-fixed": "#ffdf9e",
+                    "surface-tint": "#006d3d",
+                    "on-error": "#ffffff",
+                    "tertiary-container": "#bf9000",
+                    "primary-fixed-dim": "#5cde91",
+                    "background": "#f4fbf2",
+                    "surface": "#f4fbf2",
+                    "on-primary-fixed-variant": "#00522c",
+                    "inverse-primary": "#5cde91",
+                    "outline-variant": "#bccabd",
+                    "surface-bright": "#f4fbf2",
+                    "inverse-surface": "#2b322c",
+                    "primary-fixed": "#7afbab",
+                    "surface-variant": "#dde4db",
+                    "on-primary": "#ffffff",
+                    "surface-container-highest": "#dde4db",
+                    "on-secondary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#00381d",
+                    "on-tertiary-container": "#3e2d00",
+                    "secondary-fixed-dim": "#ffb3b0",
+                    "on-background": "#161d18"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "container-padding": "24px",
+                    "section-margin": "40px",
+                    "card-gap": "16px"
+            },
+            "fontFamily": {
+                    "body-md": ["Geist Sans"],
+                    "headline-md": ["Instrument Serif"],
+                    "label-caps": ["Geist Sans"],
+                    "headline-sm": ["Instrument Serif"],
+                    "display-lg": ["Instrument Serif"],
+                    "body-lg": ["Geist Sans"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "1.2", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-sm": ["24px", {"lineHeight": "1.2", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scanning-line {
+            height: 2px;
+            background: #1bad66;
+            box-shadow: 0 0 15px #1bad66, 0 0 30px #1bad66;
+            position: absolute;
+            width: 100%;
+            top: 50%;
+            left: 0;
+            z-index: 20;
+        }
+        .jali-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l30 30-30 30L0 30z' fill='%231bad66' fill-opacity='0.05'/%3E%3C/svg%3E");
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary-container selection:text-on-primary-container overflow-hidden">
+<!-- Camera Viewport / Main Canvas -->
+<main class="relative h-screen w-full bg-black overflow-hidden">
+<!-- Live Camera Feed Simulation -->
+<img alt="Camera view of Biryani" class="absolute inset-0 w-full h-full object-cover opacity-90" data-alt="A top-down professional food photograph of a steaming plate of authentic Pakistani Biryani with long-grain basmati rice, tender meat chunks, and garnishes. The lighting is dramatic yet soft, highlighting the vibrant oranges and yellows of the rice. The scene is framed by a minimalist camera interface with thin glowing green scanning lines moving across the plate, creating a high-tech health-conscious atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2W_lNYF1sAYDx5Ll2kW5nfbYuSCcO0dYw0_Nivi_48GncjdMwb3zhY53IuaEZMsAR_VLIPZj5kkAQD7T2JCHARIcHPMNJAOE8CMxtv8Wa4g7_lUBMzE9gGkMMnlZEzBPdaI38k8NTVDuXdAQMDj18gqJ8vJfooTU14iaasG-j6aDVaW1sGAnqQijALzwBddNtYz2C3bIHr6prs2XZrQgGyqGL80UFSMGZ2A0XWooMm_be0YiF4CXDlQWDA-T3Adant6VMCYoT0xQP"/>
+<!-- Overlay Vignette -->
+<div class="absolute inset-0 bg-black/20 pointer-events-none"></div>
+<!-- Scanning Animation Effect -->
+<div class="scanning-line"></div>
+<!-- Top App Bar (Shared Component Strategy) -->
+<header class="flex justify-between items-center px-container-padding py-4 w-full fixed top-0 left-0 z-40">
+<button class="w-12 h-12 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-md text-white hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined">close</span>
+</button>
+<div class="px-4 py-1.5 rounded-full bg-black/20 backdrop-blur-md">
+<span class="font-label-caps text-label-caps text-white tracking-widest">AUTO SCAN ACTIVE</span>
+</div>
+<button class="w-12 h-12 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-md text-white hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="bubble_chart">bubble_chart</span>
+</button>
+</header>
+<!-- Floating Action Controls -->
+<div class="absolute bottom-40 left-0 w-full px-container-padding flex justify-between items-center z-30">
+<button class="flex items-center gap-2 px-6 py-3 bg-black/40 backdrop-blur-xl border border-white/10 rounded-full text-white hover:bg-black/60 transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+<span class="font-body-md">Flash</span>
+</button>
+<div class="w-20 h-20 rounded-full border-4 border-white/30 flex items-center justify-center p-1">
+<button class="w-full h-full rounded-full bg-white active:scale-90 transition-transform shadow-xl"></button>
+</div>
+<button class="flex items-center gap-2 px-6 py-3 bg-primary-container text-on-primary-container rounded-full shadow-lg hover:opacity-90 transition-opacity active:scale-95">
+<span class="material-symbols-outlined text-[20px]" data-icon="camera_enhance">camera_enhance</span>
+<span class="font-body-md font-bold">Identify</span>
+</button>
+</div>
+<!-- Bottom Panel (Identifying State) -->
+<section class="fixed bottom-0 left-0 w-full z-50 bg-surface-container-lowest rounded-t-[32px] shadow-[0_-10px_50px_rgba(0,0,0,0.1)] pb-12 pt-8 transform translate-y-0 transition-transform duration-500">
+<!-- Handle -->
+<div class="w-12 h-1.5 bg-outline-variant/30 rounded-full mx-auto mb-8"></div>
+<div class="px-container-padding">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-1">Identifying...</h2>
+<p class="font-body-md text-outline">Analyzing dish components and volume</p>
+</div>
+<!-- Pakistani-Inspired Loading Animation -->
+<div class="relative w-16 h-16 flex items-center justify-center">
+<div class="absolute inset-0 border-2 border-primary-container/20 rounded-full"></div>
+<div class="absolute inset-0 border-t-2 border-primary-container rounded-full animate-spin"></div>
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="restaurant" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+</div>
+</div>
+<!-- Analysis Bento Grid -->
+<div class="grid grid-cols-2 gap-card-gap">
+<!-- Predicted Item Card -->
+<div class="col-span-2 p-6 bg-surface-container-low rounded-xl border border-outline-variant/10 relative overflow-hidden">
+<div class="jali-pattern absolute inset-0 opacity-10"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-4">
+<span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-bold tracking-wider uppercase">High Confidence</span>
+<span class="font-headline-sm text-headline-sm text-primary">640 kcal</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Chicken Biryani</h3>
+<p class="font-body-md text-outline mt-1 italic">Basmati rice, Spiced Chicken, Saffron</p>
+</div>
+</div>
+<!-- Macro Indicators -->
+<div class="p-4 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.04)] flex flex-col gap-1">
+<span class="font-label-caps text-label-caps text-outline">PROTEIN</span>
+<div class="flex items-end gap-1">
+<span class="font-headline-sm text-headline-sm text-on-surface">32g</span>
+<span class="font-body-md text-primary mb-1">▲</span>
+</div>
+</div>
+<div class="p-4 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.04)] flex flex-col gap-1">
+<span class="font-label-caps text-label-caps text-outline">CARBS</span>
+<div class="flex items-end gap-1">
+<span class="font-headline-sm text-headline-sm text-on-surface">84g</span>
+</div>
+</div>
+</div>
+<div class="mt-8">
+<button class="w-full py-4 bg-primary text-on-primary rounded-xl font-body-md font-bold text-lg hover:opacity-95 transition-opacity active:scale-[0.98] duration-150">
+                        Confirm &amp; Log Entry
+                    </button>
+<button class="w-full py-4 mt-2 text-outline font-body-md hover:text-on-surface transition-colors">
+                        Edit Details
+                    </button>
+</div>
+</div>
+</section>
+<!-- Bottom Navigation Bar (Shared Component Strategy) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-8 pb-8 pt-4 bg-surface-container-lowest/80 backdrop-blur-md shadow-[0_-4px_40px_rgba(0,0,0,0.04)] rounded-t-xl hidden">
+<!-- Hidden by default as per 'Transactional/Focused' rule, but included for system integrity -->
+<div class="flex flex-col items-center justify-center text-outline"><span class="material-symbols-outlined" data-icon="dashboard">dashboard</span></div>
+<div class="flex flex-col items-center justify-center text-primary scale-110"><span class="material-symbols-outlined" data-icon="camera_enhance" style="font-variation-settings: 'FILL' 1;">camera_enhance</span></div>
+<div class="flex flex-col items-center justify-center text-outline"><span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span></div>
+<div class="flex flex-col items-center justify-center text-outline"><span class="material-symbols-outlined" data-icon="restaurant">restaurant</span></div>
+<div class="flex flex-col items-center justify-center text-outline"><span class="material-symbols-outlined" data-icon="person">person</span></div>
+</nav>
+</main>
+<!-- Cultural Motif Watermark -->
+<div class="fixed -bottom-20 -right-20 w-80 h-80 opacity-[0.03] pointer-events-none z-0">
+<svg class="text-on-surface" fill="none" stroke="currentColor" viewbox="0 0 100 100">
+<path d="M50 0L60 40L100 50L60 60L50 100L40 60L0 50L40 40Z" stroke-width="0.5"></path>
+<circle cx="50" cy="50" r="30" stroke-width="0.5"></circle>
+</svg>
+</div>
+</body></html>
