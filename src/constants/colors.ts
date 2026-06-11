@@ -46,10 +46,30 @@ export const Colors = {
 export type AccentColor = keyof typeof Colors.accent;
 export type ThemeMode = 'light' | 'dark';
 
+/**
+ * Structural shape shared by `Colors.light` and `Colors.dark`. Use this for
+ * anything that consumes a resolved theme palette (e.g. `useTheme().colors`)
+ * so both palettes are assignable.
+ */
+export interface ThemeColors {
+  surface: {
+    primary: string;
+    secondary: string;
+    tertiary: string;
+  };
+  text: {
+    primary: string;
+    secondary: string;
+    tertiary: string;
+  };
+  border: string;
+  shadow: string;
+}
+
 export const getAccentColor = (accent: AccentColor): string => {
   return Colors.accent[accent] || Colors.accent.green;
 };
 
-export const getThemeColors = (theme: ThemeMode) => {
+export const getThemeColors = (theme: ThemeMode): ThemeColors => {
   return theme === 'dark' ? Colors.dark : Colors.light;
 };

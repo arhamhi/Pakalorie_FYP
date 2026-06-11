@@ -7,7 +7,7 @@ import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useLanguage } from '../../src/contexts/LanguageContext';
 import { Card, Button } from '../../src/components/ui';
-import { Colors, AccentColor } from '../../src/constants/colors';
+import { Colors, AccentColor, ThemeColors } from '../../src/constants/colors';
 import { calculateDailyTarget } from '../../src/constants/nutrition';
 import { getHydrationGoal, setHydrationGoal, HYDRATION_DEFAULT_GOAL } from '../../src/lib/preferences';
 import * as Haptics from 'expo-haptics';
@@ -632,7 +632,7 @@ const InputRow = ({
   value: string;
   onChangeText: (v: string) => void;
   keyboardType?: 'default' | 'numeric';
-  colors: typeof Colors.dark;
+  colors: ThemeColors;
   theme?: 'light' | 'dark';
 }) => (
   <View

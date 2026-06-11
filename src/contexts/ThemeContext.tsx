@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useColorScheme } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Colors, AccentColor, ThemeMode, getThemeColors } from '../constants/colors';
+import { Colors, AccentColor, ThemeMode, ThemeColors, getThemeColors } from '../constants/colors';
 
 interface ThemeContextType {
   theme: ThemeMode;
   accentColor: AccentColor;
-  colors: typeof Colors.dark;
+  colors: ThemeColors;
   accent: string;
   setTheme: (theme: ThemeMode) => Promise<void>;
   setAccentColor: (color: AccentColor) => Promise<void>;
