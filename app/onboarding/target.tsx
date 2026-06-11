@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '../../src/contexts/ThemeContext';
+import { Colors } from '../../src/constants/colors';
 import { useOnboarding } from '../../src/contexts/OnboardingContext';
 import { Button, ProgressRing } from '../../src/components/ui';
 import { calculateDailyTarget, calculateMacros, GOALS } from '../../src/constants/nutrition';
@@ -152,7 +153,7 @@ export default function TargetScreen() {
               style={{
                 fontFamily: 'IBMPlexMono_500Medium',
                 fontSize: 14,
-                color: goalModifier < 0 ? '#D32F2F' : accent,
+                color: goalModifier < 0 ? Colors.system.error : accent,
               }}
             >
               {goalModifier > 0 ? '+' : ''}

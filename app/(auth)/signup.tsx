@@ -24,6 +24,7 @@ import {
 } from '../../src/components/auth/AuthFormPrimitives';
 import { Type } from '../../src/constants/fonts';
 import { Spacing } from '../../src/constants/spacing';
+import { Colors } from '../../src/constants/colors';
 import type { AuthError } from '../../src/types/auth';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -162,7 +163,7 @@ export default function SignupScreen() {
             <Text
               style={{
                 ...Type.bodySm,
-                color: '#D32F2F',
+                color: Colors.system.error,
                 marginTop: Spacing.xs,
                 marginBottom: Spacing.sm,
                 textAlign: 'center',

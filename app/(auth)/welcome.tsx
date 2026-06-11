@@ -3,7 +3,7 @@ import { View, Text, Pressable, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useTheme } from '../../src/contexts/ThemeContext';
-import { Type } from '../../src/constants/fonts';
+import { Type, FontFamily } from '../../src/constants/fonts';
 import { Spacing, Radius } from '../../src/constants/spacing';
 
 /**
@@ -88,7 +88,7 @@ export default function WelcomeScreen() {
               marginBottom: Spacing.sm,
             })}
           >
-            <Text style={{ ...Type.bodyLg, color: '#FFFFFF', fontFamily: 'Geist_600SemiBold' }}>
+            <Text style={{ ...Type.bodyLg, color: '#FFFFFF', fontFamily: FontFamily.geistSemiBold }}>
               Create account
             </Text>
           </Pressable>
@@ -109,7 +109,7 @@ export default function WelcomeScreen() {
               style={{
                 ...Type.bodyLg,
                 color: colors.text.primary,
-                fontFamily: 'Geist_600SemiBold',
+                fontFamily: FontFamily.geistSemiBold,
               }}
             >
               Sign in
