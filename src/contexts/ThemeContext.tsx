@@ -20,7 +20,7 @@ const ACCENT_KEY = '@pakalorie_accent';
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const systemColorScheme = useColorScheme();
-  const [theme, setThemeState] = useState<ThemeMode>('dark');
+  const [theme, setThemeState] = useState<ThemeMode>('light');
   const [accentColor, setAccentColorState] = useState<AccentColor>('green');
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -36,8 +36,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         if (savedTheme) {
           setThemeState(savedTheme as ThemeMode);
         } else {
-          // Default to dark mode as per design spec
-          setThemeState('dark');
+          // Light mode only for P1 (docs/DESIGN.md); dark polish is deferred
+          setThemeState('light');
         }
 
         if (savedAccent) {
