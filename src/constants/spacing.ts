@@ -22,9 +22,9 @@ export const Spacing = {
 export type SpacingToken = keyof typeof Spacing;
 
 export const Radius = {
-  card: 16,
-  button: 12,
-  input: 12,
+  card: 24,   // Stitch: large, soft "Apple-style" card corners
+  button: 12, // Legacy ui/Button keeps 12; new CTAs use `pill`
+  input: 16,  // Stitch: soft-fill inputs
   pill: 999,
 } as const;
 

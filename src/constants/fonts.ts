@@ -25,6 +25,7 @@ export interface TypeStyle {
   fontFamily: string;
   fontSize: number;
   lineHeight: number;
+  letterSpacing?: number;
 }
 
 /**
@@ -43,7 +44,11 @@ export const Type: Record<
   | 'bodyMd'
   | 'bodySm'
   | 'caption'
-  | 'numericLg',
+  | 'numericLg'
+  | 'displaySerifLg'
+  | 'headlineSerifMd'
+  | 'headlineSerifSm'
+  | 'labelCaps',
   TypeStyle
 > = {
   displayHero: { fontFamily: FontFamily.instrumentSerif, fontSize: 64, lineHeight: 68 },
@@ -56,6 +61,14 @@ export const Type: Record<
   bodySm: { fontFamily: FontFamily.geistRegular, fontSize: 12, lineHeight: 16 },
   caption: { fontFamily: FontFamily.geistMedium, fontSize: 11, lineHeight: 14 },
   numericLg: { fontFamily: FontFamily.instrumentSerif, fontSize: 32, lineHeight: 36 },
+  // Stitch additions (DESIGN.md §typography) — serif headings + caps labels.
+  // Additive only: existing tokens keep their metrics so legacy layouts
+  // don't clip; only restyled screens consume these.
+  displaySerifLg: { fontFamily: FontFamily.instrumentSerif, fontSize: 48, lineHeight: 53 },
+  headlineSerifMd: { fontFamily: FontFamily.instrumentSerif, fontSize: 32, lineHeight: 38 },
+  headlineSerifSm: { fontFamily: FontFamily.instrumentSerif, fontSize: 24, lineHeight: 29 },
+  // Consumers add textTransform: 'uppercase'.
+  labelCaps: { fontFamily: FontFamily.geistSemiBold, fontSize: 12, lineHeight: 14, letterSpacing: 0.6 },
 };
 
 export type TypeToken = keyof typeof Type;
