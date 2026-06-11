@@ -1,11 +1,28 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, RefreshControl, Dimensions, NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import {
+  BellIcon,
+  SparkleIcon,
+  ChatTeardropDotsIcon,
+  TrendUpIcon,
+  CaretRightIcon,
+  DropIcon,
+  MinusIcon,
+  PlusIcon,
+  ForkKnifeIcon,
+  StarIcon,
+  LockIcon,
+  MagnifyingGlassIcon,
+  CameraIcon,
+  PencilSimpleIcon,
+} from 'phosphor-react-native';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Svg, { Path, Rect } from 'react-native-svg';
 import { useTheme } from '../../src/contexts/ThemeContext';
+import { Colors } from '../../src/constants/colors';
+import { Type, FontFamily } from '../../src/constants/fonts';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useLanguage } from '../../src/contexts/LanguageContext';
 import { supabase } from '../../src/lib/supabase';
@@ -17,6 +34,9 @@ import { getHydrationGoal, HYDRATION_DEFAULT_GOAL } from '../../src/lib/preferen
 import { aggregateCalories, buildDateRange, normalizeSeries } from '../../src/lib/analytics';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+// Hydration keeps its own blue — water is the one surface that isn't the
+// health-green accent (matches the Stitch dashboard mockup).
+const HYDRATION_BLUE = '#4FC3F7';
 const CARD_PADDING = 20;
 const CARD_GAP = 16;
 const CARD_WIDTH = SCREEN_WIDTH - (CARD_PADDING * 2); // Full width minus padding
@@ -308,7 +328,7 @@ export default function HomeScreen() {
           <View style={{ flex: 1 }}>
             <Text
               style={{
-                fontFamily: 'PlusJakartaSans_400Regular',
+                fontFamily: FontFamily.geistRegular,
                 fontSize: 14,
                 color: colors.text.secondary,
               }}
@@ -321,7 +341,7 @@ export default function HomeScreen() {
             </Text>
             <Text
               style={{
-                fontFamily: 'PlusJakartaSans_600SemiBold',
+                fontFamily: FontFamily.geistSemiBold,
                 fontSize: 20,
                 color: colors.text.primary,
                 marginTop: 4,
@@ -342,7 +362,7 @@ export default function HomeScreen() {
               alignItems: 'center',
             }}
           >
-            <MaterialIcons name="notifications-none" size={24} color={colors.text.primary} />
+            <BellIcon size={24} color={colors.text.primary} weight="regular" />
           </TouchableOpacity>
         </View>
 
@@ -381,7 +401,7 @@ export default function HomeScreen() {
                   <View style={{ alignItems: 'center' }}>
                     <Text
                       style={{
-                        fontFamily: 'IBMPlexMono_700Bold',
+                        fontFamily: FontFamily.instrumentSerif,
                         fontSize: 32,
                         color: colors.text.primary,
                       }}
@@ -390,7 +410,7 @@ export default function HomeScreen() {
                     </Text>
                     <Text
                       style={{
-                        fontFamily: 'PlusJakartaSans_600SemiBold',
+                        fontFamily: FontFamily.geistSemiBold,
                         fontSize: 16,
                         color: colors.text.tertiary,
                         marginTop: 4,
@@ -409,7 +429,7 @@ export default function HomeScreen() {
                   <View style={{ alignItems: 'center' }}>
                     <Text
                       style={{
-                        fontFamily: 'IBMPlexMono_700Bold',
+                        fontFamily: FontFamily.instrumentSerif,
                         fontSize: 32,
                         color: accent,
                       }}
@@ -418,7 +438,7 @@ export default function HomeScreen() {
                     </Text>
                     <Text
                       style={{
-                        fontFamily: 'PlusJakartaSans_600SemiBold',
+                        fontFamily: FontFamily.geistSemiBold,
                         fontSize: 16,
                         color: colors.text.tertiary,
                         marginTop: 4,
@@ -436,19 +456,19 @@ export default function HomeScreen() {
                   label="Protein"
                   current={Math.round(totalProtein)}
                   target={targetMacros.protein}
-                  color="#FF6B6B"
+                  color={Colors.accent.coral}
                 />
                 <MacroBar
                   label="Carbs"
                   current={Math.round(totalCarbs)}
                   target={targetMacros.carbs}
-                  color="#FFC107"
+                  color={Colors.accent.gold}
                 />
                 <MacroBar
                   label="Fat"
                   current={Math.round(totalFat)}
                   target={targetMacros.fat}
-                  color="#1BAD66"
+                  color={Colors.accent.green}
                 />
               </View>
             </Card>
@@ -468,11 +488,11 @@ export default function HomeScreen() {
                       marginRight: 16,
                     }}
                   >
-                    <MaterialIcons name="auto-awesome" size={28} color={accent} />
+                    <SparkleIcon size={28} color={accent} weight="duotone" />
                   </View>
                   <Text
                     style={{
-                      fontFamily: 'PlusJakartaSans_700Bold',
+                      fontFamily: FontFamily.geistBold,
                       fontSize: 24,
                       color: colors.text.primary,
                     }}
@@ -482,7 +502,7 @@ export default function HomeScreen() {
                 </View>
                 <Text
                   style={{
-                    fontFamily: 'PlusJakartaSans_600SemiBold',
+                    fontFamily: FontFamily.geistSemiBold,
                     fontSize: 28,
                     color: colors.text.primary,
                     lineHeight: 42,
@@ -507,12 +527,12 @@ export default function HomeScreen() {
                   borderRadius: 16,
                 }}
               >
-                <MaterialIcons name="chat" size={24} color="#fff" />
+                <ChatTeardropDotsIcon size={24} color={Colors.onAccent} weight="fill" />
                 <Text
                   style={{
-                    fontFamily: 'PlusJakartaSans_700Bold',
+                    fontFamily: FontFamily.geistBold,
                     fontSize: 18,
-                    color: '#fff',
+                    color: Colors.onAccent,
                     marginLeft: 12,
                   }}
                 >
@@ -540,12 +560,12 @@ export default function HomeScreen() {
                         marginRight: 16,
                       }}
                     >
-                      <MaterialIcons name="trending-up" size={28} color={accent} />
+                      <TrendUpIcon size={28} color={accent} weight="duotone" />
                     </View>
                     <View>
                       <Text
                         style={{
-                          fontFamily: 'PlusJakartaSans_700Bold',
+                          fontFamily: FontFamily.geistBold,
                           fontSize: 24,
                           color: colors.text.primary,
                         }}
@@ -554,7 +574,7 @@ export default function HomeScreen() {
                       </Text>
                       <Text
                         style={{
-                          fontFamily: 'IBMPlexMono_600SemiBold',
+                          fontFamily: FontFamily.instrumentSerif,
                           fontSize: 18,
                           color: colors.text.secondary,
                           marginTop: 4,
@@ -590,7 +610,7 @@ export default function HomeScreen() {
                       <Text
                         key={date}
                         style={{
-                          fontFamily: 'PlusJakartaSans_600SemiBold',
+                          fontFamily: FontFamily.geistSemiBold,
                           fontSize: 14,
                           color: colors.text.tertiary,
                         }}
@@ -612,7 +632,7 @@ export default function HomeScreen() {
                 >
                   <Text
                     style={{
-                      fontFamily: 'PlusJakartaSans_600SemiBold',
+                      fontFamily: FontFamily.geistSemiBold,
                       fontSize: 17,
                       color: accent,
                       flex: 1,
@@ -620,7 +640,7 @@ export default function HomeScreen() {
                   >
                     View detailed trends
                   </Text>
-                  <MaterialIcons name="chevron-right" size={24} color={accent} />
+                  <CaretRightIcon size={24} color={accent} weight="regular" />
                 </View>
               </Card>
             </TouchableOpacity>
@@ -668,17 +688,17 @@ export default function HomeScreen() {
                   width: 48,
                   height: 48,
                   borderRadius: 24,
-                  backgroundColor: '#4FC3F7' + '20',
+                  backgroundColor: HYDRATION_BLUE + '20',
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}
               >
-                <MaterialIcons name="water-drop" size={26} color="#4FC3F7" />
+                <DropIcon size={26} color={HYDRATION_BLUE} weight="duotone" />
               </View>
               <View style={{ marginLeft: 14 }}>
                 <Text
                   style={{
-                    fontFamily: 'PlusJakartaSans_700Bold',
+                    fontFamily: FontFamily.geistBold,
                     fontSize: 18,
                     color: colors.text.primary,
                   }}
@@ -687,7 +707,7 @@ export default function HomeScreen() {
                 </Text>
                 <Text
                   style={{
-                    fontFamily: 'PlusJakartaSans_500Medium',
+                    fontFamily: FontFamily.geistMedium,
                     fontSize: 14,
                     color: colors.text.secondary,
                     marginTop: 2,
@@ -713,11 +733,11 @@ export default function HomeScreen() {
                   alignItems: 'center',
                 }}
               >
-                <MaterialIcons name="remove" size={22} color={waterCount > 0 ? colors.text.primary : colors.text.tertiary} />
+                <MinusIcon size={22} color={waterCount > 0 ? colors.text.primary : colors.text.tertiary} weight="bold" />
               </TouchableOpacity>
               <Text
                 style={{
-                  fontFamily: 'IBMPlexMono_700Bold',
+                  fontFamily: FontFamily.instrumentSerif,
                   fontSize: 24,
                   color: colors.text.primary,
                   minWidth: 60,
@@ -735,12 +755,12 @@ export default function HomeScreen() {
                   width: 48,
                   height: 48,
                   borderRadius: 24,
-                  backgroundColor: '#4FC3F7',
+                  backgroundColor: HYDRATION_BLUE,
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}
               >
-                <MaterialIcons name="add" size={26} color="#fff" />
+                <PlusIcon size={26} color={Colors.onAccent} weight="bold" />
               </TouchableOpacity>
             </View>
           </View>
@@ -757,7 +777,7 @@ export default function HomeScreen() {
               style={{
                 height: '100%',
                 width: `${Math.min(waterProgress, 100)}%`,
-                backgroundColor: '#4FC3F7',
+                backgroundColor: HYDRATION_BLUE,
                 borderRadius: 5,
               }}
             />
@@ -775,19 +795,19 @@ export default function HomeScreen() {
                       width: 48,
                       height: 48,
                       borderRadius: 24,
-                      backgroundColor: '#FFC107' + '20',
+                      backgroundColor: Colors.accent.gold + '20',
                       justifyContent: 'center',
                       alignItems: 'center',
                       marginRight: 14,
                     }}
                   >
-                    <MaterialIcons name="restaurant" size={24} color="#FFC107" />
+                    <ForkKnifeIcon size={24} color={Colors.accent.gold} weight="duotone" />
                   </View>
                   <View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                       <Text
                         style={{
-                          fontFamily: 'PlusJakartaSans_700Bold',
+                          fontFamily: FontFamily.geistBold,
                           fontSize: 18,
                           color: colors.text.primary,
                         }}
@@ -796,7 +816,7 @@ export default function HomeScreen() {
                       </Text>
                       <View
                         style={{
-                          backgroundColor: '#FFC107',
+                          backgroundColor: Colors.accent.gold,
                           paddingHorizontal: 6,
                           paddingVertical: 2,
                           borderRadius: 4,
@@ -805,9 +825,9 @@ export default function HomeScreen() {
                       >
                         <Text
                           style={{
-                            fontFamily: 'PlusJakartaSans_600SemiBold',
+                            fontFamily: FontFamily.geistSemiBold,
                             fontSize: 10,
-                            color: '#121212',
+                            color: Colors.ink,
                           }}
                         >
                           PRO
@@ -816,7 +836,7 @@ export default function HomeScreen() {
                     </View>
                     <Text
                       style={{
-                        fontFamily: 'PlusJakartaSans_500Medium',
+                        fontFamily: FontFamily.geistMedium,
                         fontSize: 14,
                         color: colors.text.secondary,
                         marginTop: 2,
@@ -826,13 +846,13 @@ export default function HomeScreen() {
                     </Text>
                   </View>
                 </View>
-                <MaterialIcons name="chevron-right" size={24} color="#FFC107" />
+                <CaretRightIcon size={24} color={Colors.accent.gold} weight="regular" />
               </View>
             </Card>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity onPress={() => router.push('/onboarding/paywall')} activeOpacity={0.8}>
-            <Card style={{ marginBottom: 16, borderWidth: 1, borderColor: '#FFC107' + '40' }}>
+            <Card style={{ marginBottom: 16, borderWidth: 1, borderColor: Colors.accent.gold + '40' }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <View
@@ -840,18 +860,18 @@ export default function HomeScreen() {
                       width: 48,
                       height: 48,
                       borderRadius: 24,
-                      backgroundColor: '#FFC107' + '10',
+                      backgroundColor: Colors.accent.gold + '10',
                       justifyContent: 'center',
                       alignItems: 'center',
                       marginRight: 14,
                     }}
                   >
-                    <MaterialIcons name="star" size={24} color="#FFC107" />
+                    <StarIcon size={24} color={Colors.accent.gold} weight="fill" />
                   </View>
                   <View>
                     <Text
                       style={{
-                        fontFamily: 'PlusJakartaSans_700Bold',
+                        fontFamily: FontFamily.geistBold,
                         fontSize: 16,
                         color: colors.text.primary,
                       }}
@@ -860,7 +880,7 @@ export default function HomeScreen() {
                     </Text>
                     <Text
                       style={{
-                        fontFamily: 'PlusJakartaSans_400Regular',
+                        fontFamily: FontFamily.geistRegular,
                         fontSize: 13,
                         color: colors.text.secondary,
                         marginTop: 2,
@@ -870,7 +890,7 @@ export default function HomeScreen() {
                     </Text>
                   </View>
                 </View>
-                <MaterialIcons name="lock" size={20} color="#FFC107" />
+                <LockIcon size={20} color={Colors.accent.gold} weight="fill" />
               </View>
             </Card>
           </TouchableOpacity>
@@ -892,12 +912,12 @@ export default function HomeScreen() {
                     marginRight: 14,
                   }}
                 >
-                  <MaterialIcons name="search" size={24} color={accent} />
+                  <MagnifyingGlassIcon size={24} color={accent} weight="duotone" />
                 </View>
                 <View>
                   <Text
                     style={{
-                      fontFamily: 'PlusJakartaSans_700Bold',
+                      fontFamily: FontFamily.geistBold,
                       fontSize: 18,
                       color: colors.text.primary,
                     }}
@@ -906,7 +926,7 @@ export default function HomeScreen() {
                   </Text>
                   <Text
                     style={{
-                      fontFamily: 'PlusJakartaSans_500Medium',
+                      fontFamily: FontFamily.geistMedium,
                       fontSize: 14,
                       color: colors.text.secondary,
                       marginTop: 2,
@@ -916,7 +936,7 @@ export default function HomeScreen() {
                   </Text>
                 </View>
               </View>
-              <MaterialIcons name="chevron-right" size={24} color={colors.text.tertiary} />
+              <CaretRightIcon size={24} color={colors.text.tertiary} weight="regular" />
             </View>
           </Card>
         </TouchableOpacity>
@@ -926,7 +946,7 @@ export default function HomeScreen() {
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
             <Text
               style={{
-                fontFamily: 'PlusJakartaSans_600SemiBold',
+                fontFamily: FontFamily.geistSemiBold,
                 fontSize: 18,
                 color: colors.text.primary,
               }}
@@ -936,7 +956,7 @@ export default function HomeScreen() {
             <TouchableOpacity onPress={() => router.push('/(tabs)/calendar-log')}>
               <Text
                 style={{
-                  fontFamily: 'PlusJakartaSans_500Medium',
+                  fontFamily: FontFamily.geistMedium,
                   fontSize: 14,
                   color: accent,
                 }}
@@ -959,7 +979,7 @@ export default function HomeScreen() {
                   <View style={{ flex: 1 }}>
                     <Text
                       style={{
-                        fontFamily: 'PlusJakartaSans_500Medium',
+                        fontFamily: FontFamily.geistMedium,
                         fontSize: 15,
                         color: colors.text.primary,
                       }}
@@ -969,7 +989,7 @@ export default function HomeScreen() {
                     </Text>
                     <Text
                       style={{
-                        fontFamily: 'PlusJakartaSans_400Regular',
+                        fontFamily: FontFamily.geistRegular,
                         fontSize: 13,
                         color: colors.text.tertiary,
                         textTransform: 'capitalize',
@@ -983,7 +1003,7 @@ export default function HomeScreen() {
                   </View>
                   <Text
                     style={{
-                      fontFamily: 'IBMPlexMono_600SemiBold',
+                      fontFamily: FontFamily.instrumentSerif,
                       fontSize: 16,
                       color: accent,
                     }}
@@ -995,10 +1015,10 @@ export default function HomeScreen() {
             ))
           ) : (
             <Card style={{ alignItems: 'center', paddingVertical: 32 }}>
-              <MaterialIcons name="restaurant" size={40} color={colors.text.tertiary} />
+              <ForkKnifeIcon size={40} color={colors.text.tertiary} weight="regular" />
               <Text
                 style={{
-                  fontFamily: 'PlusJakartaSans_500Medium',
+                  fontFamily: FontFamily.geistMedium,
                   fontSize: 16,
                   color: colors.text.secondary,
                   marginTop: 12,
@@ -1008,7 +1028,7 @@ export default function HomeScreen() {
               </Text>
               <Text
                 style={{
-                  fontFamily: 'PlusJakartaSans_400Regular',
+                  fontFamily: FontFamily.geistRegular,
                   fontSize: 14,
                   color: colors.text.tertiary,
                   marginTop: 4,
