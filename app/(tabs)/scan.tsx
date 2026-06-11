@@ -43,6 +43,7 @@ import {
   type GroundedMeta,
 } from '../../src/lib/api';
 import { FOOD_MODIFIERS } from '../../src/constants/nutrition';
+import { Elevation } from '../../src/constants/colors';
 import { Type, FontFamily } from '../../src/constants/fonts';
 import { Spacing, Radius } from '../../src/constants/spacing';
 
@@ -566,8 +567,7 @@ export default function ScanScreen() {
           style={{
             backgroundColor: colors.surface.secondary,
             borderRadius: Radius.card,
-            borderWidth: 1,
-            borderColor: colors.surface.tertiary,
+            ...Elevation.ambient,
             padding: Spacing.lg,
             marginBottom: Spacing.lg,
           }}
@@ -713,8 +713,7 @@ export default function ScanScreen() {
             style={{
               backgroundColor: colors.surface.secondary,
               borderRadius: Radius.card,
-              borderWidth: 1,
-              borderColor: colors.surface.tertiary,
+              ...Elevation.ambient,
               padding: Spacing.md,
               marginBottom: Spacing.lg,
             }}
@@ -912,10 +911,8 @@ export default function ScanScreen() {
           style={{
             ...Type.bodyLg,
             color: colors.text.primary,
-            backgroundColor: colors.surface.primary,
+            backgroundColor: colors.surface.tertiary,
             borderRadius: Radius.input,
-            borderWidth: 1,
-            borderColor: colors.surface.tertiary,
             padding: Spacing.md,
             minHeight: 84,
             textAlignVertical: 'top',
@@ -987,9 +984,8 @@ function CameraPermissionCard({ onGrant, canAskAgain }: PermissionCardProps) {
         style={{
           width: '100%',
           backgroundColor: colors.surface.secondary,
-          borderWidth: 1,
-          borderColor: colors.surface.tertiary,
           borderRadius: Radius.card,
+          ...Elevation.ambient,
           padding: Spacing.xl,
           alignItems: 'center',
         }}
@@ -1145,8 +1141,7 @@ function GroundedSourceCard({ grounded, accent, colors }: GroundedSourceCardProp
       style={{
         backgroundColor: colors.surface.secondary,
         borderRadius: Radius.card,
-        borderWidth: 1,
-        borderColor: colors.surface.tertiary,
+        ...Elevation.ambient,
         padding: Spacing.md,
         marginBottom: Spacing.lg,
       }}
@@ -1228,9 +1223,8 @@ function MacroCard({ label, value, colors }: MacroCardProps) {
       style={{
         flex: 1,
         backgroundColor: colors.surface.secondary,
-        borderWidth: 1,
-        borderColor: colors.surface.tertiary,
         borderRadius: Radius.card,
+        ...Elevation.ambient,
         paddingVertical: Spacing.sm,
         paddingHorizontal: Spacing.xs,
         alignItems: 'center',
@@ -1322,7 +1316,7 @@ function PrimaryButton({ label, onPress, loading, disabled, flex }: PrimaryButto
         flex: flex ? 1 : undefined,
         backgroundColor: accent,
         paddingVertical: Spacing.md,
-        borderRadius: Radius.button,
+        borderRadius: Radius.pill,
         alignItems: 'center',
         justifyContent: 'center',
         opacity: isInactive ? 0.4 : pressed ? 0.9 : 1,
@@ -1355,7 +1349,7 @@ function SecondaryButton({ label, onPress, disabled, flex }: SecondaryButtonProp
       style={({ pressed }) => ({
         flex: flex ? 1 : undefined,
         paddingVertical: Spacing.md,
-        borderRadius: Radius.button,
+        borderRadius: Radius.pill,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'transparent',
