@@ -6,6 +6,7 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import { useTheme } from '../../contexts/ThemeContext';
+import { FontFamily } from '../../constants/fonts';
 
 interface MacroBarProps {
   label: string;
@@ -51,7 +52,7 @@ export const MacroBar: React.FC<MacroBarProps> = ({
       >
         <Text
           style={{
-            fontFamily: 'PlusJakartaSans_500Medium',
+            fontFamily: FontFamily.geistMedium,
             fontSize: 14,
             color: colors.text.secondary,
           }}
@@ -60,7 +61,7 @@ export const MacroBar: React.FC<MacroBarProps> = ({
         </Text>
         <Text
           style={{
-            fontFamily: 'IBMPlexMono_500Medium',
+            fontFamily: FontFamily.geistMedium,
             fontSize: 14,
             color: colors.text.primary,
           }}

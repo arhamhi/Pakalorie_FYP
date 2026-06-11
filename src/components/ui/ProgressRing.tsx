@@ -8,6 +8,8 @@ import Animated, {
   useDerivedValue,
 } from 'react-native-reanimated';
 import { useTheme } from '../../contexts/ThemeContext';
+import { Colors } from '../../constants/colors';
+import { FontFamily } from '../../constants/fonts';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -49,7 +51,7 @@ export const ProgressRing: React.FC<ProgressRingProps> = ({
   });
 
   const getProgressColor = () => {
-    if (progress >= 100) return '#D32F2F'; // Exceeded - show error color
+    if (progress >= 100) return Colors.system.error; // Exceeded target
     return accent;
   };
 
@@ -90,7 +92,7 @@ export const ProgressRing: React.FC<ProgressRingProps> = ({
         {value !== undefined && (
           <Text
             style={{
-              fontFamily: 'IBMPlexMono_700Bold',
+              fontFamily: FontFamily.instrumentSerif,
               fontSize: size * 0.2,
               color: colors.text.primary,
             }}
@@ -101,8 +103,10 @@ export const ProgressRing: React.FC<ProgressRingProps> = ({
         {unit && (
           <Text
             style={{
-              fontFamily: 'PlusJakartaSans_400Regular',
-              fontSize: size * 0.08,
+              fontFamily: FontFamily.geistSemiBold,
+              fontSize: size * 0.065,
+              letterSpacing: 1,
+              textTransform: 'uppercase',
               color: colors.text.tertiary,
               marginTop: 2,
             }}
@@ -113,7 +117,7 @@ export const ProgressRing: React.FC<ProgressRingProps> = ({
         {showPercentage && (
           <Text
             style={{
-              fontFamily: 'IBMPlexMono_700Bold',
+              fontFamily: FontFamily.instrumentSerif,
               fontSize: size * 0.15,
               color: colors.text.primary,
             }}
@@ -124,7 +128,7 @@ export const ProgressRing: React.FC<ProgressRingProps> = ({
         {label && (
           <Text
             style={{
-              fontFamily: 'PlusJakartaSans_400Regular',
+              fontFamily: FontFamily.geistRegular,
               fontSize: size * 0.07,
               color: colors.text.secondary,
               marginTop: 4,
