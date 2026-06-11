@@ -975,7 +975,10 @@ export default function HomeScreen() {
                         textTransform: 'capitalize',
                       }}
                     >
-                      {log.meal_type} • {new Date(log.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+                      {log.meal_type}
+                      {log.created_at
+                        ? ` • ${new Date(log.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`
+                        : ''}
                     </Text>
                   </View>
                   <Text
