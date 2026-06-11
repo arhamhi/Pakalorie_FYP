@@ -321,6 +321,8 @@ export default function ScanScreen() {
             <Pressable
               onPress={() => router.back()}
               hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel="Close scanner"
               style={({ pressed }) => ({
                 width: 40,
                 height: 40,
@@ -367,6 +369,8 @@ export default function ScanScreen() {
               <Pressable
                 onPress={pickImage}
                 hitSlop={6}
+                accessibilityRole="button"
+                accessibilityLabel="Choose a photo from your gallery"
                 style={({ pressed }) => ({
                   width: 52,
                   height: 52,
@@ -383,6 +387,8 @@ export default function ScanScreen() {
               <Pressable
                 onPress={takePicture}
                 disabled={!isCameraReady}
+                accessibilityRole="button"
+                accessibilityLabel="Take photo"
                 style={({ pressed }) => ({
                   width: 80,
                   height: 80,
@@ -529,7 +535,12 @@ export default function ScanScreen() {
             marginBottom: Spacing.xl,
           }}
         >
-          <Pressable onPress={resetScanner} hitSlop={12}>
+          <Pressable
+            onPress={resetScanner}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel="Back to camera"
+          >
             <ArrowLeftIcon size={24} color={colors.text.primary} weight="regular" />
           </Pressable>
           <Text style={{ ...Type.headingSm, color: colors.text.primary }}>Log meal</Text>
@@ -640,6 +651,7 @@ export default function ScanScreen() {
               icon={<MinusIcon size={16} color={colors.text.primary} weight="bold" />}
               onPress={() => setServings(Math.max(0.5, servings - 0.5))}
               colors={colors}
+              accessibilityLabel="Decrease servings"
             />
             <View style={{ alignItems: 'center', minWidth: 80 }}>
               <Text style={{ ...Type.headingMd, color: colors.text.primary }}>{servings}</Text>
@@ -651,6 +663,7 @@ export default function ScanScreen() {
               icon={<PlusIcon size={16} color={colors.text.primary} weight="bold" />}
               onPress={() => setServings(servings + 0.5)}
               colors={colors}
+              accessibilityLabel="Increase servings"
             />
           </View>
         </View>
@@ -1265,13 +1278,16 @@ interface StepperButtonProps {
   icon: React.ReactNode;
   onPress: () => void;
   colors: ReturnType<typeof useTheme>['colors'];
+  accessibilityLabel: string;
 }
 
-function StepperButton({ icon, onPress, colors }: StepperButtonProps) {
+function StepperButton({ icon, onPress, colors, accessibilityLabel }: StepperButtonProps) {
   return (
     <Pressable
       onPress={onPress}
       hitSlop={6}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
       style={({ pressed }) => ({
         width: 40,
         height: 40,

@@ -141,6 +141,8 @@ export default function LoginScreen() {
                 onPress={() => setShowPassword((v) => !v)}
                 hitSlop={8}
                 style={{ padding: 4 }}
+                accessibilityRole="button"
+                accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? (
                   <EyeClosedIcon size={20} color={colors.text.tertiary} weight="regular" />
