@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   Pressable,
-  ActivityIndicator,
   type TextInputProps,
 } from 'react-native';
 import { router } from 'expo-router';
@@ -13,6 +12,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { Type, FontFamily } from '../../constants/fonts';
 import { Spacing, Radius } from '../../constants/spacing';
 import { Colors } from '../../constants/colors';
+import { PillButton } from '../ui/PillButton';
 
 /**
  * Shared atoms for the auth form screens (login / signup / forgot-password).
@@ -95,11 +95,13 @@ export function AuthInput({ label, error, hint, rightSlot, ...textInputProps }: 
   const { colors, accent } = useTheme();
   const [isFocused, setIsFocused] = useState(false);
 
+  // Stitch inputs: soft fill, borderless at rest; deep-green focus ring,
+  // error keeps the system red.
   const borderColor = error
     ? Colors.system.error
     : isFocused
-    ? accent
-    : colors.surface.tertiary;
+    ? Colors.accentDeep
+    : 'transparent';
 
   return (
     <View style={{ marginBottom: Spacing.md }}>
@@ -123,7 +125,7 @@ export function AuthInput({ label, error, hint, rightSlot, ...textInputProps }: 
           borderRadius: Radius.input,
           paddingHorizontal: Spacing.md,
           paddingVertical: Spacing.sm,
-          backgroundColor: colors.surface.primary,
+          backgroundColor: colors.surface.tertiary,
         }}
       >
         <TextInput
@@ -137,6 +139,7 @@ export function AuthInput({ label, error, hint, rightSlot, ...textInputProps }: 
             textInputProps.onBlur?.(e);
           }}
           placeholderTextColor={colors.text.tertiary}
+          selectionColor={accent}
           style={{
             flex: 1,
             ...Type.bodyLg,
@@ -169,31 +172,10 @@ interface PrimaryButtonProps {
   disabled?: boolean;
 }
 
+// Solid-ink Stitch pill (PillButton primary). Public props unchanged so the
+// auth screens need no edits.
 export function PrimaryButton({ label, onPress, loading, disabled }: PrimaryButtonProps) {
-  const { accent } = useTheme();
-  const isInactive = loading || disabled;
-
-  return (
-    <Pressable
-      onPress={onPress}
-      disabled={isInactive}
-      style={({ pressed }) => ({
-        backgroundColor: accent,
-        paddingVertical: Spacing.md,
-        borderRadius: Radius.button,
-        alignItems: 'center',
-        opacity: isInactive ? 0.4 : pressed ? 0.9 : 1,
-      })}
-    >
-      {loading ? (
-        <ActivityIndicator color="#FFFFFF" size="small" />
-      ) : (
-        <Text style={{ ...Type.bodyLg, color: '#FFFFFF', fontFamily: FontFamily.geistSemiBold }}>
-          {label}
-        </Text>
-      )}
-    </Pressable>
-  );
+  return <PillButton label={label} onPress={onPress} loading={loading} disabled={disabled} />;
 }
 
 interface GoogleButtonProps {
@@ -202,44 +184,19 @@ interface GoogleButtonProps {
   disabled?: boolean;
 }
 
+// Secondary Stitch pill with the Google glyph.
 export function GoogleButton({ onPress, loading, disabled }: GoogleButtonProps) {
   const { colors } = useTheme();
-  const isInactive = loading || disabled;
 
   return (
-    <Pressable
+    <PillButton
+      label="Continue with Google"
       onPress={onPress}
-      disabled={isInactive}
-      style={({ pressed }) => ({
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: colors.surface.primary,
-        borderWidth: 1,
-        borderColor: colors.surface.tertiary,
-        paddingVertical: Spacing.md,
-        borderRadius: Radius.button,
-        opacity: isInactive ? 0.4 : pressed ? 0.7 : 1,
-      })}
-    >
-      {loading ? (
-        <ActivityIndicator color={colors.text.primary} size="small" />
-      ) : (
-        <>
-          <GoogleLogoIcon size={20} color={colors.text.primary} weight="bold" />
-          <Text
-            style={{
-              ...Type.bodyLg,
-              color: colors.text.primary,
-              fontFamily: FontFamily.geistSemiBold,
-              marginLeft: Spacing.sm,
-            }}
-          >
-            Continue with Google
-          </Text>
-        </>
-      )}
-    </Pressable>
+      loading={loading}
+      disabled={disabled}
+      variant="secondary"
+      icon={<GoogleLogoIcon size={20} color={colors.text.primary} weight="bold" />}
+    />
   );
 }
 
