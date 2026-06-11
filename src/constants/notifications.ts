@@ -249,18 +249,20 @@ export const getRandomMessage = (messages: NotificationMessage[]): NotificationM
 export const getGenderAgeGreeting = (profile: Profile | null): string => {
   if (!profile) return 'there';
   
-  const { gender, year_of_birth, display_name } = profile;
-  
+  const { gender, dob, display_name } = profile;
+
   // Use display name if available
   if (display_name) {
     return display_name.split(' ')[0]; // First name only
   }
-  
-  // Calculate age based on year of birth
+
+  // Calculate age from date of birth (ISO "YYYY-MM-DD")
   let age = 25; // default
-  if (year_of_birth) {
-    const currentYear = new Date().getFullYear();
-    age = currentYear - year_of_birth;
+  if (dob) {
+    const birthYear = new Date(dob).getFullYear();
+    if (Number.isFinite(birthYear)) {
+      age = new Date().getFullYear() - birthYear;
+    }
   }
   
   // Gender + age based greetings

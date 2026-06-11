@@ -62,6 +62,7 @@ export interface NotificationPreferences {
   mealReminders: boolean;
   streakAlerts: boolean;
   hydrationReminders: boolean;
+  achievementAlerts: boolean;
   weeklyDigest: boolean;
   quietHoursStart: number; // 0-23, e.g., 22 = 10 PM
   quietHoursEnd: number;   // 0-23, e.g., 7 = 7 AM
@@ -72,6 +73,7 @@ export const DEFAULT_NOTIFICATION_PREFS: NotificationPreferences = {
   mealReminders: true,
   streakAlerts: true,
   hydrationReminders: true,
+  achievementAlerts: true,
   weeklyDigest: true,
   quietHoursStart: 23, // 11 PM
   quietHoursEnd: 7,    // 7 AM

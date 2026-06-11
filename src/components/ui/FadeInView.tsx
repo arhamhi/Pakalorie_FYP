@@ -6,7 +6,6 @@ import Animated, {
   FadeIn,
   SlideInRight,
   SlideInLeft,
-  LayoutAnimationBuilder,
 } from 'react-native-reanimated';
 
 /**

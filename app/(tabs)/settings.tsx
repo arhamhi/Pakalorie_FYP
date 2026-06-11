@@ -53,7 +53,7 @@ export default function SettingsScreen() {
   const handleAccentChange = async (newAccent: AccentColor) => {
     await setAccentColor(newAccent);
     if (user) {
-      await updateProfile({ accent_color: newAccent });
+      await updateProfile({ accent_preference: newAccent });
     }
   };
 

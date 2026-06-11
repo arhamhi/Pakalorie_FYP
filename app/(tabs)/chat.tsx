@@ -15,6 +15,7 @@ import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { supabase } from '../../src/lib/supabase';
 import { chatWithUstad, ChatMessage } from '../../src/lib/gemini';
+import type { Json } from '../../src/types/database';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -172,9 +173,12 @@ export default function ChatScreen() {
 
   useEffect(() => {
     if (session?.messages) {
-      setMessages(session.messages as Message[]);
+      // The messages column is Supabase Json; it always round-trips the
+      // Message[] shape written below, so the narrowing is safe at runtime.
+      const stored = session.messages as unknown as Message[];
+      setMessages(stored);
       // Convert to ChatMessage format for Gemini API
-      const history: ChatMessage[] = (session.messages as Message[]).map(msg => ({
+      const history: ChatMessage[] = stored.map(msg => ({
         role: msg.role === 'user' ? 'user' : 'model',
         parts: [{ text: msg.text }],
       }));
@@ -239,7 +243,7 @@ export default function ChatScreen() {
       if (session && user) {
         await supabase
           .from('chat_sessions')
-          .update({ messages: finalMessages })
+          .update({ messages: finalMessages as unknown as Json })
           .eq('id', session.id);
       }
 

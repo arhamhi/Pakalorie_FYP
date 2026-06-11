@@ -17,7 +17,7 @@ import { FadeInView } from '../../src/components/ui';
 import {
   getNotificationPrefs,
   saveNotificationPrefs,
-  scheduleMealReminders,
+  scheduleDailyMealReminders,
   scheduleHydrationReminders,
   scheduleStreakWarnings,
   cancelAllNotifications,
@@ -79,7 +79,7 @@ export default function NotificationsScreen() {
       await cancelAllNotifications();
 
       if (newPrefs.mealReminders) {
-        await scheduleMealReminders();
+        await scheduleDailyMealReminders(profile);
       }
       if (newPrefs.hydrationReminders) {
         await scheduleHydrationReminders();
