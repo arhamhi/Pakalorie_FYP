@@ -484,7 +484,7 @@ export default function ScanScreen() {
             paddingHorizontal: Spacing.xl,
             paddingTop: Spacing.xl,
             paddingBottom: Platform.OS === 'ios' ? 40 : Spacing.xl,
-            backgroundColor: colors.surface.primary,
+            backgroundColor: colors.surface.secondary,
             borderTopLeftRadius: Radius.card * 1.5,
             borderTopRightRadius: Radius.card * 1.5,
           }}
@@ -516,7 +516,7 @@ export default function ScanScreen() {
   const grounded = result?.grounded;
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.surface.secondary }}>
+    <View style={{ flex: 1, backgroundColor: colors.surface.primary }}>
       <ScrollView
         contentContainerStyle={{
           paddingHorizontal: Spacing.xl,
@@ -564,7 +564,7 @@ export default function ScanScreen() {
         {/* Hero card */}
         <View
           style={{
-            backgroundColor: colors.surface.primary,
+            backgroundColor: colors.surface.secondary,
             borderRadius: Radius.card,
             borderWidth: 1,
             borderColor: colors.surface.tertiary,
@@ -711,7 +711,7 @@ export default function ScanScreen() {
         {isLowConfidence && result?.alternatives && result.alternatives.length > 0 && (
           <View
             style={{
-              backgroundColor: colors.surface.primary,
+              backgroundColor: colors.surface.secondary,
               borderRadius: Radius.card,
               borderWidth: 1,
               borderColor: colors.surface.tertiary,
@@ -768,7 +768,7 @@ export default function ScanScreen() {
                   flex: 1,
                   paddingVertical: Spacing.sm,
                   borderRadius: Radius.button,
-                  backgroundColor: active ? accent + '1F' : colors.surface.primary,
+                  backgroundColor: active ? accent + '1F' : colors.surface.secondary,
                   borderWidth: 1,
                   borderColor: active ? accent : colors.surface.tertiary,
                   alignItems: 'center',
@@ -824,7 +824,7 @@ export default function ScanScreen() {
                   paddingHorizontal: Spacing.md,
                   paddingVertical: Spacing.sm,
                   borderRadius: Radius.pill,
-                  backgroundColor: active ? accent + '1F' : colors.surface.primary,
+                  backgroundColor: active ? accent + '1F' : colors.surface.secondary,
                   borderWidth: 1,
                   borderColor: active ? accent : colors.surface.tertiary,
                   opacity: pressed ? 0.7 : 1,
@@ -947,7 +947,7 @@ export default function ScanScreen() {
           paddingHorizontal: Spacing.xl,
           paddingTop: Spacing.md,
           paddingBottom: Platform.OS === 'ios' ? 40 : Spacing.xl,
-          backgroundColor: colors.surface.secondary,
+          backgroundColor: colors.surface.primary,
           borderTopWidth: 1,
           borderTopColor: colors.surface.tertiary,
         }}
@@ -977,7 +977,7 @@ function CameraPermissionCard({ onGrant, canAskAgain }: PermissionCardProps) {
     <View
       style={{
         flex: 1,
-        backgroundColor: colors.surface.secondary,
+        backgroundColor: colors.surface.primary,
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: Spacing.xl,
@@ -986,7 +986,7 @@ function CameraPermissionCard({ onGrant, canAskAgain }: PermissionCardProps) {
       <View
         style={{
           width: '100%',
-          backgroundColor: colors.surface.primary,
+          backgroundColor: colors.surface.secondary,
           borderWidth: 1,
           borderColor: colors.surface.tertiary,
           borderRadius: Radius.card,
@@ -1143,7 +1143,7 @@ function GroundedSourceCard({ grounded, accent, colors }: GroundedSourceCardProp
   return (
     <View
       style={{
-        backgroundColor: colors.surface.primary,
+        backgroundColor: colors.surface.secondary,
         borderRadius: Radius.card,
         borderWidth: 1,
         borderColor: colors.surface.tertiary,
@@ -1227,7 +1227,7 @@ function MacroCard({ label, value, colors }: MacroCardProps) {
     <View
       style={{
         flex: 1,
-        backgroundColor: colors.surface.primary,
+        backgroundColor: colors.surface.secondary,
         borderWidth: 1,
         borderColor: colors.surface.tertiary,
         borderRadius: Radius.card,
