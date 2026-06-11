@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#e9f0e7",
+                        "surface-container-low": "#eef6ec",
+                        "on-surface-variant": "#3d4a40",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#8c1520",
+                        "on-tertiary-fixed": "#261a00",
+                        "inverse-on-surface": "#ecf3ea",
+                        "secondary-container": "#ff6b6b",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-secondary-container": "#6d0010",
+                        "on-surface": "#161d18",
+                        "surface-dim": "#d5dcd3",
+                        "secondary": "#ae2f34",
+                        "tertiary": "#785900",
+                        "outline": "#6d7a6f",
+                        "on-tertiary-fixed-variant": "#5b4300",
+                        "tertiary-fixed-dim": "#fabd00",
+                        "on-secondary-fixed": "#410006",
+                        "surface-container-high": "#e3eae1",
+                        "secondary-fixed": "#ffdad8",
+                        "on-primary-fixed": "#00210f",
+                        "primary": "#006d3d",
+                        "primary-container": "#1bad66",
+                        "tertiary-fixed": "#ffdf9e",
+                        "surface-tint": "#006d3d",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#bf9000",
+                        "primary-fixed-dim": "#5cde91",
+                        "background": "#f4fbf2",
+                        "surface": "#f4fbf2",
+                        "on-primary-fixed-variant": "#00522c",
+                        "inverse-primary": "#5cde91",
+                        "outline-variant": "#bccabd",
+                        "surface-bright": "#f4fbf2",
+                        "inverse-surface": "#2b322c",
+                        "primary-fixed": "#7afbab",
+                        "surface-variant": "#dde4db",
+                        "on-primary": "#ffffff",
+                        "surface-container-highest": "#dde4db",
+                        "on-secondary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#00381d",
+                        "on-tertiary-container": "#3e2d00",
+                        "secondary-fixed-dim": "#ffb3b0",
+                        "on-background": "#161d18"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "container-padding": "24px",
+                        "section-margin": "40px",
+                        "card-gap": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Geist Sans"],
+                        "headline-md": ["Instrument Serif"],
+                        "label-caps": ["Geist Sans"],
+                        "headline-sm": ["Instrument Serif"],
+                        "display-lg": ["Instrument Serif"],
+                        "body-lg": ["Geist Sans"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-md": ["32px", {"lineHeight": "1.2", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-sm": ["24px", {"lineHeight": "1.2", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .jali-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l15 15-15 15-15-15L30 0zm0 60l15-15-15-15-15 15 15 15z' fill='%23006d3d' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen selection:bg-primary-fixed">
+<header class="bg-background dark:bg-background fixed top-0 w-full z-40">
+<div class="flex justify-between items-center px-container-padding py-4 w-full">
+<span class="font-headline-md text-headline-md text-on-surface dark:text-on-surface">Nourish</span>
+<div class="flex items-center gap-4">
+<button class="hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed">bubble_chart</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-container-padding max-w-2xl mx-auto jali-pattern min-h-screen">
+<section class="flex flex-col items-center text-center mb-section-margin">
+<div class="relative mb-6">
+<div class="w-32 h-32 rounded-full border-4 border-surface-container-high p-1 bg-surface-container-lowest shadow-[0_20px_40px_rgba(0,0,0,0.04)]">
+<img alt="User Profile" class="w-full h-full rounded-full object-cover" data-alt="A sophisticated editorial-style portrait of a serene South Asian woman with warm studio lighting. She is set against a soft, neutral beige background that complements the minimalist aesthetic. The lighting is bright and airy, creating a professional and premium high-end wellness app feel. The composition is a close-up, emphasizing a clean and elegant visual identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXYOuzHLeli_fYhBIlBwyX1aJg_bc5m-nXESuRuYLuDx2ZLJf2rgSFDBuAWQb-nbGWUuDp_m-BX9qbsSXeDb-SzqaFbkkOfPurltBnrXBFkqOO3BxgkDwPfh4NljjylNYvJV7Aaw7RaykmCMJ9YPUt3KmAC0gnpwbcRQflRrmY8jq1eKugFn_MLXSW-1aO_r1p_tMEQMqmXL3P0ODBpiBnxOVjGTWG8XwytzE5nQ9XFBUOg64PgEKjz_TYLRlYQ7H9IzGr2k1IS-__"/>
+</div>
+<div class="absolute bottom-1 right-1 bg-primary text-on-primary p-1.5 rounded-full shadow-lg border-2 border-background">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<h1 class="font-headline-md text-headline-md mb-1">Amara Siddiqui</h1>
+<p class="text-on-surface-variant font-body-md opacity-70">Premium Member since 2023</p>
+</section>
+<section class="mb-section-margin">
+<h2 class="font-headline-sm text-headline-sm mb-4 px-2">Health Stats</h2>
+<div class="grid grid-cols-2 gap-card-gap">
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_40px_60px_rgba(0,0,0,0.04)] flex flex-col items-start active:scale-[0.98] transition-transform">
+<span class="text-on-surface-variant text-label-caps mb-2 opacity-60">CURRENT WEIGHT</span>
+<div class="flex items-baseline gap-1">
+<span class="text-3xl font-headline-md">64.2</span>
+<span class="text-on-surface-variant text-body-md">kg</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_40px_60px_rgba(0,0,0,0.04)] flex flex-col items-start active:scale-[0.98] transition-transform">
+<span class="text-on-surface-variant text-label-caps mb-2 opacity-60">TARGET GOAL</span>
+<div class="flex items-baseline gap-1">
+<span class="text-3xl font-headline-md">58.0</span>
+<span class="text-on-surface-variant text-body-md">kg</span>
+</div>
+</div>
+</div>
+</section>
+<section class="mb-section-margin">
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_40px_60px_rgba(0,0,0,0.04)] overflow-hidden">
+<div class="p-6">
+<h2 class="font-headline-sm text-headline-sm mb-6">App Theme</h2>
+<div class="flex justify-between items-center gap-4 px-2">
+<div class="flex flex-col items-center gap-2">
+<button class="w-14 h-14 rounded-full bg-[#1bad66] border-4 border-surface-container-high ring-2 ring-primary ring-offset-2 active:scale-90 transition-transform"></button>
+<span class="text-label-caps text-primary">Nourish</span>
+</div>
+<div class="flex flex-col items-center gap-2 opacity-40">
+<button class="w-14 h-14 rounded-full bg-[#ff6b6b] border-4 border-transparent active:scale-90 transition-transform"></button>
+<span class="text-label-caps">Rose</span>
+</div>
+<div class="flex flex-col items-center gap-2 opacity-40">
+<button class="w-14 h-14 rounded-full bg-[#ffc107] border-4 border-transparent active:scale-90 transition-transform"></button>
+<span class="text-label-caps">Amber</span>
+</div>
+<div class="flex flex-col items-center gap-2 opacity-40">
+<button class="w-14 h-14 rounded-full bg-[#161d18] border-4 border-transparent active:scale-90 transition-transform"></button>
+<span class="text-label-caps">Midnight</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="mb-section-margin">
+<h2 class="font-headline-sm text-headline-sm mb-4 px-2">Account Settings</h2>
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_40px_60px_rgba(0,0,0,0.04)] overflow-hidden">
+<div class="flex flex-col divide-y divide-surface-container-high">
+<div class="flex items-center justify-between p-5 hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">person</span>
+</div>
+<span class="font-body-md font-medium">Personal Information</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+<div class="flex items-center justify-between p-5 hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">notifications</span>
+</div>
+<span class="font-body-md font-medium">Notifications</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+<div class="flex items-center justify-between p-5 hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">security</span>
+</div>
+<span class="font-body-md font-medium">Privacy &amp; Security</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-on-background/5 rounded-xl p-8 text-center border border-on-background/10">
+<p class="text-on-surface-variant font-body-md mb-6 opacity-80">Log out of your account on this device. Your data is securely synced to the cloud.</p>
+<button class="w-full py-4 bg-secondary text-on-secondary rounded-full font-body-md font-semibold tracking-wide active:scale-95 transition-transform">Log Out</button>
+</section>
+<div class="h-16 flex items-center justify-center opacity-10 mt-12 mb-8">
+<span class="material-symbols-outlined text-6xl">energy_savings_leaf</span>
+</div>
+</main>
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-8 pb-8 pt-4 bg-surface-container-lowest/80 backdrop-blur-md shadow-[0_-4px_40px_rgba(0,0,0,0.04)] rounded-t-xl">
+<div class="flex flex-col items-center justify-center text-outline dark:text-outline-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+</div>
+<div class="flex flex-col items-center justify-center text-outline dark:text-outline-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="camera_enhance">camera_enhance</span>
+</div>
+<div class="flex flex-col items-center justify-center text-outline dark:text-outline-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+</div>
+<div class="flex flex-col items-center justify-center text-outline dark:text-outline-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="restaurant">restaurant</span>
+</div>
+<div class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed scale-110 active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+</div>
+</nav>
+</body></html>

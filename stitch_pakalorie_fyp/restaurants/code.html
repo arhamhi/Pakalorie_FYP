@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#e9f0e7",
+                    "surface-container-low": "#eef6ec",
+                    "on-surface-variant": "#3d4a40",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#8c1520",
+                    "on-tertiary-fixed": "#261a00",
+                    "inverse-on-surface": "#ecf3ea",
+                    "secondary-container": "#ff6b6b",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-secondary-container": "#6d0010",
+                    "on-surface": "#161d18",
+                    "surface-dim": "#d5dcd3",
+                    "secondary": "#ae2f34",
+                    "tertiary": "#785900",
+                    "outline": "#6d7a6f",
+                    "on-tertiary-fixed-variant": "#5b4300",
+                    "tertiary-fixed-dim": "#fabd00",
+                    "on-secondary-fixed": "#410006",
+                    "surface-container-high": "#e3eae1",
+                    "secondary-fixed": "#ffdad8",
+                    "on-primary-fixed": "#00210f",
+                    "primary": "#006d3d",
+                    "primary-container": "#1bad66",
+                    "tertiary-fixed": "#ffdf9e",
+                    "surface-tint": "#006d3d",
+                    "on-error": "#ffffff",
+                    "tertiary-container": "#bf9000",
+                    "primary-fixed-dim": "#5cde91",
+                    "background": "#f4fbf2",
+                    "surface": "#f4fbf2",
+                    "on-primary-fixed-variant": "#00522c",
+                    "inverse-primary": "#5cde91",
+                    "outline-variant": "#bccabd",
+                    "surface-bright": "#f4fbf2",
+                    "inverse-surface": "#2b322c",
+                    "primary-fixed": "#7afbab",
+                    "surface-variant": "#dde4db",
+                    "on-primary": "#ffffff",
+                    "surface-container-highest": "#dde4db",
+                    "on-secondary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#00381d",
+                    "on-tertiary-container": "#3e2d00",
+                    "secondary-fixed-dim": "#ffb3b0",
+                    "on-background": "#161d18"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "container-padding": "24px",
+                    "section-margin": "40px",
+                    "card-gap": "16px"
+            },
+            "fontFamily": {
+                    "body-md": ["Geist Sans"],
+                    "headline-md": ["Instrument Serif"],
+                    "label-caps": ["Geist Sans"],
+                    "headline-sm": ["Instrument Serif"],
+                    "display-lg": ["Instrument Serif"],
+                    "body-lg": ["Geist Sans"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "1.2", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-sm": ["24px", {"lineHeight": "1.2", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      body {
+        background-color: #f4fbf2;
+        color: #161d18;
+        font-family: 'Geist Sans', sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .jali-pattern {
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l30 30-30 30L0 30z' fill='%23006d3d' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+      }
+      .shadow-ambient {
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background min-h-screen pb-32">
+<!-- Top Navigation Bar -->
+<header class="bg-background dock-full-width top-0 z-40 flex justify-between items-center px-container-padding py-4 w-full">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border-2 border-white shadow-sm">
+<img alt="User profile portrait" data-alt="A professional and clean studio headshot of a person with a warm, friendly expression. The lighting is soft and natural, emphasizing a modern health-conscious persona. The background is a solid, muted light green, maintaining the minimalist aesthetic of the Nourish brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjInkO5dHebzG7q4KZ67uTj7Z_HG4r-gbhVTv7rcW6UB_5I-qDfucinRtB1j1pznvtj2PdMXvkm1bVjQ4r86bIgMqqDb_FvvAME1XbtkHwjcZBvN2bY-gNxIbgQyat0I11QTXeBTxsXE0ycrT3eAh7CZ_jTF6386VfKufYohndX-EIIhmAKYOkWjxHeJRSUtYY4SDqJvNK6aFJMf9lVd6mRNH69KOqV-c_BgG6q3Rb2Ysq02gNO3tTQUu7m8ZQ9u8kI885gXkIZmst"/>
+</div>
+<h1 class="font-headline-md text-headline-md text-on-surface">Nourish</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-primary hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined text-headline-md">bubble_chart</span>
+</button>
+</div>
+</header>
+<main class="px-container-padding pt-6 relative">
+<!-- Subtle Cultural Backdrop -->
+<div class="fixed inset-0 jali-pattern pointer-events-none -z-10 opacity-50"></div>
+<!-- Search and Discovery Header -->
+<section class="mb-section-margin">
+<div class="max-w-xl">
+<h2 class="font-display-lg text-display-lg mb-4 text-on-surface">Discover Healthy <br/><span class="text-primary italic">Pakistani Flavors</span></h2>
+<!-- Minimalist Search Bar -->
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full bg-surface-container-lowest border-none rounded-xl py-4 pl-12 pr-4 shadow-ambient focus:ring-2 focus:ring-primary-container transition-all font-body-md text-body-md placeholder:text-outline-variant" placeholder="Search for grilled kebabs, lentils..." type="text"/>
+</div>
+</div>
+</section>
+<!-- Filters Section -->
+<section class="mb-8 overflow-x-auto no-scrollbar flex items-center gap-3 py-2">
+<button class="flex items-center gap-2 px-6 py-2.5 bg-primary text-on-primary rounded-full font-label-caps text-label-caps whitespace-nowrap active:scale-95 transition-transform shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+                HALAL
+            </button>
+<button class="flex items-center gap-2 px-6 py-2.5 bg-surface-container-lowest text-on-surface border border-outline-variant rounded-full font-label-caps text-label-caps whitespace-nowrap hover:bg-surface-variant transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[18px]">fitness_center</span>
+                HIGH PROTEIN
+            </button>
+<button class="flex items-center gap-2 px-6 py-2.5 bg-surface-container-lowest text-on-surface border border-outline-variant rounded-full font-label-caps text-label-caps whitespace-nowrap hover:bg-surface-variant transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[18px]">near_me</span>
+                NEARBY
+            </button>
+<button class="flex items-center gap-2 px-4 py-2.5 bg-surface-container-lowest text-on-surface border border-outline-variant rounded-full active:scale-95">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</button>
+</section>
+<!-- Restaurant Feed: Bento/Card Layout -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-card-gap">
+<!-- Featured Card (Large) -->
+<div class="md:col-span-2 group relative bg-surface-container-lowest rounded-3xl overflow-hidden shadow-ambient hover:scale-[1.01] transition-transform duration-300">
+<div class="relative h-[300px] w-full">
+<img alt="Gourmet Grilled Platter" class="w-full h-full object-cover" data-alt="A premium overhead shot of a Pakistani grilled platter featuring lean lamb kebabs, marinated chicken tikka, and vibrant grilled bell peppers on a white marble surface. The lighting is high-key and bright, emphasizing fresh textures. A side of cooling mint raita and a crisp arugula salad are artfully placed to highlight health and balance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvEbcmbiezaUcWzg0TEbfF6c8orj2LBGkuO97bMgrvCYygiNOJ8b7eTrAC6UcC3CQV5VUG_lACDU1hWR1H8irt5--Y3a5sHvlTlW1nOXzcR03t4f5d1lbwICqvzMALM0M65ODBdDoxazyUCDcfpHefkSvSOJVM71uFcI0rY8zjwCnhjmbO5WRgN0LuwOubJScWN9oFH2r3V0WxxNXZfS46inINfKIvs7jtRpGd21IGIk4-WL_HHwkCkrBsyYEpsBuVI5VmLPtI3Q_6"/>
+<div class="absolute top-4 right-4 bg-primary-container text-on-primary-container px-4 py-2 rounded-full font-label-caps text-label-caps flex items-center gap-1 shadow-lg">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                        9.2 HEALTH SCORE
+                    </div>
+</div>
+<div class="p-container-padding flex justify-between items-end">
+<div>
+<h3 class="font-headline-sm text-headline-sm mb-1 text-on-surface">The Indus Grill House</h3>
+<p class="font-body-md text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+                            Gulberg, Lahore • 1.2 km away
+                        </p>
+</div>
+<div class="text-right">
+<p class="font-label-caps text-outline-variant mb-1">CALORIE RANGE</p>
+<p class="font-headline-sm text-headline-sm text-primary">450 - 680 <span class="text-body-md font-body-md text-outline">kcal</span></p>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-ambient group hover:scale-[1.01] transition-transform duration-300">
+<div class="relative h-[220px]">
+<img alt="Fresh Chickpea Salad" class="w-full h-full object-cover" data-alt="A vibrant and colorful Chana Chaat salad bowl presented in a minimalist ceramic dish. The bowl is filled with protein-rich chickpeas, diced tomatoes, cucumbers, red onions, and a sprinkle of fresh cilantro. The lighting is bright and ethereal, casting soft shadows on a clean off-white background, embodying a modern health-tech aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbFCC4cZk5HlCYm_9Et8KJOI6EjHAzobwTdJ9A72S2qcMh2dN36gBWl5bumnSHX7C3h6M2nJuGL3r2bGU-haDMN4zygIHxy4Gf4iaKZYEx4-K7Bxk3GzTzzumc9eqfPt1yx5PPZU8k2Kw8UXKRffogQVK9lUZ3FAded4kLj4LyVYESHtCNc43Zs3spOC4jK7VFe3HMnHHIHa3uL-bFHNG-xXiDgU2kKi43LushozycXT9VMCyKAnWK1UhrUZpBuJwNnPv9b3Qslm_F"/>
+<div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-on-surface font-label-caps text-[10px] tracking-widest border border-outline-variant/20">
+                        PLANT BASED
+                    </div>
+</div>
+<div class="p-container-padding">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Organic Oasis</h3>
+<div class="bg-surface-container px-2 py-1 rounded-lg">
+<span class="font-label-caps text-primary">8.8</span>
+</div>
+</div>
+<p class="font-body-md text-on-surface-variant mb-4">Lentil soups &amp; superfood bowls</p>
+<div class="flex justify-between items-center pt-4 border-t border-outline-variant/10">
+<span class="text-outline font-body-md">2.4 km away</span>
+<span class="font-label-caps text-on-surface-variant">$$</span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-ambient group hover:scale-[1.01] transition-transform duration-300">
+<div class="relative h-[220px]">
+<img alt="Lean Chicken Handi" class="w-full h-full object-cover" data-alt="A top-down view of a modern, lean take on a traditional Pakistani Chicken Handi, cooked in a copper vessel but styled with minimalist precision. The sauce is light and tomato-based rather than oily, garnished with ginger julienne and fresh green chilies. Surrounding the dish is a clean, bright white tabletop with ample negative space and soft morning light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4toOJI0QzkDG3gZ1sM8ZY946KMnsm6DIuEkLBk5gdvGG-0SYkYh8fcsSC9pHDi9DgkBf3JMBE7u-ifvJMbZ3-drD3GqdckwjxUWoLzdqlLMsZJX7p4fl_WQ4Iufpk10umCsKVfcUf8ZB9ZRF8MX_X4T6yjonCdt5-D_L8YaajhIUpSX9Z-0SzoPrmax_9I-wNxZogygw_1nNQhc5shwBhhpMQlJp8u6_uK_cyCrJmtQ8nqmmv9VrhC0QDKFpVn2wcpjsV8z-jONcM"/>
+<div class="absolute bottom-4 left-4 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-[10px] tracking-widest">
+                        HIGH PROTEIN
+                    </div>
+</div>
+<div class="p-container-padding">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Heritage Kitchen</h3>
+<div class="bg-surface-container px-2 py-1 rounded-lg">
+<span class="font-label-caps text-primary">9.5</span>
+</div>
+</div>
+<p class="font-body-md text-on-surface-variant mb-4">Low-oil traditional recipes</p>
+<div class="flex justify-between items-center pt-4 border-t border-outline-variant/10">
+<span class="text-outline font-body-md">0.8 km away</span>
+<span class="font-label-caps text-on-surface-variant">$$$</span>
+</div>
+</div>
+</div>
+<!-- Card 4 (Horizontal Style for variety) -->
+<div class="md:col-span-2 flex flex-col md:flex-row bg-surface-container-lowest rounded-3xl overflow-hidden shadow-ambient hover:scale-[1.005] transition-transform duration-300">
+<div class="md:w-1/3 h-[200px] md:h-auto">
+<img alt="Grilled Salmon Salad" class="w-full h-full object-cover" data-alt="A clean, minimalist plate featuring perfectly grilled salmon with a side of steamed spinach and quinoa. The dish is presented with editorial elegance, using a soft pastel color palette of greens and pinks against a bright white background. The lighting is bright and diffuse, creating a sense of calm and premium health quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdzBO50zNp7YZoclO6t-c6jwAJ_6oVeVBJRdEQ-sV7AkXD4zvER2rmmZvYL79sz1q07IEx1TOFDsj17VRsCX1O3neXdDzZzEI9ecUbknPoyJ88Sebmk0Wo8fPuTFC6um7aJZBfEJKAf4-WXqLhdOvV2jy8GuxddbrvAdNAAkA7k4VQRA31jdVlYH5F9Kbu7hT7QRXrZ7QCBpAiKmdXNbGHVMKZTcQpz9_yPXCLbQRRrLGsNTyFeQZE4vkTR3trFC2OCkefdjJ98BYu"/>
+</div>
+<div class="md:w-2/3 p-container-padding flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-center mb-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Zest &amp; Zaffron</h3>
+<span class="text-on-tertiary-container bg-tertiary-fixed px-3 py-1 rounded-full font-label-caps text-[10px]">NEW</span>
+</div>
+<p class="font-body-md text-on-surface-variant">Modern fusion with calorie-tracked appetizers. Known for their charcoal-grilled fish and sugar-free dessert options.</p>
+</div>
+<div class="flex items-center gap-6 mt-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">timer</span>
+<span class="font-body-md text-on-surface-variant">15-20 min</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">monitor_weight</span>
+<span class="font-body-md text-on-surface-variant">Avg 520 kcal</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Empty State/Footer Motif -->
+<footer class="mt-section-margin py-12 text-center opacity-30">
+<div class="w-16 h-16 mx-auto mb-4 border border-outline rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-outline">restaurant</span>
+</div>
+<p class="font-label-caps text-outline tracking-[0.2em]">CRAFTED FOR NOURISHMENT</p>
+</footer>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-8 pb-8 pt-4 bg-surface-container-lowest/80 backdrop-blur-md shadow-[0_-4px_40px_rgba(0,0,0,0.04)] rounded-t-xl">
+<div class="flex flex-col items-center justify-center text-outline dark:text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">dashboard</span>
+</div>
+<div class="flex flex-col items-center justify-center text-outline dark:text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">camera_enhance</span>
+</div>
+<div class="flex flex-col items-center justify-center text-outline dark:text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">chat_bubble</span>
+</div>
+<div class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed scale-110">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+</div>
+<div class="flex flex-col items-center justify-center text-outline dark:text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">person</span>
+</div>
+</nav>
+</body></html>
