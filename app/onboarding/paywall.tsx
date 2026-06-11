@@ -36,14 +36,16 @@ export default function PaywallScreen() {
   const { updateData } = useOnboarding();
   const [selectedTier, setSelectedTier] = useState('biannual');
 
+  // Users are already authenticated before onboarding (the (auth) group runs
+  // first), so the flow continues straight to profile setup.
   const handlePremium = () => {
     updateData({ isPremium: true });
-    router.push('/onboarding/auth');
+    router.push('/onboarding/name');
   };
 
   const handleFree = () => {
     updateData({ isPremium: false });
-    router.push('/onboarding/auth');
+    router.push('/onboarding/name');
   };
 
   const handleRestorePurchase = async () => {

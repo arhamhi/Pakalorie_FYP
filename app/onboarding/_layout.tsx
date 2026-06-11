@@ -22,7 +22,6 @@ export default function OnboardingLayout() {
       <Stack.Screen name="activity" />
       <Stack.Screen name="target" />
       <Stack.Screen name="paywall" />
-      <Stack.Screen name="auth" />
       <Stack.Screen name="name" />
       <Stack.Screen name="ai-explanation" />
       <Stack.Screen name="permissions" />
