@@ -1,8 +1,8 @@
 # Pakalorie FYP — Design System Reference
 
-**Status:** P1 Mid (May 2026) — light mode only. Dark mode tokens defined but not wired in UI. Animations and micro-interactions deferred to June sprint.
+**Status:** P1 Final (June 2026) — light mode only; dark mode deferred. This doc reflects the **Stitch design system** (`stitch_pakalorie_fyp/calorie_tracking_app/DESIGN.md` + 6 screen mockups) adopted in the June UI sprint, mapped onto the existing token structure in `src/constants/`.
 
-**North star:** Apple SwiftUI structural feel + Cal AI / MacroFactor personality. Editorial, premium, not generic-AI-app.
+**North star:** Apple SwiftUI structural feel + Cal AI / MacroFactor personality, with editorial Instrument Serif headings and "Digital Zen" minimalism. Subtle Pakistani craft cues (Jali pattern watermarks) at near-invisible opacity — never clutter.
 
 ---
 
@@ -10,24 +10,36 @@
 
 | % | Role | Use |
 |---|---|---|
-| 70% | Surfaces | white / off-white backgrounds, cards |
-| 20% | Text | charcoal / black for primary content |
-| 10% | Accent | user-selected accent for CTAs, active states, progress |
+| 70% | Surfaces | sage-tinted background + white floating cards |
+| 20% | Text | near-black ink for primary content; solid-ink primary buttons |
+| 10% | Accent | green for health/save/success; coral warnings; amber streaks |
 
 (Dark mode flips: 70% near-black surfaces, 20% near-white text, 10% accent.)
 
 ### Tokens (semantic — never hex-named)
 
-#### Light mode
+> **Semantics (matches `src/constants/colors.ts` — the code is the source of truth):**
+> `surface.primary` = **page background**, `surface.secondary` = **cards**.
+
+#### Light mode (Stitch palette)
 | Token | Hex | Use |
 |---|---|---|
-| `surface.primary` | `#FFFFFF` | Cards, modal sheets |
-| `surface.secondary` | `#F5F5F5` | Page background |
-| `surface.tertiary` | `#E5E5E5` | Borders, dividers, disabled fills |
-| `text.primary` | `#121212` | Headings, body copy |
-| `text.secondary` | `#525252` | Inactive icons, supporting text |
-| `text.tertiary` | `#A3A3A3` | Placeholders, captions |
-| `error` | `#D32F2F` | Validation, exceeded targets, destructive actions |
+| `surface.primary` | `#F4FBF2` | Page background (sage tint) |
+| `surface.secondary` | `#FFFFFF` | Cards, modal sheets (float via shadow, no border) |
+| `surface.tertiary` | `#E9F0E7` | Dividers, soft input fills, disabled fills |
+| `text.primary` | `#161D18` | Headings, body copy (ink) |
+| `text.secondary` | `#3D4A40` | Inactive icons, supporting text |
+| `text.tertiary` | `#6D7A6F` | Placeholders, captions |
+| `ink` | `#161D18` | Solid-black pill primary buttons |
+| `onAccent` | `#FFFFFF` | Text/icons on accent or ink fills |
+| `accentDeep` | `#006D3D` | Active nav, focus states, insights banner |
+| `system.error` | `#BA1A1A` | Validation, destructive actions |
+| `system.warning` | `#FF6B6B` | Over-limit indicators (coral) |
+
+### Elevation (`Elevation` in colors.ts)
+- `ambient` — cards: large-blur, 5%-opacity shadow + Android `elevation: 3`. No hard borders; tonal contrast (white on sage) carries hierarchy where shadows are weak.
+- `banner` — deep-green insights/streak banner glow (`#006D3D` at 15%).
+- Press feedback: scale to 98% (AnimatedPressable), not color/opacity shifts.
 
 #### Dark mode (defined, not wired in May)
 | Token | Hex |
@@ -82,8 +94,14 @@ Loaded via:
 | `body.sm` | 12 / 16 | Geist Sans | 400 |
 | `caption` | 11 / 14 | Geist Sans | 500 |
 | `numeric.lg` | 32 / 36 | Instrument Serif | 400 |
+| `displaySerifLg` | 48 / 53 | Instrument Serif | 400 |
+| `headlineSerifMd` | 32 / 38 | Instrument Serif | 400 |
+| `headlineSerifSm` | 24 / 29 | Instrument Serif | 400 |
+| `labelCaps` | 12 / 14, +0.6 tracking | Geist Sans | 600 |
 
 `display.hero` is reserved for the single calorie number on Results. Don't reuse it elsewhere.
+
+Stitch additions: serif headlines (`displaySerifLg` for brand/hero moments, `headlineSerifMd/Sm` for screen headers and large numerals) and `labelCaps` for uppercase metadata kickers (add `textTransform: 'uppercase'` at the consumer). Sentence case for headings; serif elevates data into an achievement.
 
 ---
 
@@ -91,34 +109,36 @@ Loaded via:
 
 8-pt grid: `4, 8, 12, 16, 20, 24, 32, 40, 48, 64`.
 
-Border radius: `card = 16`, `button = 12`, `input = 12`, `pill = 999`.
+Border radius: `card = 24`, `button = 12` (legacy), `input = 16`, `pill = 999` (all new CTAs are pills).
 
 ---
 
 ## 4. Component pass (P1 Mid scope)
 
 ### Cards
-- `surface.primary` background.
-- 1px `surface.tertiary` border (light mode) for elevation without heavy shadow.
-- Padding: 16. Internal vertical rhythm: 12.
+- `surface.secondary` (white) background, floating on the sage page.
+- **No borders** — `Elevation.ambient` shadow only (Android falls back to `elevation: 3` + tonal contrast).
+- Radius 24. Padding: 16 default, 24 for hero cards. Internal vertical rhythm: 12.
 
-### Buttons
-- **Primary:** accent background, `#FFFFFF` text, 12 radius, 14h padding, body.lg semibold.
-- **Secondary:** transparent background, 1px `surface.tertiary` border, `text.primary` text.
-- **Destructive:** `error` background, white text.
-- Pressed state: 90% opacity.
+### Buttons (Stitch system — `PillButton`)
+- **Primary:** solid `ink` (black) pill, `onAccent` text, body.lg semibold.
+- **Save/log actions:** solid `accent.green` pill, white text — green is *reserved* for logging/saving/health-positive actions ("Save to history", "Confirm & log").
+- **Secondary:** transparent pill, 1px `surface.tertiary` border, `text.primary` text.
+- **Destructive:** `system.error` background, white text.
+- Pressed state: scale to 98% (not opacity).
 - Disabled: 40% opacity, no press feedback.
 
 ### Inputs
-- `surface.primary` background, 1px `surface.tertiary` border, 12 radius.
-- Focus: 2px accent bottom border (rest of border drops to 0).
-- Error: 1px `error` border, helper text below in `error`.
+- Soft `surface.tertiary` fill, **no border**, radius 16.
+- Focus: `accentDeep` border/underline + green cursor (`selectionColor`).
+- Error: 1px `system.error` border, helper text below in `system.error`.
 - Placeholder: `text.tertiary`.
 
 ### Tab bar
-- `surface.primary` background, 1px top border `surface.tertiary`.
-- Active label + icon: accent. Inactive: `text.secondary`.
-- No blur / liquid-glass for P1 Mid (deferred to June sprint).
+- Floating pill geometry (kept from v2 — docked mockup variant rejected: it ripples into every screen's bottom padding).
+- Solid `surface.secondary` background, no border, `Elevation.ambient`. No blur.
+- Active label + icon: `accentDeep` duotone. Inactive: `text.tertiary` regular.
+- Center scan FAB: `accent.green` circle, white Phosphor camera icon.
 
 ### Hero numeric (Results screen only)
 - `display.hero` Instrument Serif, `text.primary`, no decoration.
