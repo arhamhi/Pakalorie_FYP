@@ -3,6 +3,7 @@ import { Stack, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { View, ActivityIndicator } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   useFonts,
@@ -25,7 +26,7 @@ import {
   Geist_700Bold,
 } from '@expo-google-fonts/geist';
 import { InstrumentSerif_400Regular } from '@expo-google-fonts/instrument-serif';
-import { AuthProvider } from '../src/contexts/AuthContext';
+import { AuthProvider, useAuth } from '../src/contexts/AuthContext';
 import { ThemeProvider, useTheme } from '../src/contexts/ThemeContext';
 import { OnboardingProvider } from '../src/contexts/OnboardingContext';
 import { LanguageProvider } from '../src/contexts/LanguageContext';
@@ -48,15 +49,29 @@ const queryClient = new QueryClient({
   },
 });
 
+const ONBOARDING_KEY = '@pakalorie_onboarding_complete';
+
 function RootLayoutNav() {
   const { theme, colors } = useTheme();
+  const { user, profile } = useAuth();
   const router = useRouter();
   const notificationListener = useRef<(() => void) | null>(null);
 
+  // Notification setup runs only once the user is signed in AND onboarded —
+  // otherwise the OS permission dialog pops over the welcome/onboarding
+  // screens. The onboarding permissions step owns the first ask.
   useEffect(() => {
-    // Initialize notifications
+    if (!user) return;
+
+    let active = true;
     const initNotifications = async () => {
+      const onboarded =
+        profile?.onboarding_complete ||
+        (await AsyncStorage.getItem(ONBOARDING_KEY)) === 'true';
+      if (!active || !onboarded) return;
+
       const granted = await requestNotificationPermissions();
+      if (!active) return;
 
       if (granted) {
         const daysAway = await getDaysSinceLastActive();
@@ -70,7 +85,14 @@ function RootLayoutNav() {
     };
 
     initNotifications();
+    return () => {
+      active = false;
+    };
+  }, [user, profile?.onboarding_complete]);
 
+  // The tap handler is registered unconditionally so a notification tap can
+  // always route into the app.
+  useEffect(() => {
     notificationListener.current = setupNotificationResponseHandler(
       (notification) => {
         if (__DEV__) {
