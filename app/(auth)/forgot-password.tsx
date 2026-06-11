@@ -148,7 +148,7 @@ export default function ForgotPasswordScreen() {
 
               <Text
                 style={{
-                  ...Type.headingLg,
+                  ...Type.headlineSerifMd,
                   color: colors.text.primary,
                   textAlign: 'center',
                   marginBottom: Spacing.sm,

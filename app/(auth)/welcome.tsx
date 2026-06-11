@@ -1,17 +1,18 @@
 import React from 'react';
-import { View, Text, Pressable, StatusBar } from 'react-native';
+import { View, Text, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useTheme } from '../../src/contexts/ThemeContext';
-import { Type, FontFamily } from '../../src/constants/fonts';
+import { Type } from '../../src/constants/fonts';
 import { Spacing, Radius } from '../../src/constants/spacing';
+import { Colors } from '../../src/constants/colors';
+import { PillButton } from '../../src/components/ui';
 
 /**
  * Welcome — first-launch entry surface (auth route group).
  *
- * Per docs/DESIGN.md §5: full-bleed surface.secondary, centered logo +
- * tagline + 2 CTA buttons. No image background, no animations — light
- * mode only for P1 Mid.
+ * Stitch design: sage page background, Instrument Serif brand title,
+ * ink primary pill + hairline secondary pill. Light mode only.
  */
 export default function WelcomeScreen() {
   const { colors, accent } = useTheme();
@@ -44,8 +45,8 @@ export default function WelcomeScreen() {
           >
             <Text
               style={{
-                ...Type.displayLg,
-                color: '#FFFFFF',
+                ...Type.displaySerifLg,
+                color: Colors.onAccent,
               }}
             >
               P
@@ -54,7 +55,7 @@ export default function WelcomeScreen() {
 
           <Text
             style={{
-              ...Type.displayLg,
+              ...Type.displaySerifLg,
               color: colors.text.primary,
               marginBottom: Spacing.sm,
               textAlign: 'center',
@@ -77,44 +78,17 @@ export default function WelcomeScreen() {
 
         {/* CTAs + disclaimer */}
         <View>
-          <Pressable
+          <PillButton
+            label="Create account"
             onPress={() => router.push('/(auth)/signup')}
-            style={({ pressed }) => ({
-              backgroundColor: accent,
-              paddingVertical: Spacing.md,
-              borderRadius: Radius.button,
-              alignItems: 'center',
-              opacity: pressed ? 0.9 : 1,
-              marginBottom: Spacing.sm,
-            })}
-          >
-            <Text style={{ ...Type.bodyLg, color: '#FFFFFF', fontFamily: FontFamily.geistSemiBold }}>
-              Create account
-            </Text>
-          </Pressable>
+            style={{ marginBottom: Spacing.sm }}
+          />
 
-          <Pressable
+          <PillButton
+            label="Sign in"
+            variant="secondary"
             onPress={() => router.push('/(auth)/login')}
-            style={({ pressed }) => ({
-              backgroundColor: 'transparent',
-              borderWidth: 1,
-              borderColor: colors.surface.tertiary,
-              paddingVertical: Spacing.md,
-              borderRadius: Radius.button,
-              alignItems: 'center',
-              opacity: pressed ? 0.7 : 1,
-            })}
-          >
-            <Text
-              style={{
-                ...Type.bodyLg,
-                color: colors.text.primary,
-                fontFamily: FontFamily.geistSemiBold,
-              }}
-            >
-              Sign in
-            </Text>
-          </Pressable>
+          />
 
           <Text
             style={{
