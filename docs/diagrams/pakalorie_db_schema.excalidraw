@@ -1,0 +1,294 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://excalidraw.com",
+  "appState": { "viewBackgroundColor": "#ffffff", "gridSize": 20 },
+  "files": {},
+  "elements": [
+    {
+      "type": "text", "id": "title_main", "x": 40, "y": 24, "width": 760, "height": 35,
+      "text": "Pakalorie - Food Database Schema (5 tables)", "originalText": "Pakalorie - Food Database Schema (5 tables)",
+      "fontSize": 28, "fontFamily": 3, "textAlign": "left", "verticalAlign": "top",
+      "strokeColor": "#1e40af", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 100001, "version": 1, "versionNonce": 100002, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false, "containerId": null, "lineHeight": 1.25
+    },
+    {
+      "type": "rectangle", "id": "foods_hdr", "x": 590, "y": 150, "width": 280, "height": 34,
+      "strokeColor": "#1e3a5f", "backgroundColor": "#3b82f6", "fillStyle": "solid",
+      "strokeWidth": 2, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 100003, "version": 1, "versionNonce": 100004, "isDeleted": false,
+      "groupIds": [], "boundElements": [{ "id": "foods_hdr_txt", "type": "text" }],
+      "link": null, "locked": false, "roundness": { "type": 3 }
+    },
+    {
+      "type": "text", "id": "foods_hdr_txt", "x": 600, "y": 158, "width": 260, "height": 18,
+      "text": "foods (hub)", "originalText": "foods (hub)",
+      "fontSize": 14, "fontFamily": 3, "textAlign": "center", "verticalAlign": "middle",
+      "strokeColor": "#ffffff", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 100005, "version": 1, "versionNonce": 100006, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false, "containerId": "foods_hdr", "lineHeight": 1.25
+    },
+    {
+      "type": "rectangle", "id": "foods_body", "x": 590, "y": 184, "width": 280, "height": 142,
+      "strokeColor": "#1e40af", "backgroundColor": "#dbeafe", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 100007, "version": 1, "versionNonce": 100008, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false, "roundness": { "type": 3 }
+    },
+    {
+      "type": "text", "id": "foods_cols", "x": 602, "y": 192, "width": 256, "height": 126,
+      "text": "id (pk)  e.g. meat_01\nsource: desi_v1 | usda\nsource_id\nname_en / name_ur (Urdu)\nslug\ncategory\nbase_unit", "originalText": "id (pk)  e.g. meat_01\nsource: desi_v1 | usda\nsource_id\nname_en / name_ur (Urdu)\nslug\ncategory\nbase_unit",
+      "fontSize": 12, "fontFamily": 3, "textAlign": "left", "verticalAlign": "top",
+      "strokeColor": "#374151", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 100009, "version": 1, "versionNonce": 100010, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false, "containerId": null, "lineHeight": 1.25
+    },
+    {
+      "type": "rectangle", "id": "aliases_hdr", "x": 140, "y": 100, "width": 260, "height": 34,
+      "strokeColor": "#1e3a5f", "backgroundColor": "#60a5fa", "fillStyle": "solid",
+      "strokeWidth": 2, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 200001, "version": 1, "versionNonce": 200002, "isDeleted": false,
+      "groupIds": [], "boundElements": [{ "id": "aliases_hdr_txt", "type": "text" }],
+      "link": null, "locked": false, "roundness": { "type": 3 }
+    },
+    {
+      "type": "text", "id": "aliases_hdr_txt", "x": 150, "y": 108, "width": 240, "height": 18,
+      "text": "food_aliases", "originalText": "food_aliases",
+      "fontSize": 14, "fontFamily": 3, "textAlign": "center", "verticalAlign": "middle",
+      "strokeColor": "#ffffff", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 200003, "version": 1, "versionNonce": 200004, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false, "containerId": "aliases_hdr", "lineHeight": 1.25
+    },
+    {
+      "type": "rectangle", "id": "aliases_body", "x": 140, "y": 134, "width": 260, "height": 66,
+      "strokeColor": "#1e40af", "backgroundColor": "#dbeafe", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 200005, "version": 1, "versionNonce": 200006, "isDeleted": false,
+      "groupIds": [], "boundElements": [{ "id": "arr_aliases_foods", "type": "arrow" }],
+      "link": null, "locked": false, "roundness": { "type": 3 }
+    },
+    {
+      "type": "text", "id": "aliases_cols", "x": 152, "y": 142, "width": 236, "height": 54,
+      "text": "id (pk)\nfood_id (fk -> foods)\nalias  e.g. 'nihari', Roman Urdu", "originalText": "id (pk)\nfood_id (fk -> foods)\nalias  e.g. 'nihari', Roman Urdu",
+      "fontSize": 12, "fontFamily": 3, "textAlign": "left", "verticalAlign": "top",
+      "strokeColor": "#374151", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 200007, "version": 1, "versionNonce": 200008, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false, "containerId": null, "lineHeight": 1.25
+    },
+    {
+      "type": "rectangle", "id": "portions_hdr", "x": 1060, "y": 100, "width": 280, "height": 34,
+      "strokeColor": "#1e3a5f", "backgroundColor": "#60a5fa", "fillStyle": "solid",
+      "strokeWidth": 2, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 300001, "version": 1, "versionNonce": 300002, "isDeleted": false,
+      "groupIds": [], "boundElements": [{ "id": "portions_hdr_txt", "type": "text" }],
+      "link": null, "locked": false, "roundness": { "type": 3 }
+    },
+    {
+      "type": "text", "id": "portions_hdr_txt", "x": 1070, "y": 108, "width": 260, "height": 18,
+      "text": "portion_sizes", "originalText": "portion_sizes",
+      "fontSize": 14, "fontFamily": 3, "textAlign": "center", "verticalAlign": "middle",
+      "strokeColor": "#ffffff", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 300003, "version": 1, "versionNonce": 300004, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false, "containerId": "portions_hdr", "lineHeight": 1.25
+    },
+    {
+      "type": "rectangle", "id": "portions_body", "x": 1060, "y": 134, "width": 280, "height": 96,
+      "strokeColor": "#1e40af", "backgroundColor": "#dbeafe", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 300005, "version": 1, "versionNonce": 300006, "isDeleted": false,
+      "groupIds": [], "boundElements": [{ "id": "arr_portions_foods", "type": "arrow" }, { "id": "arr_nutrition_portions", "type": "arrow" }],
+      "link": null, "locked": false, "roundness": { "type": 3 }
+    },
+    {
+      "type": "text", "id": "portions_cols", "x": 1072, "y": 142, "width": 256, "height": 80,
+      "text": "id (pk)\nfood_id (fk -> foods)\nlabel  e.g. 'Standard Bowl'\nweight_g e.g. 300 / is_default\nNOT a fixed small/med/large enum", "originalText": "id (pk)\nfood_id (fk -> foods)\nlabel  e.g. 'Standard Bowl'\nweight_g e.g. 300 / is_default\nNOT a fixed small/med/large enum",
+      "fontSize": 12, "fontFamily": 3, "textAlign": "left", "verticalAlign": "top",
+      "strokeColor": "#374151", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 300007, "version": 1, "versionNonce": 300008, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false, "containerId": null, "lineHeight": 1.25
+    },
+    {
+      "type": "rectangle", "id": "modifiers_hdr", "x": 140, "y": 420, "width": 260, "height": 34,
+      "strokeColor": "#1e3a5f", "backgroundColor": "#60a5fa", "fillStyle": "solid",
+      "strokeWidth": 2, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 400001, "version": 1, "versionNonce": 400002, "isDeleted": false,
+      "groupIds": [], "boundElements": [{ "id": "modifiers_hdr_txt", "type": "text" }],
+      "link": null, "locked": false, "roundness": { "type": 3 }
+    },
+    {
+      "type": "text", "id": "modifiers_hdr_txt", "x": 150, "y": 428, "width": 240, "height": 18,
+      "text": "modifier_constants", "originalText": "modifier_constants",
+      "fontSize": 14, "fontFamily": 3, "textAlign": "center", "verticalAlign": "middle",
+      "strokeColor": "#ffffff", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 400003, "version": 1, "versionNonce": 400004, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false, "containerId": "modifiers_hdr", "lineHeight": 1.25
+    },
+    {
+      "type": "rectangle", "id": "modifiers_body", "x": 140, "y": 454, "width": 260, "height": 82,
+      "strokeColor": "#1e40af", "backgroundColor": "#dbeafe", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 400005, "version": 1, "versionNonce": 400006, "isDeleted": false,
+      "groupIds": [], "boundElements": [{ "id": "arr_modifiers_foods", "type": "arrow" }],
+      "link": null, "locked": false, "roundness": { "type": 3 }
+    },
+    {
+      "type": "text", "id": "modifiers_cols", "x": 152, "y": 462, "width": 236, "height": 68,
+      "text": "id (pk)\nfood_id (fk -> foods)\nname  e.g. extra_tarri\nkcal_delta  e.g. +60 (additive)", "originalText": "id (pk)\nfood_id (fk -> foods)\nname  e.g. extra_tarri\nkcal_delta  e.g. +60 (additive)",
+      "fontSize": 12, "fontFamily": 3, "textAlign": "left", "verticalAlign": "top",
+      "strokeColor": "#374151", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 400007, "version": 1, "versionNonce": 400008, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false, "containerId": null, "lineHeight": 1.25
+    },
+    {
+      "type": "rectangle", "id": "nutrition_hdr", "x": 1060, "y": 420, "width": 280, "height": 34,
+      "strokeColor": "#1e3a5f", "backgroundColor": "#60a5fa", "fillStyle": "solid",
+      "strokeWidth": 2, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 500001, "version": 1, "versionNonce": 500002, "isDeleted": false,
+      "groupIds": [], "boundElements": [{ "id": "nutrition_hdr_txt", "type": "text" }],
+      "link": null, "locked": false, "roundness": { "type": 3 }
+    },
+    {
+      "type": "text", "id": "nutrition_hdr_txt", "x": 1070, "y": 428, "width": 260, "height": 18,
+      "text": "nutrition_facts", "originalText": "nutrition_facts",
+      "fontSize": 14, "fontFamily": 3, "textAlign": "center", "verticalAlign": "middle",
+      "strokeColor": "#ffffff", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 500003, "version": 1, "versionNonce": 500004, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false, "containerId": "nutrition_hdr", "lineHeight": 1.25
+    },
+    {
+      "type": "rectangle", "id": "nutrition_body", "x": 1060, "y": 454, "width": 280, "height": 112,
+      "strokeColor": "#1e40af", "backgroundColor": "#dbeafe", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 500005, "version": 1, "versionNonce": 500006, "isDeleted": false,
+      "groupIds": [], "boundElements": [{ "id": "arr_nutrition_foods", "type": "arrow" }, { "id": "arr_nutrition_portions", "type": "arrow" }],
+      "link": null, "locked": false, "roundness": { "type": 3 }
+    },
+    {
+      "type": "text", "id": "nutrition_cols", "x": 1072, "y": 462, "width": 256, "height": 96,
+      "text": "id (pk)\nfood_id (fk) / portion_id (fk)\ncalories_kcal / protein_g\ncarbs_g / fat_g\nfiber_g NULLABLE\nportion_weight_g", "originalText": "id (pk)\nfood_id (fk) / portion_id (fk)\ncalories_kcal / protein_g\ncarbs_g / fat_g\nfiber_g NULLABLE\nportion_weight_g",
+      "fontSize": 12, "fontFamily": 3, "textAlign": "left", "verticalAlign": "top",
+      "strokeColor": "#374151", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 500007, "version": 1, "versionNonce": 500008, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false, "containerId": null, "lineHeight": 1.25
+    },
+    {
+      "type": "arrow", "id": "arr_aliases_foods", "x": 402, "y": 167, "width": 186, "height": 50,
+      "strokeColor": "#64748b", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 2, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 600001, "version": 1, "versionNonce": 600002, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false,
+      "points": [[0, 0], [186, 50]],
+      "startBinding": { "elementId": "aliases_body", "focus": 0, "gap": 2 },
+      "endBinding": { "elementId": "foods_body", "focus": 0, "gap": 2 },
+      "startArrowhead": null, "endArrowhead": "arrow"
+    },
+    {
+      "type": "arrow", "id": "arr_portions_foods", "x": 1058, "y": 167, "width": 186, "height": 50,
+      "strokeColor": "#64748b", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 2, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 600003, "version": 1, "versionNonce": 600004, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false,
+      "points": [[0, 0], [-186, 50]],
+      "startBinding": { "elementId": "portions_body", "focus": 0, "gap": 2 },
+      "endBinding": { "elementId": "foods_body", "focus": 0, "gap": 2 },
+      "startArrowhead": null, "endArrowhead": "arrow"
+    },
+    {
+      "type": "arrow", "id": "arr_modifiers_foods", "x": 402, "y": 480, "width": 186, "height": -180,
+      "strokeColor": "#64748b", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 2, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 600005, "version": 1, "versionNonce": 600006, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false,
+      "points": [[0, 0], [186, -180]],
+      "startBinding": { "elementId": "modifiers_body", "focus": 0, "gap": 2 },
+      "endBinding": { "elementId": "foods_body", "focus": 0, "gap": 2 },
+      "startArrowhead": null, "endArrowhead": "arrow"
+    },
+    {
+      "type": "arrow", "id": "arr_nutrition_foods", "x": 1058, "y": 480, "width": 186, "height": -180,
+      "strokeColor": "#64748b", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 2, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 600007, "version": 1, "versionNonce": 600008, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false,
+      "points": [[0, 0], [-186, -180]],
+      "startBinding": { "elementId": "nutrition_body", "focus": 0, "gap": 2 },
+      "endBinding": { "elementId": "foods_body", "focus": 0, "gap": 2 },
+      "startArrowhead": null, "endArrowhead": "arrow"
+    },
+    {
+      "type": "arrow", "id": "arr_nutrition_portions", "x": 1200, "y": 418, "width": 0, "height": 186,
+      "strokeColor": "#64748b", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 2, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 600009, "version": 1, "versionNonce": 600010, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false,
+      "points": [[0, 0], [0, -186]],
+      "startBinding": { "elementId": "nutrition_body", "focus": 0, "gap": 2 },
+      "endBinding": { "elementId": "portions_body", "focus": 0, "gap": 2 },
+      "startArrowhead": null, "endArrowhead": "arrow"
+    },
+    {
+      "type": "text", "id": "lbl_np", "x": 1212, "y": 310, "width": 110, "height": 16,
+      "text": "portion_id", "originalText": "portion_id",
+      "fontSize": 12, "fontFamily": 3, "textAlign": "left", "verticalAlign": "top",
+      "strokeColor": "#64748b", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 600011, "version": 1, "versionNonce": 600012, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false, "containerId": null, "lineHeight": 1.25
+    },
+    {
+      "type": "rectangle", "id": "sample_box", "x": 460, "y": 620, "width": 620, "height": 130,
+      "strokeColor": "#1e293b", "backgroundColor": "#1e293b", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 700001, "version": 1, "versionNonce": 700002, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false, "roundness": { "type": 3 }
+    },
+    {
+      "type": "text", "id": "sample_txt", "x": 476, "y": 634, "width": 590, "height": 102,
+      "text": "real seeded rows (Nihari):\nfoods:              meat_01 | desi_v1 | Nihari (Beef/Mutton) | Meat Gravy\nportion_sizes:      Standard Bowl | 300 g | default\nnutrition_facts:    255 kcal | P 38 | C 4 | F 17 | fiber NULL\nmodifier_constants: extra_tarri +60 | nalli +45", "originalText": "real seeded rows (Nihari):\nfoods:              meat_01 | desi_v1 | Nihari (Beef/Mutton) | Meat Gravy\nportion_sizes:      Standard Bowl | 300 g | default\nnutrition_facts:    255 kcal | P 38 | C 4 | F 17 | fiber NULL\nmodifier_constants: extra_tarri +60 | nalli +45",
+      "fontSize": 12, "fontFamily": 3, "textAlign": "left", "verticalAlign": "top",
+      "strokeColor": "#22c55e", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 700003, "version": 1, "versionNonce": 700004, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false, "containerId": null, "lineHeight": 1.25
+    },
+    {
+      "type": "text", "id": "note_seed", "x": 140, "y": 620, "width": 290, "height": 48,
+      "text": "seed: 160 rows, idempotent\n30 desi_v1 (curated core)\n130 usda (Foundation Foods)", "originalText": "seed: 160 rows, idempotent\n30 desi_v1 (curated core)\n130 usda (Foundation Foods)",
+      "fontSize": 12, "fontFamily": 3, "textAlign": "left", "verticalAlign": "top",
+      "strokeColor": "#64748b", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 700005, "version": 1, "versionNonce": 700006, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false, "containerId": null, "lineHeight": 1.25
+    },
+    {
+      "type": "text", "id": "note_fiber", "x": 140, "y": 690, "width": 300, "height": 32,
+      "text": "fiber_g NULLABLE: desi rows have none,\nthe UI shows a dash - never fabricated", "originalText": "fiber_g NULLABLE: desi rows have none,\nthe UI shows a dash - never fabricated",
+      "fontSize": 12, "fontFamily": 3, "textAlign": "left", "verticalAlign": "top",
+      "strokeColor": "#b91c1c", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 700007, "version": 1, "versionNonce": 700008, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false, "containerId": null, "lineHeight": 1.25
+    },
+    {
+      "type": "text", "id": "note_index", "x": 140, "y": 778, "width": 420, "height": 32,
+      "text": "search: pg_trgm trigram similarity over name_en,\nname_ur and aliases - pgvector enabled for P2 embeddings", "originalText": "search: pg_trgm trigram similarity over name_en,\nname_ur and aliases - pgvector enabled for P2 embeddings",
+      "fontSize": 12, "fontFamily": 3, "textAlign": "left", "verticalAlign": "top",
+      "strokeColor": "#64748b", "backgroundColor": "transparent", "fillStyle": "solid",
+      "strokeWidth": 1, "strokeStyle": "solid", "roughness": 0, "opacity": 100, "angle": 0,
+      "seed": 700009, "version": 1, "versionNonce": 700010, "isDeleted": false,
+      "groupIds": [], "boundElements": null, "link": null, "locked": false, "containerId": null, "lineHeight": 1.25
+    }
+  ]
+}

@@ -10,6 +10,11 @@ Last updated: 2026-06-10.
 
 ## 1. System architecture
 
+> Editable Excalidraw diagrams (with rendered PNGs) for every section live in
+> [`diagrams/`](./diagrams/): system architecture, scan pipeline, RAG engine,
+> ML pipelines, DB schema, and mobile navigation. Open the `.excalidraw` files
+> at excalidraw.com to edit; drop the PNGs straight into the report.
+
 ```mermaid
 flowchart LR
     subgraph Phone["Mobile app (Expo / React Native)"]
