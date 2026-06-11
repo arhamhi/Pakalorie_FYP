@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, ViewStyle, TouchableOpacity, Platform } from 'react-native';
+import { View, ViewStyle, TouchableOpacity } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { useTheme } from '../../contexts/ThemeContext';
+import { Elevation } from '../../constants/colors';
+import { Radius } from '../../constants/spacing';
 
 interface CardProps {
   children: React.ReactNode;
@@ -26,27 +28,15 @@ export const Card: React.FC<CardProps> = ({
   };
 
   const baseStyle: ViewStyle = {
-    borderRadius: 16,
-    overflow: 'hidden',
+    borderRadius: Radius.card,
     padding: getPadding(),
   };
 
-  // Light mode gets shadows and borders for visual separation
+  // Stitch: cards float on the tinted background via ambient shadow —
+  // no hard borders (Elevation.ambient carries the Android fallback).
   const lightModeElevation: ViewStyle = theme === 'light' ? {
     backgroundColor: colors.surface.secondary,
-    borderWidth: 1,
-    borderColor: colors.border,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.06,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 2,
-      },
-    }),
+    ...Elevation.ambient,
   } : {
     backgroundColor: colors.surface.secondary,
   };
@@ -64,7 +54,7 @@ export const Card: React.FC<CardProps> = ({
         <BlurView
           intensity={80}
           tint={theme === 'dark' ? 'dark' : 'light'}
-          style={[baseStyle, style]}
+          style={[baseStyle, { overflow: 'hidden' }, style]}
         >
           {children}
         </BlurView>
