@@ -401,7 +401,7 @@ export default function HomeScreen() {
                   size={220}
                   strokeWidth={16}
                   value={remainingCalories > 0 ? remainingCalories : 0}
-                  unit="kcal remaining"
+                  unit="kcal left"
                 />
                 <View
                   style={{

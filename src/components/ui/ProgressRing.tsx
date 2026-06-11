@@ -103,8 +103,10 @@ export const ProgressRing: React.FC<ProgressRingProps> = ({
         {unit && (
           <Text
             style={{
-              fontFamily: FontFamily.geistRegular,
-              fontSize: size * 0.08,
+              fontFamily: FontFamily.geistSemiBold,
+              fontSize: size * 0.065,
+              letterSpacing: 1,
+              textTransform: 'uppercase',
               color: colors.text.tertiary,
               marginTop: 2,
             }}
