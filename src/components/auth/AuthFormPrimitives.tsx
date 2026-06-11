@@ -67,7 +67,8 @@ export function AuthHeader({ title, subtitle, onBack }: AuthHeaderProps) {
         <CaretLeftIcon size={24} color={colors.text.primary} weight="regular" />
       </Pressable>
 
-      <Text style={{ ...Type.headingLg, color: colors.text.primary }}>{title}</Text>
+      {/* Stitch: screen headers are Instrument Serif (headlineSerifMd) */}
+      <Text style={{ ...Type.headlineSerifMd, color: colors.text.primary }}>{title}</Text>
 
       {subtitle && (
         <Text
