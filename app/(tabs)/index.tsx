@@ -941,27 +941,26 @@ export default function HomeScreen() {
           />
         </View>
 
-        {/* Today's Log */}
+        {/* Today's meals — Stitch list: caps meal-type kicker + serif kcal */}
         <View style={{ marginTop: 8 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
             <Text
               style={{
-                fontFamily: FontFamily.geistSemiBold,
-                fontSize: 18,
+                ...Type.headlineSerifSm,
                 color: colors.text.primary,
               }}
             >
-              Today's Log
+              Today's meals
             </Text>
-            <TouchableOpacity onPress={() => router.push('/(tabs)/calendar-log')}>
+            <TouchableOpacity onPress={() => router.push('/(tabs)/calendar-log')} hitSlop={8}>
               <Text
                 style={{
                   fontFamily: FontFamily.geistMedium,
                   fontSize: 14,
-                  color: accent,
+                  color: Colors.accentDeep,
                 }}
               >
-                View All
+                View all
               </Text>
             </TouchableOpacity>
           </View>
@@ -976,23 +975,13 @@ export default function HomeScreen() {
                     alignItems: 'center',
                   }}
                 >
-                  <View style={{ flex: 1 }}>
+                  <View style={{ flex: 1, paddingRight: 12 }}>
                     <Text
                       style={{
-                        fontFamily: FontFamily.geistMedium,
-                        fontSize: 15,
-                        color: colors.text.primary,
-                      }}
-                      numberOfLines={1}
-                    >
-                      {log.name}
-                    </Text>
-                    <Text
-                      style={{
-                        fontFamily: FontFamily.geistRegular,
-                        fontSize: 13,
-                        color: colors.text.tertiary,
-                        textTransform: 'capitalize',
+                        ...Type.labelCaps,
+                        textTransform: 'uppercase',
+                        color: Colors.accentDeep,
+                        marginBottom: 2,
                       }}
                     >
                       {log.meal_type}
@@ -1000,12 +989,22 @@ export default function HomeScreen() {
                         ? ` • ${new Date(log.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`
                         : ''}
                     </Text>
+                    <Text
+                      style={{
+                        fontFamily: FontFamily.geistSemiBold,
+                        fontSize: 16,
+                        color: colors.text.primary,
+                      }}
+                      numberOfLines={1}
+                    >
+                      {log.name}
+                    </Text>
                   </View>
                   <Text
                     style={{
                       fontFamily: FontFamily.instrumentSerif,
-                      fontSize: 16,
-                      color: accent,
+                      fontSize: 18,
+                      color: colors.text.primary,
                     }}
                   >
                     {log.calories} kcal
