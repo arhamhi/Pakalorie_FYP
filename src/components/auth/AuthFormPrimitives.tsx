@@ -50,6 +50,8 @@ export function AuthHeader({ title, subtitle, onBack }: AuthHeaderProps) {
       <Pressable
         onPress={handleBack}
         hitSlop={12}
+        accessibilityRole="button"
+        accessibilityLabel="Go back"
         style={({ pressed }) => ({
           width: 40,
           height: 40,

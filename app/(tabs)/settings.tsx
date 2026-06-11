@@ -345,36 +345,9 @@ export default function SettingsScreen() {
           Appearance
         </Text>
         <Card style={{ marginBottom: 24 }}>
-          {/* Dark Mode */}
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              paddingVertical: 12,
-            }}
-          >
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <MaterialIcons name="dark-mode" size={22} color={colors.text.secondary} />
-              <Text
-                style={{
-                  fontFamily: 'PlusJakartaSans_500Medium',
-                  fontSize: 16,
-                  color: colors.text.primary,
-                  marginLeft: 12,
-                }}
-              >
-                Dark Mode
-              </Text>
-            </View>
-            <Switch
-              value={theme === 'dark'}
-              onValueChange={handleThemeChange}
-              trackColor={{ false: colors.surface.tertiary, true: accent }}
-              thumbColor="#fff"
-            />
-          </View>
-
+          {/* Dark mode toggle removed for P1: dark tokens exist but the dark
+              UI is unpolished (docs/DESIGN.md defers it). handleThemeChange
+              stays wired for when the toggle returns. */}
           {/* Accent Color */}
           <View style={{ paddingVertical: 12 }}>
             <Text

@@ -24,6 +24,7 @@ import {
 } from '../../src/components/auth/AuthFormPrimitives';
 import { Type } from '../../src/constants/fonts';
 import { Spacing } from '../../src/constants/spacing';
+import { Colors } from '../../src/constants/colors';
 import type { AuthError } from '../../src/types/auth';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -148,6 +149,8 @@ export default function SignupScreen() {
                 onPress={() => setShowPassword((v) => !v)}
                 hitSlop={8}
                 style={{ padding: 4 }}
+                accessibilityRole="button"
+                accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? (
                   <EyeClosedIcon size={20} color={colors.text.tertiary} weight="regular" />
@@ -162,7 +165,7 @@ export default function SignupScreen() {
             <Text
               style={{
                 ...Type.bodySm,
-                color: '#D32F2F',
+                color: Colors.system.error,
                 marginTop: Spacing.xs,
                 marginBottom: Spacing.sm,
                 textAlign: 'center',
