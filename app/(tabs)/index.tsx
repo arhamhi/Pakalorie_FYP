@@ -21,7 +21,7 @@ import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Svg, { Path, Rect } from 'react-native-svg';
 import { useTheme } from '../../src/contexts/ThemeContext';
-import { Colors } from '../../src/constants/colors';
+import { Colors, Elevation } from '../../src/constants/colors';
 import { Type, FontFamily } from '../../src/constants/fonts';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useLanguage } from '../../src/contexts/LanguageContext';
@@ -909,50 +909,37 @@ export default function HomeScreen() {
           </TouchableOpacity>
         )}
 
-        {/* Search Meals / Manual Logging Card */}
-        <TouchableOpacity onPress={() => router.push('/(tabs)/search')} activeOpacity={0.8}>
-          <Card style={{ marginBottom: 16 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <View
-                  style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 24,
-                    backgroundColor: accent + '20',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginRight: 14,
-                  }}
-                >
-                  <MagnifyingGlassIcon size={24} color={accent} weight="duotone" />
-                </View>
-                <View>
-                  <Text
-                    style={{
-                      fontFamily: FontFamily.geistBold,
-                      fontSize: 18,
-                      color: colors.text.primary,
-                    }}
-                  >
-                    Search & Log
-                  </Text>
-                  <Text
-                    style={{
-                      fontFamily: FontFamily.geistMedium,
-                      fontSize: 14,
-                      color: colors.text.secondary,
-                      marginTop: 2,
-                    }}
-                  >
-                    Search foods or log manually
-                  </Text>
-                </View>
-              </View>
-              <CaretRightIcon size={24} color={colors.text.tertiary} weight="regular" />
-            </View>
-          </Card>
-        </TouchableOpacity>
+        {/* Quick log — Stitch dashboard tiles (Photo / Search / Manual) */}
+        <Text
+          style={{
+            ...Type.labelCaps,
+            textTransform: 'uppercase',
+            color: colors.text.secondary,
+            marginBottom: 12,
+          }}
+        >
+          Quick log
+        </Text>
+        <View style={{ flexDirection: 'row', gap: 12, marginBottom: 16 }}>
+          <QuickLogTile
+            label="Photo"
+            icon={<CameraIcon size={24} color={Colors.accentDeep} weight="duotone" />}
+            onPress={() => router.push('/(tabs)/scan')}
+            colors={colors}
+          />
+          <QuickLogTile
+            label="Search"
+            icon={<MagnifyingGlassIcon size={24} color={Colors.accentDeep} weight="duotone" />}
+            onPress={() => router.push('/(tabs)/search')}
+            colors={colors}
+          />
+          <QuickLogTile
+            label="Manual"
+            icon={<PencilSimpleIcon size={24} color={Colors.accentDeep} weight="duotone" />}
+            onPress={() => router.push('/(tabs)/create-meal')}
+            colors={colors}
+          />
+        </View>
 
         {/* Today's Log */}
         <View style={{ marginTop: 8 }}>
@@ -1054,5 +1041,55 @@ export default function HomeScreen() {
         </View>
       </ScrollView>
     </View>
+  );
+}
+
+interface QuickLogTileProps {
+  label: string;
+  icon: React.ReactNode;
+  onPress: () => void;
+  colors: ReturnType<typeof useTheme>['colors'];
+}
+
+// White Stitch tile with a deep-green icon chip (dashboard "Quick log" row).
+function QuickLogTile({ label, icon, onPress, colors }: QuickLogTileProps) {
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.85}
+      accessibilityRole="button"
+      accessibilityLabel={`${label} log`}
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        paddingVertical: 16,
+        borderRadius: 24,
+        backgroundColor: colors.surface.secondary,
+        ...Elevation.ambient,
+      }}
+    >
+      <View
+        style={{
+          width: 44,
+          height: 44,
+          borderRadius: 22,
+          backgroundColor: Colors.accentDeep + '1A',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: 8,
+        }}
+      >
+        {icon}
+      </View>
+      <Text
+        style={{
+          ...Type.labelCaps,
+          textTransform: 'uppercase',
+          color: colors.text.secondary,
+        }}
+      >
+        {label}
+      </Text>
+    </TouchableOpacity>
   );
 }
