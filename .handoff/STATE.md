@@ -1,7 +1,9 @@
 ﻿# STATE â€” single source of truth on current code state
 
-**Last updated:** 2026-06-10 by Claude (CDX-007 MiDaS **DEPLOYED LIVE** with Arham's explicit permission; Colab notebook hardened; calorie eval 12/12 on live API; TEAM_GUIDE + SDS written; PRs #2-#5 merged)
-**Next action owner:** Arham (1. on-device Expo Go smoke test — see below; 2. hand a group member `docs/TEAM_GUIDE.md` §2 to run the Colab training; 3. provide held-out food photos for the notebook's qualitative cell).
+**Last updated:** 2026-06-11 by Claude (mobile polish sprint: audit fixes A1-A5 + Stitch UI reskin B1-B6 merged as PRs #8-#18; tsc at 0 errors; demo flow gated on every batch)
+**Next action owner:** Arham (1. **on-device demo pass on Android** — the app looks completely different now (Stitch design) and 3 demo-flow bugs were fixed, see "What Arham needs to test on device"; 2. hand a group member `docs/TEAM_GUIDE.md` §2 to run the Colab training; 3. held-out food photos for the notebook's qualitative cell).
+
+**MOBILE POLISH 2026-06-11 (Claude):** Phase 1 audit found 3 critical demo-flow bugs + 12 tsc errors; all fixed (PRs #8-#12): light theme now the fresh-install default (was dark), onboarding completion persists to Firestore + root router honors it (sign-in on a fresh device no longer forces the paywall flow), the superseded `app/onboarding/auth.tsx` is deleted (paywall now routes to /onboarding/name), notification permission prompt deferred until signed-in + onboarded, `npx tsc --noEmit` = **0 errors** (was 12), a11y labels on all demo-path icon buttons, dark-mode toggle hidden. Then the **Stitch UI reskin** (PRs #13-#18, design source committed at `stitch_pakalorie_fyp/`): sage/white/ink palette + serif headings via token swap (structure frozen, all screens inherit), PillButton system (ink primary / green save / hairline secondary), Phosphor tab bar, auth + home dashboard restyled to the mockups, scan result surfaces cosmetically aligned (also fixed scan's inverted surface-token usage). docs/DESIGN.md rewritten to match shipped tokens. Every batch gated on tsc 0 + iOS export + api-smoke 10/10.
 
 **LIVE DEPLOY 2026-06-10 (Claude, Arham-authorized):** VPS now runs `main` @ 9d30fd7. `/opt/pakalorie-fyp` converted to a real git checkout using a **repo-scoped read-only GitHub deploy key** generated on the box (`/root/.ssh/pakalorie_deploy`, registered as "vps-deploy-readonly") — future deploys are `git pull` + compose build/up, no account tokens involved. MiDaS model downloaded on-box (sha256 matches local). **Verified from outside:** `/healthz` 200; `POST /portion` with the real Haleem photo -> `medium` bucket (identical to local); `POST /calories` with `portion_multiplier:1.3` -> 409.5 kcal (315 x 1.3 exact, `gemini_grounded`, source rows unscaled); n8n 200; Postgres external probe still False. Container healthy at 1g mem limit.
 
@@ -121,9 +123,19 @@ Full mapping + rationale: `DECISIONS.md` (2026-06-03).
 5. **Open:** Google OAuth dev-build need for the live demo vs. email/password through Expo Go (unchanged).
 6. **DONE earlier:** planning re-baseline (2026-06-03); CDX-002..005 + CDX-008 live (2026-06-03/04); Phase 5 wiring code-complete (2026-06-04); CDX-007 MiDaS code+tests, calorie eval 12/12, Colab notebook hardening, TEAM_GUIDE + SDS, PRs #2-#4 merged (2026-06-10).
 
-## What Arham needs to test on device (Phase 5 backend wiring)
+## What Arham needs to test on device (Phase 5 backend wiring + 2026-06-11 polish)
 
-The scan flow is wired to the live backend in code and the API contract is verified (10/10 smoke via `node scripts/api-smoke.mjs`, touched-file typecheck clean), but the `POST /recognize` multipart image upload can only be exercised on a real device. Run `npx expo start -c --max-workers 2`, open in Expo Go, and check:
+**NEW (post-polish additions to the checklist):**
+
+1. Fresh launch renders **light/sage** (no dark flash); no notification permission dialog over the welcome screen.
+2. Welcome → signup → onboarding: after the paywall you land on the **name** screen (no "create account again" screen).
+3. Complete onboarding → kill app → relaunch lands on tabs. Then sign out and sign back in: you go **straight to tabs**, not back through onboarding (Firestore flag).
+4. Stitch visuals hold up on the Android phone: sage background, white floating cards (Android uses elevation fallback, no blur shadows), serif headings, pill buttons, Phosphor tab bar, home quick-log tiles, scan result cards.
+5. Notification permission prompt appears only after onboarding completes.
+
+**Original Phase 5 checks (unchanged, still required):**
+
+The scan flow is wired to the live backend in code and the API contract is verified (10/10 smoke via `node scripts/api-smoke.mjs`, full typecheck now at 0 errors), but the `POST /recognize` multipart image upload can only be exercised on a real device. Run `npx expo start -c --max-workers 2`, open in Expo Go, and check:
 
 1. Camera or gallery -> take/pick a desi food photo -> the result screen appears.
 2. The result shows a green "DB-grounded" pill under the dish name (the live pipeline ran). Calories/macros come from the backend, and the "How we got this" card shows the matched DB row + portion, the engine's "why", the data source ("Pakistani food database"), and the model.
