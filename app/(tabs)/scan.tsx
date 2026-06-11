@@ -43,6 +43,7 @@ import {
   type GroundedMeta,
 } from '../../src/lib/api';
 import { FOOD_MODIFIERS } from '../../src/constants/nutrition';
+import { Elevation } from '../../src/constants/colors';
 import { Type, FontFamily } from '../../src/constants/fonts';
 import { Spacing, Radius } from '../../src/constants/spacing';
 
@@ -484,7 +485,7 @@ export default function ScanScreen() {
             paddingHorizontal: Spacing.xl,
             paddingTop: Spacing.xl,
             paddingBottom: Platform.OS === 'ios' ? 40 : Spacing.xl,
-            backgroundColor: colors.surface.primary,
+            backgroundColor: colors.surface.secondary,
             borderTopLeftRadius: Radius.card * 1.5,
             borderTopRightRadius: Radius.card * 1.5,
           }}
@@ -516,7 +517,7 @@ export default function ScanScreen() {
   const grounded = result?.grounded;
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.surface.secondary }}>
+    <View style={{ flex: 1, backgroundColor: colors.surface.primary }}>
       <ScrollView
         contentContainerStyle={{
           paddingHorizontal: Spacing.xl,
@@ -564,10 +565,9 @@ export default function ScanScreen() {
         {/* Hero card */}
         <View
           style={{
-            backgroundColor: colors.surface.primary,
+            backgroundColor: colors.surface.secondary,
             borderRadius: Radius.card,
-            borderWidth: 1,
-            borderColor: colors.surface.tertiary,
+            ...Elevation.ambient,
             padding: Spacing.lg,
             marginBottom: Spacing.lg,
           }}
@@ -711,10 +711,9 @@ export default function ScanScreen() {
         {isLowConfidence && result?.alternatives && result.alternatives.length > 0 && (
           <View
             style={{
-              backgroundColor: colors.surface.primary,
+              backgroundColor: colors.surface.secondary,
               borderRadius: Radius.card,
-              borderWidth: 1,
-              borderColor: colors.surface.tertiary,
+              ...Elevation.ambient,
               padding: Spacing.md,
               marginBottom: Spacing.lg,
             }}
@@ -768,7 +767,7 @@ export default function ScanScreen() {
                   flex: 1,
                   paddingVertical: Spacing.sm,
                   borderRadius: Radius.button,
-                  backgroundColor: active ? accent + '1F' : colors.surface.primary,
+                  backgroundColor: active ? accent + '1F' : colors.surface.secondary,
                   borderWidth: 1,
                   borderColor: active ? accent : colors.surface.tertiary,
                   alignItems: 'center',
@@ -824,7 +823,7 @@ export default function ScanScreen() {
                   paddingHorizontal: Spacing.md,
                   paddingVertical: Spacing.sm,
                   borderRadius: Radius.pill,
-                  backgroundColor: active ? accent + '1F' : colors.surface.primary,
+                  backgroundColor: active ? accent + '1F' : colors.surface.secondary,
                   borderWidth: 1,
                   borderColor: active ? accent : colors.surface.tertiary,
                   opacity: pressed ? 0.7 : 1,
@@ -912,10 +911,8 @@ export default function ScanScreen() {
           style={{
             ...Type.bodyLg,
             color: colors.text.primary,
-            backgroundColor: colors.surface.primary,
+            backgroundColor: colors.surface.tertiary,
             borderRadius: Radius.input,
-            borderWidth: 1,
-            borderColor: colors.surface.tertiary,
             padding: Spacing.md,
             minHeight: 84,
             textAlignVertical: 'top',
@@ -947,7 +944,7 @@ export default function ScanScreen() {
           paddingHorizontal: Spacing.xl,
           paddingTop: Spacing.md,
           paddingBottom: Platform.OS === 'ios' ? 40 : Spacing.xl,
-          backgroundColor: colors.surface.secondary,
+          backgroundColor: colors.surface.primary,
           borderTopWidth: 1,
           borderTopColor: colors.surface.tertiary,
         }}
@@ -977,7 +974,7 @@ function CameraPermissionCard({ onGrant, canAskAgain }: PermissionCardProps) {
     <View
       style={{
         flex: 1,
-        backgroundColor: colors.surface.secondary,
+        backgroundColor: colors.surface.primary,
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: Spacing.xl,
@@ -986,10 +983,9 @@ function CameraPermissionCard({ onGrant, canAskAgain }: PermissionCardProps) {
       <View
         style={{
           width: '100%',
-          backgroundColor: colors.surface.primary,
-          borderWidth: 1,
-          borderColor: colors.surface.tertiary,
+          backgroundColor: colors.surface.secondary,
           borderRadius: Radius.card,
+          ...Elevation.ambient,
           padding: Spacing.xl,
           alignItems: 'center',
         }}
@@ -1143,10 +1139,9 @@ function GroundedSourceCard({ grounded, accent, colors }: GroundedSourceCardProp
   return (
     <View
       style={{
-        backgroundColor: colors.surface.primary,
+        backgroundColor: colors.surface.secondary,
         borderRadius: Radius.card,
-        borderWidth: 1,
-        borderColor: colors.surface.tertiary,
+        ...Elevation.ambient,
         padding: Spacing.md,
         marginBottom: Spacing.lg,
       }}
@@ -1227,10 +1222,9 @@ function MacroCard({ label, value, colors }: MacroCardProps) {
     <View
       style={{
         flex: 1,
-        backgroundColor: colors.surface.primary,
-        borderWidth: 1,
-        borderColor: colors.surface.tertiary,
+        backgroundColor: colors.surface.secondary,
         borderRadius: Radius.card,
+        ...Elevation.ambient,
         paddingVertical: Spacing.sm,
         paddingHorizontal: Spacing.xs,
         alignItems: 'center',
@@ -1322,7 +1316,7 @@ function PrimaryButton({ label, onPress, loading, disabled, flex }: PrimaryButto
         flex: flex ? 1 : undefined,
         backgroundColor: accent,
         paddingVertical: Spacing.md,
-        borderRadius: Radius.button,
+        borderRadius: Radius.pill,
         alignItems: 'center',
         justifyContent: 'center',
         opacity: isInactive ? 0.4 : pressed ? 0.9 : 1,
@@ -1355,7 +1349,7 @@ function SecondaryButton({ label, onPress, disabled, flex }: SecondaryButtonProp
       style={({ pressed }) => ({
         flex: flex ? 1 : undefined,
         paddingVertical: Spacing.md,
-        borderRadius: Radius.button,
+        borderRadius: Radius.pill,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'transparent',
