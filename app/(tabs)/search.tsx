@@ -15,6 +15,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { supabase } from '../../src/lib/supabase';
+import type { Json } from '../../src/types/database';
 import { Card, Button, Input } from '../../src/components/ui';
 import { COMMON_FOODS, FOOD_MODIFIERS } from '../../src/constants/nutrition';
 
@@ -179,7 +180,9 @@ export default function SearchScreen() {
 
       const { error } = await supabase.from('favorites').insert({
         user_id: user.id,
-        food_data: food,
+        // FoodItem is a plain JSON-serializable shape; Supabase's Json type
+        // just can't see that structurally.
+        food_data: food as unknown as Json,
         is_combination: false,
       });
 
@@ -840,7 +843,7 @@ export default function SearchScreen() {
               Favorites
             </Text>
             {favorites.slice(0, 5).map((fav) => {
-              const food = fav.food_data as FoodItem;
+              const food = fav.food_data as unknown as FoodItem;
               return (
                 <TouchableOpacity
                   key={fav.id}
