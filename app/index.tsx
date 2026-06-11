@@ -20,7 +20,7 @@ const ONBOARDING_KEY = '@pakalorie_onboarding_complete';
  *   user + onboarding pending  → /onboarding/goal
  */
 export default function Index() {
-  const { user, loading } = useAuth();
+  const { user, profile, loading } = useAuth();
   const { colors, accent } = useTheme();
   const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
 
@@ -57,7 +57,10 @@ export default function Index() {
     return <Redirect href="/(auth)/welcome" />;
   }
 
-  if (!onboardingComplete) {
+  // The Firestore profile flag is the cloud source of truth (set when the
+  // onboarding permissions step completes); the AsyncStorage flag covers the
+  // moment right after completion before the profile listener catches up.
+  if (!(onboardingComplete || profile?.onboarding_complete)) {
     return <Redirect href="/onboarding/goal" />;
   }
 

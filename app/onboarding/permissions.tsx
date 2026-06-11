@@ -64,7 +64,9 @@ export default function PermissionsScreen() {
   const completeOnboarding = async () => {
     setLoading(true);
     try {
-      // Save profile to Supabase if logged in
+      // Save profile to Firestore if logged in. onboarding_complete is the
+      // cloud source of truth so signing in on a new device skips onboarding;
+      // the AsyncStorage flag below stays as a local fast-path cache.
       if (user) {
         await updateProfile({
           display_name: data.displayName,
@@ -75,6 +77,7 @@ export default function PermissionsScreen() {
           activity_level: data.activityLevel,
           daily_target_kcal: data.dailyTargetKcal,
           is_premium: data.isPremium,
+          onboarding_complete: true,
         });
       }
 
