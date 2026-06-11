@@ -325,12 +325,12 @@ export default function HomeScreen() {
             marginBottom: 24,
           }}
         >
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 1, paddingRight: 12 }}>
             <Text
               style={{
-                fontFamily: FontFamily.geistRegular,
-                fontSize: 14,
-                color: colors.text.secondary,
+                ...Type.labelCaps,
+                textTransform: 'uppercase',
+                color: colors.text.tertiary,
               }}
             >
               {new Date().toLocaleDateString('en-US', {
@@ -341,18 +341,31 @@ export default function HomeScreen() {
             </Text>
             <Text
               style={{
-                fontFamily: FontFamily.geistSemiBold,
-                fontSize: 20,
+                ...Type.headlineSerifMd,
                 color: colors.text.primary,
                 marginTop: 4,
               }}
               numberOfLines={1}
+              adjustsFontSizeToFit
             >
               {greeting}
+            </Text>
+            <Text
+              style={{
+                ...Type.bodyMd,
+                color: colors.text.secondary,
+                marginTop: 4,
+              }}
+            >
+              {remainingCalories > 0
+                ? `You're ${remainingCalories} kcal away from your goal today.`
+                : "You've hit your goal for today."}
             </Text>
           </View>
           <TouchableOpacity
             onPress={() => router.push('/(tabs)/notifications')}
+            accessibilityRole="button"
+            accessibilityLabel="Notifications"
             style={{
               width: 44,
               height: 44,
