@@ -1,6 +1,6 @@
 # Pakalorie YOLOv8 Food Classifier Model Card
 
-Status: pre-training dataset audit complete, model training pending.
+Status: trained. `yolov8n-cls` baseline complete (2026-06-28). Not wired into the mobile app — the live `/recognize` path stays Gemini Vision for P1 Final; this model is the reported deliverable and the P2 on-device path.
 
 ## Intended Use
 
@@ -43,21 +43,44 @@ If baseline accuracy is weak, train `yolov8s-cls.pt` with the same split.
 
 ## Metrics
 
-Training has not been run yet.
+Run `yolov8n_cls_218`, 2026-06-28. Free Colab T4, 50 epochs, 224px, batch 64.
+Trained on 217 classes / 8,573 images (6,858 train + 1,715 val) — one ultra-rare
+class (`white_boiled_rice` family, 1 image) could not be stratified into both
+splits and dropped out; the `_218` run name is historical.
 
-| Model | Top-1 | Top-5 | Notes |
-| --- | ---: | ---: | --- |
-| `yolov8n-cls.pt` | TBD | TBD | Pending Colab run |
-| `yolov8s-cls.pt` | TBD | TBD | Run only if nano is weak |
+| Model | Classes | Top-1 | Top-5 | Epochs | imgsz | Notes |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| `yolov8n-cls.pt` | 217 | 0.5848 | 0.8659 | 50 | 224 | Honest baseline |
+| `yolov8s-cls.pt` | — | TBD | TBD | — | — | Optional next step; not run for P1 |
+
+### Error analysis (honest)
+
+Per-class recall (`ml/reports/per_class_recall.csv`) shows the top-1 gap is the
+under-sampled long tail, not a modeling failure:
+
+- **Strongest (well-sampled):** biryani 0.93 (30 val), chai 1.00 (20), samosa
+  1.00 (20), sheer_korma 0.90 (10).
+- **Weakest:** every 0.00-recall class has ≤5 validation images (~≤20 training
+  images): e.g. `barbecue_chicken`, `chicken_kabsa`, `koskosi_fish`,
+  `chicken_tikka_masala`, `maqluba`.
+- Caveat: most 1.00-recall classes have only 5 val images (5/5, small sample);
+  the trustworthy wins are the 20-30 image classes above.
+- This is the direct consequence of the documented 14.58x class imbalance. The
+  fix is more data per class or `yolov8s-cls`, not silently pruning hard classes.
+
+Qualitative check on a held-out photo: real Haleem photo →
+`haleem (0.86)` top-1, agreeing with the live Gemini path (`haleem 0.98`).
 
 ## Artifacts
 
-Expected after training:
+Produced by the run, saved on Google Drive under `MyDrive/pakalorie_ml/`:
 
-- `best.pt`
-- `best.onnx`
-- confusion matrix image
-- `ml/reports/eval_metrics.json`
-- sample predictions on Arham's own held-out food photos
+- `runs/yolov8n_cls_218/weights/best.pt` (3.5 MB) and `best.onnx` (6.6 MB)
+- `runs/yolov8n_cls_218_eval/confusion_matrix_normalized.png`
+- `reports/eval_metrics.json` (top-1 0.5848, top-5 0.8659)
+- `reports/per_class_recall.csv` (per-class error analysis)
+- `reports/qualitative_predictions.md` (held-out photo predictions)
 
-Do not commit large weights directly if they make the repo heavy. Prefer a release or Drive link and keep this model card updated with the exact artifact location.
+The 3.5 MB `best.pt` / 6.6 MB `best.onnx` are small enough to commit; mirror
+them into `ml/artifacts/checkpoints/` and the reports into `ml/reports/` so the
+repo is the source of truth for the FYP submission.

@@ -1,0 +1,7 @@
+{
+  "weights": "/content/drive/MyDrive/pakalorie_ml/runs/yolov8n_cls_218/weights/best.pt",
+  "data": "/content/pakalorie-ml/food-cls-224",
+  "top1": 0.5848396420478821,
+  "top5": 0.8658891916275024,
+  "save_dir": "/content/drive/MyDrive/pakalorie_ml/runs/yolov8n_cls_218_eval"
+}
