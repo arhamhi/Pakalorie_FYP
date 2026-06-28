@@ -65,7 +65,7 @@ this" card with the matched row, the engine's why, and the data source.
 
 Methodology in §3; evaluation in §5.1.
 
-### 2.3 YOLOv8 Food Classification — notebook ready, training run pending
+### 2.3 YOLOv8 Food Classification — trained baseline complete
 
 - Dataset: two Kaggle sets audited and merged — 218 normalized classes, 8,660
   images, SHA-1 exact dedupe, stratified 80/20 split, 14.58x class imbalance
@@ -73,6 +73,14 @@ Methodology in §3; evaluation in §5.1.
 - Decision (2026-06-10): train the **full 218-class honest baseline** first
   (`yolov8n-cls`, 224px, 50 epochs, free Colab T4); escalate to `yolov8s-cls`
   if weak — never silently prune awkward classes.
+- Result (2026-06-28): trained on 217 classes (one ultra-rare 1-image class
+  dropped in the stratified split). **Top-1 0.5848, Top-5 0.8659.** Strong on
+  well-sampled dishes (biryani 0.93, chai/samosa 1.00); the top-1 gap is the
+  under-sampled long tail, consistent with the 14.58x imbalance — exactly the
+  predicted failure mode, not a modeling fault. `best.pt` (3.5 MB) + `best.onnx`
+  (6.6 MB) + confusion matrix + per-class recall committed under
+  [`../ml/artifacts/checkpoints/`](../ml/artifacts/checkpoints/) and
+  [`../ml/reports/`](../ml/reports/).
 - One self-contained notebook produces all artifacts:
   [`../ml/notebooks/train_yolov8_cls.ipynb`](../ml/notebooks/train_yolov8_cls.ipynb)
   (walkthrough: [`TEAM_GUIDE.md`](./TEAM_GUIDE.md) §2). Metrics land in
@@ -82,7 +90,7 @@ Methodology in §3; evaluation in §5.1.
   live `/recognize` path stays Gemini Vision for P1 Final; the trained model
   is the reported deliverable and the P2 on-device path.
 
-### 2.4 Volume & Depth Estimation (MiDaS) — code complete, deploy pending
+### 2.4 Volume & Depth Estimation (MiDaS) — LIVE
 
 - `POST /portion`: pretrained MiDaS v2.1 small (ONNX, CPU-only, 256x256) on
   the VPS produces a **relative** inverse-depth map; a documented heuristic
@@ -95,9 +103,10 @@ Methodology in §3; evaluation in §5.1.
   one uncalibrated photo has no absolute scale. Full methodology +
   limitations (report this verbatim):
   [`../backend/docs/DEPTH_NOTES.md`](../backend/docs/DEPTH_NOTES.md).
-- Verified locally on the real test photo (Haleem): `medium` bucket,
-  prominence 0.24, near-fill 21%, score 0.22. Tests cover the heuristics,
-  the 503 setup path, multiplier math, and real ONNX inference.
+- Verified live on the deployed VPS (`POST /portion`) with the real test photo
+  (Haleem): `medium` bucket, prominence 0.24, near-fill 21%, score 0.22 — the
+  endpoint runs real ONNX inference in production, not just locally. Tests cover
+  the heuristics, the 503 setup path, multiplier math, and ONNX inference.
 
 ## 3. RAG methodology (calorie engine)
 
