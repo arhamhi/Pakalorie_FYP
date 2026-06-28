@@ -4,6 +4,7 @@ import argparse
 import csv
 import hashlib
 import json
+import os
 import random
 import re
 import shutil
@@ -16,6 +17,9 @@ from typing import Iterable
 
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}
 IGNORED_PARTS = {".ipynb_checkpoints", "__MACOSX"}
+LABEL_ALIASES = {
+    "kinoa_salad": "kino_salad",
+}
 
 
 @dataclass(frozen=True)
@@ -38,7 +42,8 @@ def normalize_label(label: str) -> str:
     normalized = label.lower()
     normalized = re.sub(r"[^a-z0-9]+", "_", normalized)
     normalized = re.sub(r"_+", "_", normalized).strip("_")
-    return normalized or "unknown"
+    normalized = normalized or "unknown"
+    return LABEL_ALIASES.get(normalized, normalized)
 
 
 def parse_source(value: str) -> Source:
@@ -199,6 +204,20 @@ def write_audit_markdown(audit: dict, path: Path) -> None:
         f"{merged['total_bytes'] / 1024 / 1024:.1f} | {merged['min_count']} | "
         f"{merged['max_count']} | {merged['imbalance_ratio']} |"
     )
+    if "prepared" in audit:
+        prepared = audit["prepared"]
+        lines.extend(
+            [
+                "",
+                "## Prepared Split",
+                "",
+                f"- Classes: {prepared['class_count']}",
+                f"- Train images: {prepared['train_images']}",
+                f"- Validation images: {prepared['val_images']}",
+                f"- Exact duplicates removed: {prepared['duplicates_removed']}",
+                f"- Unreadable images skipped: {prepared['invalid_images']}",
+            ]
+        )
 
     lines.extend(
         [
@@ -283,27 +302,61 @@ def split_samples(samples: list[Sample], val_ratio: float, seed: int) -> dict[st
     return splits
 
 
-def save_image(src: Path, dest: Path, image_size: int) -> None:
+def save_image(src: Path, dest: Path, image_size: int, materialize: str) -> None:
     from PIL import Image, ImageOps
 
     dest.parent.mkdir(parents=True, exist_ok=True)
+    if materialize == "hardlink":
+        with Image.open(src) as image:
+            image.verify()
+        try:
+            os.link(src, dest)
+        except OSError:
+            shutil.copy2(src, dest)
+        return
+
     with Image.open(src) as image:
         image = ImageOps.exif_transpose(image).convert("RGB")
         image = ImageOps.fit(image, (image_size, image_size), method=Image.Resampling.LANCZOS)
         image.save(dest, format="JPEG", quality=92, optimize=True)
 
 
-def prepare_dataset(samples: list[Sample], output: Path, image_size: int, val_ratio: float, seed: int) -> None:
+def prepare_dataset(
+    samples: list[Sample],
+    output: Path,
+    image_size: int,
+    val_ratio: float,
+    seed: int,
+    materialize: str,
+) -> dict:
     output.mkdir(parents=True, exist_ok=True)
     deduped = dedupe_samples(samples)
     splits = split_samples(deduped, val_ratio=val_ratio, seed=seed)
 
     manifest_rows = []
-    for split_name, split_samples in splits.items():
-        for sample in split_samples:
-            dest_name = f"{sample.path.stem}_{sample.sha1[:10]}.jpg"
+    invalid_rows = []
+    for split_name, samples_in_split in splits.items():
+        for sample in samples_in_split:
+            suffix = sample.path.suffix.lower() if materialize == "hardlink" else ".jpg"
+            dest_name = f"{sample.path.stem}_{sample.sha1[:10]}{suffix}"
             dest = output / split_name / sample.class_name / dest_name
-            save_image(sample.path, dest, image_size=image_size)
+            try:
+                save_image(
+                    sample.path,
+                    dest,
+                    image_size=image_size,
+                    materialize=materialize,
+                )
+            except (OSError, ValueError) as error:
+                invalid_rows.append(
+                    {
+                        "source_ref": sample.source_ref,
+                        "class_name": sample.class_name,
+                        "original_path": str(sample.path),
+                        "error": f"{type(error).__name__}: {error}",
+                    }
+                )
+                continue
             manifest_rows.append(
                 {
                     "split": split_name,
@@ -316,12 +369,32 @@ def prepare_dataset(samples: list[Sample], output: Path, image_size: int, val_ra
                 }
             )
 
+    if not manifest_rows:
+        raise RuntimeError("No valid images were prepared")
+
     with (output / "manifest.csv").open("w", newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(file, fieldnames=list(manifest_rows[0].keys()))
         writer.writeheader()
         writer.writerows(manifest_rows)
 
+    if invalid_rows:
+        with (output / "invalid_images.csv").open(
+            "w", newline="", encoding="utf-8"
+        ) as file:
+            writer = csv.DictWriter(file, fieldnames=list(invalid_rows[0].keys()))
+            writer.writeheader()
+            writer.writerows(invalid_rows)
+
     shutil.copyfile(output / "manifest.csv", output / "dataset_manifest.csv")
+    prepared_classes = {row["class_name"] for row in manifest_rows}
+    return {
+        "class_count": len(prepared_classes),
+        "train_images": sum(row["split"] == "train" for row in manifest_rows),
+        "val_images": sum(row["split"] == "val" for row in manifest_rows),
+        "duplicates_removed": len(samples) - len(deduped),
+        "invalid_images": len(invalid_rows),
+        "materialize": materialize,
+    }
 
 
 def main() -> None:
@@ -341,6 +414,12 @@ def main() -> None:
     parser.add_argument("--class-counts-csv", type=Path, help="Write merged class counts CSV.")
     parser.add_argument("--audit-only", action="store_true", help="Only audit, do not prepare images.")
     parser.add_argument("--imgsz", type=int, default=224, help="Prepared square image size.")
+    parser.add_argument(
+        "--materialize",
+        choices=("resize", "hardlink"),
+        default="resize",
+        help="Resize to JPEG or validate and hard-link original images.",
+    )
     parser.add_argument("--val-ratio", type=float, default=0.2, help="Validation split ratio.")
     parser.add_argument("--seed", type=int, default=42, help="Split random seed.")
     args = parser.parse_args()
@@ -348,23 +427,24 @@ def main() -> None:
     samples = collect_samples(args.source)
     audit = build_audit(samples, args.source)
 
+    if not args.audit_only:
+        if not args.output:
+            parser.error("--output is required unless --audit-only is set")
+        audit["prepared"] = prepare_dataset(
+            samples=samples,
+            output=args.output,
+            image_size=args.imgsz,
+            val_ratio=args.val_ratio,
+            seed=args.seed,
+            materialize=args.materialize,
+        )
+
     if args.audit_json:
         write_audit_json(audit, args.audit_json)
     if args.audit_markdown:
         write_audit_markdown(audit, args.audit_markdown)
     if args.class_counts_csv:
         write_class_counts_csv(audit, args.class_counts_csv)
-
-    if not args.audit_only:
-        if not args.output:
-            parser.error("--output is required unless --audit-only is set")
-        prepare_dataset(
-            samples=samples,
-            output=args.output,
-            image_size=args.imgsz,
-            val_ratio=args.val_ratio,
-            seed=args.seed,
-        )
 
     print(
         json.dumps(
