@@ -122,6 +122,35 @@ curl -i -X POST https://api.srv987636.hstgr.cloud/portion -F "image=@some_food_p
 
 Expect HTTP 200 with `{"success":true,"data":{"bucket":...,"multiplier":...}}`.
 
+### 4c. Install The YOLOv8 Model Files (one-time, enables POST /recognize with engine=yolo)
+
+The optional `engine=yolo` recognition path needs our trained classifier
+(`best.onnx`, ~6.6 MB) and its index-ordered label list (`class_names.json`).
+Unlike MiDaS, both are committed in git at `ml/artifacts/checkpoints/`, so a
+`git pull` already brings them onto the box — they just need to be placed in the
+host-mounted `backend/models/` dir the container reads. Until installed,
+`engine=yolo` returns a clear 503; `engine=gemini` (the default) is unaffected.
+
+```sh
+cd /opt/pakalorie-fyp
+mkdir -p backend/models/yolo
+cp ml/artifacts/checkpoints/best.onnx ml/artifacts/checkpoints/class_names.json backend/models/yolo/
+docker compose -f backend/docker-compose.prod.yml up -d
+```
+
+The default env paths (`YOLO_MODEL_PATH=models/yolo/best.onnx`,
+`YOLO_CLASS_NAMES_PATH=models/yolo/class_names.json`) resolve to
+`/app/models/yolo/...` inside the container, so no `.env` change is needed.
+
+Verify from outside the VPS:
+
+```sh
+curl -i -X POST https://api.srv987636.hstgr.cloud/recognize \
+  -F "image=@some_food_photo.jpg" -F "engine=yolo"
+```
+
+Expect HTTP 200 with `{"success":true,"data":{"food_label":...,"confidence":...}}`.
+
 ## 5. Verify
 
 Check the container and logs:

@@ -19,6 +19,12 @@ class Settings(BaseSettings):
     )
     gemini_timeout_seconds: float = Field(default=20.0, alias="GEMINI_TIMEOUT_SECONDS")
     midas_model_path: str = Field(default="models/midas_small_256.onnx", alias="MIDAS_MODEL_PATH")
+    yolo_model_path: str = Field(
+        default="models/yolo/best.onnx", alias="YOLO_MODEL_PATH"
+    )
+    yolo_class_names_path: str = Field(
+        default="models/yolo/class_names.json", alias="YOLO_CLASS_NAMES_PATH"
+    )
     cors_origins: str = Field(
         default="https://*.expo.dev,exp://*,http://localhost:8081,http://localhost:19006",
         alias="CORS_ORIGINS",

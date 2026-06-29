@@ -1,6 +1,13 @@
+from typing import Literal
+
+from starlette.concurrency import run_in_threadpool
+
 from app.core.settings import Settings
 from app.schemas.recognition import RecognitionAlternative, RecognitionResponse
 from app.services.gemini import GeminiClient
+from app.services.yolo_recognition import YoloRecognizer
+
+Engine = Literal["gemini", "yolo"]
 
 FOOD_IDENTIFICATION_PROMPT = """
 You are an expert Pakistani and South Asian food nutritionist.
@@ -34,9 +41,25 @@ If the image is not food, return:
 
 class RecognitionService:
     def __init__(self, settings: Settings) -> None:
+        self.settings = settings
         self.gemini = GeminiClient(settings)
 
-    async def recognize(self, image_bytes: bytes, mime_type: str | None) -> RecognitionResponse:
+    async def recognize(
+        self,
+        image_bytes: bytes,
+        mime_type: str | None,
+        engine: Engine = "gemini",
+    ) -> RecognitionResponse:
+        if engine == "yolo":
+            # Our trained model runs synchronous CPU ONNX inference; keep the
+            # event loop free. Same RecognitionResponse shape as the Gemini path.
+            recognizer = YoloRecognizer(self.settings)
+            return await run_in_threadpool(recognizer.recognize, image_bytes)
+        return await self._recognize_gemini(image_bytes, mime_type)
+
+    async def _recognize_gemini(
+        self, image_bytes: bytes, mime_type: str | None
+    ) -> RecognitionResponse:
         result = await self.gemini.generate_json(
             FOOD_IDENTIFICATION_PROMPT,
             image_bytes=image_bytes,

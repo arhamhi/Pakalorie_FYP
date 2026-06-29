@@ -37,8 +37,12 @@ Returns raw health JSON, not an envelope:
 Multipart form-data:
 
 - `image`: uploaded food image
+- `engine` (optional): `gemini` (default, recommended) | `yolo`. `gemini` runs
+  the server-side Gemini vision model; `yolo` runs our own trained YOLOv8-cls
+  model (demo of our model — 217 classes, lower accuracy). Both engines return
+  the identical response shape below, so the client never branches on engine.
 
-Server-side Gemini only. The mobile app must not send or store a Gemini key.
+Recognition is server-side. The mobile app must not send or store a Gemini key.
 
 Response data:
 
