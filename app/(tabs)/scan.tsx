@@ -43,8 +43,9 @@ import {
   type GroundedMeta,
 } from '../../src/lib/api';
 import { getRecognitionEngine } from '../../src/lib/preferences';
+import { PillButton } from '../../src/components/ui';
 import { FOOD_MODIFIERS } from '../../src/constants/nutrition';
-import { Elevation } from '../../src/constants/colors';
+import { Colors, Elevation } from '../../src/constants/colors';
 import { Type, FontFamily } from '../../src/constants/fonts';
 import { Spacing, Radius } from '../../src/constants/spacing';
 
@@ -79,9 +80,14 @@ export default function ScanScreen() {
   const [additionalNotes, setAdditionalNotes] = useState('');
   const [adjustmentsApplied, setAdjustmentsApplied] = useState(false);
   const [isCameraReady, setIsCameraReady] = useState(false);
+  const [scanError, setScanError] = useState<string | null>(null);
+  const [logged, setLogged] = useState(false);
 
   const isMountedRef = useRef(true);
   const analysisTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Guards against the 300ms auto-run and a manual "Analyze"/"Try again" tap
+  // firing recognition twice for the same image.
+  const analyzingRef = useRef(false);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -94,9 +100,18 @@ export default function ScanScreen() {
     };
   }, []);
 
+  // Preview with no image is an invalid state (e.g. a failed capture); bounce
+  // back to the camera from an effect, never with a setState during render.
+  useEffect(() => {
+    if (state === 'preview' && !imageUri) setState('camera');
+  }, [state, imageUri]);
+
   const onCameraReady = () => setIsCameraReady(true);
 
   const runAnalysis = async (uri: string) => {
+    if (analyzingRef.current) return; // a run is already in flight for this image
+    analyzingRef.current = true;
+    setScanError(null);
     setIsAnalyzing(true);
     try {
       let scanResult: ScanResult;
@@ -123,12 +138,17 @@ export default function ScanScreen() {
         setState('result');
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       } else {
-        Alert.alert('Could not identify food', 'Try a clearer photo with better lighting.');
+        // Stay on the preview and surface an inline, recoverable error instead
+        // of a blocking alert that strands the user with no path forward.
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+        setScanError("We couldn't identify the food in this photo. Try a clearer, well-lit shot.");
       }
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'Failed to analyze image.';
-      Alert.alert('Analysis failed', `${msg} Check your internet and try again.`);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+      setScanError(`${msg} Check your connection and try again.`);
     } finally {
+      analyzingRef.current = false;
       setIsAnalyzing(false);
     }
   };
@@ -216,22 +236,9 @@ export default function ScanScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
-  const buildNotesString = () => {
-    const parts: string[] = [];
-    if (selectedModifiers.length > 0) {
-      const modLabels = selectedModifiers.map(
-        (mod) => FOOD_MODIFIERS[mod as keyof typeof FOOD_MODIFIERS]?.label ?? mod
-      );
-      parts.push(modLabels.join(', '));
-    }
-    if (additionalNotes.trim()) parts.push(additionalNotes.trim());
-    return parts.join(' - ');
-  };
-
   const logMeal = useMutation({
     mutationFn: async () => {
       if (!user || !result) throw new Error('Missing data');
-      const notes = buildNotesString();
       const useAdjusted = adjustmentsApplied && selectedModifiers.length > 0;
       // NOTE: still writes to Supabase until CDX-001 ships. The history-reading
       // surfaces (home tab, calendar log) read from Supabase too, so flipping
@@ -243,20 +250,22 @@ export default function ScanScreen() {
         protein: calculateFinalMacro(result.protein, useAdjusted),
         carbs: calculateFinalMacro(result.carbs, useAdjusted),
         fat: calculateFinalMacro(result.fat, useAdjusted),
-        fiber: result.fiber != null ? calculateFinalMacro(result.fiber, useAdjusted) : null,
         meal_type: mealType,
         image_path: imageUri,
-        notes: notes || null,
       });
       if (error) throw error;
     },
     onSuccess: () => {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       queryClient.invalidateQueries({ queryKey: ['foodLogs'] });
-      Alert.alert('Saved', 'Meal logged successfully.');
-      resetScanner();
+      // Brief on-brand confirmation instead of a blocking alert, then reset.
+      setLogged(true);
+      setTimeout(() => {
+        if (isMountedRef.current) resetScanner();
+      }, 1300);
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('Failed to log meal:', error);
       Alert.alert('Error', 'Failed to log meal. Please try again.');
     },
   });
@@ -270,9 +279,27 @@ export default function ScanScreen() {
     setServings(1);
     setAdditionalNotes('');
     setAdjustmentsApplied(false);
+    setScanError(null);
+    setLogged(false);
+  };
+
+  // Leaving the result screen discards the scan. Confirm only when the user has
+  // made changes worth losing; otherwise go straight back to the camera.
+  const handleLeaveResult = () => {
+    const hasEdits =
+      servings !== 1 || selectedModifiers.length > 0 || additionalNotes.trim().length > 0;
+    if (!hasEdits) {
+      resetScanner();
+      return;
+    }
+    Alert.alert('Discard this scan?', 'Your adjustments and notes will be lost.', [
+      { text: 'Keep editing', style: 'cancel' },
+      { text: 'Discard', style: 'destructive', onPress: resetScanner },
+    ]);
   };
 
   const toggleModifier = (mod: string) => {
+    Haptics.selectionAsync();
     setSelectedModifiers((prev) =>
       prev.includes(mod) ? prev.filter((m) => m !== mod) : [...prev, mod]
     );
@@ -430,10 +457,7 @@ export default function ScanScreen() {
   // ─────────────────────────────────────────────────────────────────────────
 
   if (state === 'preview') {
-    if (!imageUri) {
-      setState('camera');
-      return null;
-    }
+    if (!imageUri) return null; // the effect above bounces this back to camera
     return (
       <View style={{ flex: 1, backgroundColor: '#000' }}>
         <Image
@@ -454,7 +478,8 @@ export default function ScanScreen() {
               left: 0,
               right: 0,
               bottom: 0,
-              backgroundColor: 'rgba(0,0,0,0.65)',
+              // Ink-tinted scrim (brand hue) rather than flat black.
+              backgroundColor: 'rgba(22,29,24,0.82)',
               justifyContent: 'center',
               alignItems: 'center',
             }}
@@ -495,10 +520,32 @@ export default function ScanScreen() {
             borderTopRightRadius: Radius.card * 1.5,
           }}
         >
+          {scanError && !isAnalyzing && (
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'flex-start',
+                gap: Spacing.xs,
+                marginBottom: Spacing.md,
+              }}
+            >
+              <WarningCircleIcon size={20} color={Colors.system.warning} weight="fill" />
+              <Text style={{ ...Type.bodyMd, color: colors.text.secondary, flex: 1 }}>
+                {scanError}
+              </Text>
+            </View>
+          )}
           <View style={{ flexDirection: 'row', gap: Spacing.sm }}>
-            <SecondaryButton label="Retake" onPress={resetScanner} disabled={isAnalyzing} flex />
-            <PrimaryButton
-              label={isAnalyzing ? 'Analyzing…' : 'Analyze'}
+            <PillButton
+              variant="secondary"
+              label="Retake"
+              onPress={resetScanner}
+              disabled={isAnalyzing}
+              flex
+            />
+            <PillButton
+              variant="primary"
+              label={isAnalyzing ? 'Analyzing…' : scanError ? 'Try again' : 'Analyze'}
               onPress={() => imageUri && runAnalysis(imageUri)}
               loading={isAnalyzing}
               disabled={isAnalyzing}
@@ -542,7 +589,7 @@ export default function ScanScreen() {
           }}
         >
           <Pressable
-            onPress={resetScanner}
+            onPress={handleLeaveResult}
             hitSlop={12}
             accessibilityRole="button"
             accessibilityLabel="Back to camera"
@@ -654,7 +701,10 @@ export default function ScanScreen() {
           >
             <StepperButton
               icon={<MinusIcon size={16} color={colors.text.primary} weight="bold" />}
-              onPress={() => setServings(Math.max(0.5, servings - 0.5))}
+              onPress={() => {
+                Haptics.selectionAsync();
+                setServings(Math.max(0.5, servings - 0.5));
+              }}
               colors={colors}
               accessibilityLabel="Decrease servings"
             />
@@ -666,7 +716,10 @@ export default function ScanScreen() {
             </View>
             <StepperButton
               icon={<PlusIcon size={16} color={colors.text.primary} weight="bold" />}
-              onPress={() => setServings(servings + 0.5)}
+              onPress={() => {
+                Haptics.selectionAsync();
+                setServings(Math.min(10, servings + 0.5));
+              }}
               colors={colors}
               accessibilityLabel="Increase servings"
             />
@@ -767,7 +820,13 @@ export default function ScanScreen() {
             return (
               <Pressable
                 key={m.value}
-                onPress={() => setMealType(m.value)}
+                onPress={() => {
+                  Haptics.selectionAsync();
+                  setMealType(m.value);
+                }}
+                accessibilityRole="button"
+                accessibilityLabel={`Meal type: ${m.label}`}
+                accessibilityState={{ selected: active }}
                 style={({ pressed }) => ({
                   flex: 1,
                   paddingVertical: Spacing.sm,
@@ -824,6 +883,9 @@ export default function ScanScreen() {
               <Pressable
                 key={key}
                 onPress={() => toggleModifier(key)}
+                accessibilityRole="button"
+                accessibilityLabel={mod.label}
+                accessibilityState={{ selected: active }}
                 style={({ pressed }) => ({
                   paddingHorizontal: Spacing.md,
                   paddingVertical: Spacing.sm,
@@ -852,6 +914,8 @@ export default function ScanScreen() {
         {selectedModifiers.length > 0 && !adjustmentsApplied && (
           <Pressable
             onPress={applyAdjustments}
+            accessibilityRole="button"
+            accessibilityLabel="Recalculate calories and macros with adjustments"
             style={({ pressed }) => ({
               flexDirection: 'row',
               alignItems: 'center',
@@ -911,6 +975,7 @@ export default function ScanScreen() {
           onChangeText={setAdditionalNotes}
           placeholder="Anything else? (e.g., homemade, extra naan)"
           placeholderTextColor={colors.text.tertiary}
+          accessibilityLabel="Notes about this meal"
           multiline
           numberOfLines={3}
           style={{
@@ -954,12 +1019,54 @@ export default function ScanScreen() {
           borderTopColor: colors.surface.tertiary,
         }}
       >
-        <PrimaryButton
-          label="Save to history"
+        <PillButton
+          variant="save"
+          label="Log meal"
           onPress={() => logMeal.mutate()}
           loading={logMeal.isPending}
+          disabled={!user}
         />
       </View>
+
+      {/* Logged confirmation — brief on-brand banner before the reset */}
+      {logged && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(22,29,24,0.55)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: Spacing.sm,
+              backgroundColor: colors.surface.secondary,
+              paddingVertical: Spacing.md,
+              paddingHorizontal: Spacing.lg,
+              borderRadius: Radius.pill,
+              ...Elevation.banner,
+            }}
+          >
+            <CheckCircleIcon size={22} color={accent} weight="fill" />
+            <Text
+              style={{
+                ...Type.bodyLg,
+                fontFamily: FontFamily.geistSemiBold,
+                color: colors.text.primary,
+              }}
+            >
+              Logged to history
+            </Text>
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -1031,7 +1138,8 @@ function CameraPermissionCard({ onGrant, canAskAgain }: PermissionCardProps) {
         </Text>
 
         <View style={{ width: '100%' }}>
-          <PrimaryButton
+          <PillButton
+            variant="primary"
             label={canAskAgain ? 'Grant permission' : 'Open settings'}
             onPress={canAskAgain ? onGrant : () => Linking.openSettings()}
           />
@@ -1235,6 +1343,8 @@ interface MacroCardProps {
 function MacroCard({ label, value, colors }: MacroCardProps) {
   return (
     <View
+      accessibilityRole="text"
+      accessibilityLabel={value != null ? `${label}, ${value} grams` : `${label}, not available`}
       style={{
         flex: 1,
         backgroundColor: colors.surface.secondary,
@@ -1312,76 +1422,3 @@ function StepperButton({ icon, onPress, colors, accessibilityLabel }: StepperBut
   );
 }
 
-interface PrimaryButtonProps {
-  label: string;
-  onPress: () => void;
-  loading?: boolean;
-  disabled?: boolean;
-  flex?: boolean;
-}
-
-function PrimaryButton({ label, onPress, loading, disabled, flex }: PrimaryButtonProps) {
-  const { accent } = useTheme();
-  const isInactive = loading || disabled;
-  return (
-    <Pressable
-      onPress={onPress}
-      disabled={isInactive}
-      style={({ pressed }) => ({
-        flex: flex ? 1 : undefined,
-        backgroundColor: accent,
-        paddingVertical: Spacing.md,
-        borderRadius: Radius.pill,
-        alignItems: 'center',
-        justifyContent: 'center',
-        opacity: isInactive ? 0.4 : pressed ? 0.9 : 1,
-      })}
-    >
-      {loading ? (
-        <ActivityIndicator color="#FFFFFF" size="small" />
-      ) : (
-        <Text style={{ ...Type.bodyLg, color: '#FFFFFF', fontFamily: FontFamily.geistSemiBold }}>
-          {label}
-        </Text>
-      )}
-    </Pressable>
-  );
-}
-
-interface SecondaryButtonProps {
-  label: string;
-  onPress: () => void;
-  disabled?: boolean;
-  flex?: boolean;
-}
-
-function SecondaryButton({ label, onPress, disabled, flex }: SecondaryButtonProps) {
-  const { colors } = useTheme();
-  return (
-    <Pressable
-      onPress={onPress}
-      disabled={disabled}
-      style={({ pressed }) => ({
-        flex: flex ? 1 : undefined,
-        paddingVertical: Spacing.md,
-        borderRadius: Radius.pill,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'transparent',
-        borderWidth: 1,
-        borderColor: colors.surface.tertiary,
-        opacity: disabled ? 0.4 : pressed ? 0.7 : 1,
-      })}
-    >
-      <Text
-        style={{
-          ...Type.bodyLg,
-          color: colors.text.primary,
-          fontFamily: FontFamily.geistSemiBold,
-        }}
-      >
-        {label}
-      </Text>
-    </Pressable>
-  );
-}

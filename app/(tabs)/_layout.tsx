@@ -72,6 +72,12 @@ export default function TabsLayout() {
         name="scan"
         options={{
           title: 'Scan',
+          // Scan is a focused full-screen capture flow: the floating tab pill
+          // (position:absolute) would otherwise sit on top of the camera
+          // controls and the result screen's sticky "Log meal" bar. Hide it
+          // while Scan is focused; the camera X (router.back) and the result
+          // back-arrow handle navigation. Bar restores on every other tab.
+          tabBarStyle: { display: 'none' },
           tabBarIcon: () => (
             <View
               style={{
