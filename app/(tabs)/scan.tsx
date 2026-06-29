@@ -42,6 +42,7 @@ import {
   type GroundedScanResult,
   type GroundedMeta,
 } from '../../src/lib/api';
+import { getRecognitionEngine } from '../../src/lib/preferences';
 import { FOOD_MODIFIERS } from '../../src/constants/nutrition';
 import { Elevation } from '../../src/constants/colors';
 import { Type, FontFamily } from '../../src/constants/fonts';
@@ -99,9 +100,13 @@ export default function ScanScreen() {
     setIsAnalyzing(true);
     try {
       let scanResult: ScanResult;
+      // Read the engine pref outside the backend try so an AsyncStorage failure
+      // isn't misattributed to the backend pipeline (it never throws anyway).
+      const engine = await getRecognitionEngine();
       try {
         // Primary path: live FastAPI pipeline (recognize -> grounded calories).
-        scanResult = await recognizeAndGroundFood(uri);
+        // The recognition engine is the user's Settings choice (Gemini default).
+        scanResult = await recognizeAndGroundFood(uri, engine);
       } catch (backendError) {
         // Fallback: keep the demo alive with the on-device Gemini path until the
         // backend pipeline is smoke-tested on device (Phase 5 guardrail). The
@@ -1133,6 +1138,15 @@ function modelLabel(model: string): string {
   return model;
 }
 
+const ENGINE_LABELS: Record<GroundedMeta['engine'], string> = {
+  gemini: 'Recognized by Gemini',
+  yolo: 'Recognized by our YOLOv8 model',
+};
+
+function engineLabel(engine: GroundedMeta['engine']): string {
+  return ENGINE_LABELS[engine] ?? ENGINE_LABELS.gemini;
+}
+
 // Shows the real RAG output: which DB row the calories were grounded in, the
 // data source, the model that did the grounding, and the engine's "why".
 function GroundedSourceCard({ grounded, accent, colors }: GroundedSourceCardProps) {
@@ -1175,6 +1189,7 @@ function GroundedSourceCard({ grounded, accent, colors }: GroundedSourceCardProp
       ) : null}
 
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.xs }}>
+        <GroundedTag label={engineLabel(grounded.engine)} accent={accent} colors={colors} />
         <GroundedTag label={dataSourceLabel(grounded.dataSource)} accent={accent} colors={colors} />
         <GroundedTag label={modelLabel(grounded.modelUsed)} accent={accent} colors={colors} />
       </View>

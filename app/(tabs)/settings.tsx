@@ -9,7 +9,15 @@ import { useLanguage } from '../../src/contexts/LanguageContext';
 import { Card, Button } from '../../src/components/ui';
 import { Colors, AccentColor, ThemeColors } from '../../src/constants/colors';
 import { calculateDailyTarget } from '../../src/constants/nutrition';
-import { getHydrationGoal, setHydrationGoal, HYDRATION_DEFAULT_GOAL } from '../../src/lib/preferences';
+import {
+  getHydrationGoal,
+  setHydrationGoal,
+  HYDRATION_DEFAULT_GOAL,
+  getRecognitionEngine,
+  setRecognitionEngine,
+  DEFAULT_RECOGNITION_ENGINE,
+  type RecognitionEngine,
+} from '../../src/lib/preferences';
 import * as Haptics from 'expo-haptics';
 import {
   getNotificationPrefs,
@@ -41,6 +49,8 @@ export default function SettingsScreen() {
   );
   const [hydrationGoal, setHydrationGoalState] = useState<number>(HYDRATION_DEFAULT_GOAL);
   const [notifPrefs, setNotifPrefs] = useState<NotificationPreferences>(DEFAULT_NOTIFICATION_PREFS);
+  const [recognitionEngine, setRecognitionEngineState] =
+    useState<RecognitionEngine>(DEFAULT_RECOGNITION_ENGINE);
 
   useEffect(() => {
     getNotificationPrefs().then(setNotifPrefs);
@@ -49,6 +59,17 @@ export default function SettingsScreen() {
   useEffect(() => {
     getHydrationGoal().then(setHydrationGoalState);
   }, []);
+
+  useEffect(() => {
+    getRecognitionEngine().then(setRecognitionEngineState);
+  }, []);
+
+  const handleEngineToggle = async (useYolo: boolean) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const engine: RecognitionEngine = useYolo ? 'yolo' : 'gemini';
+    setRecognitionEngineState(engine);
+    await setRecognitionEngine(engine);
+  };
 
   const handleAccentChange = async (newAccent: AccentColor) => {
     await setAccentColor(newAccent);
@@ -169,6 +190,62 @@ export default function SettingsScreen() {
             Settings
           </Text>
         </View>
+
+        {/* Recognition engine */}
+        <Text
+          style={{
+            fontFamily: 'PlusJakartaSans_600SemiBold',
+            fontSize: 14,
+            color: colors.text.tertiary,
+            marginBottom: 12,
+            textTransform: 'uppercase',
+            letterSpacing: 1,
+          }}
+        >
+          Recognition Engine
+        </Text>
+        <Card style={{ marginBottom: 24 }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              paddingVertical: 12,
+            }}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, paddingRight: 12 }}>
+              <MaterialIcons name="psychology" size={22} color={colors.text.secondary} />
+              <View style={{ marginLeft: 12, flex: 1 }}>
+                <Text
+                  style={{
+                    fontFamily: 'PlusJakartaSans_500Medium',
+                    fontSize: 16,
+                    color: colors.text.primary,
+                  }}
+                >
+                  {recognitionEngine === 'yolo' ? 'Our model (YOLOv8)' : 'Gemini (recommended)'}
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: 'PlusJakartaSans_400Regular',
+                    fontSize: 12,
+                    color: colors.text.tertiary,
+                  }}
+                >
+                  {recognitionEngine === 'yolo'
+                    ? 'Our trained model — 217 dishes, lower accuracy. Demo only.'
+                    : 'Best accuracy. Identifies most dishes server-side.'}
+                </Text>
+              </View>
+            </View>
+            <Switch
+              value={recognitionEngine === 'yolo'}
+              onValueChange={handleEngineToggle}
+              trackColor={{ false: colors.surface.tertiary, true: accent }}
+              thumbColor="#fff"
+            />
+          </View>
+        </Card>
 
         {/* Notifications */}
         <Text

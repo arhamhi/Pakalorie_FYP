@@ -25,3 +25,28 @@ export const setHydrationGoal = async (goal: number): Promise<void> => {
 };
 
 export const HYDRATION_DEFAULT_GOAL = DEFAULT_GOAL;
+
+const RECOGNITION_ENGINE_KEY = '@pakalorie_recognition_engine';
+
+/** Server-side recognition engine. `gemini` is the default/recommended path;
+ * `yolo` runs our own trained model (demo — 217 classes, lower accuracy). */
+export type RecognitionEngine = 'gemini' | 'yolo';
+export const DEFAULT_RECOGNITION_ENGINE: RecognitionEngine = 'gemini';
+
+export const getRecognitionEngine = async (): Promise<RecognitionEngine> => {
+  try {
+    const stored = await AsyncStorage.getItem(RECOGNITION_ENGINE_KEY);
+    return stored === 'yolo' ? 'yolo' : DEFAULT_RECOGNITION_ENGINE;
+  } catch (error) {
+    console.warn('Failed to load recognition engine', error);
+    return DEFAULT_RECOGNITION_ENGINE;
+  }
+};
+
+export const setRecognitionEngine = async (engine: RecognitionEngine): Promise<void> => {
+  try {
+    await AsyncStorage.setItem(RECOGNITION_ENGINE_KEY, engine);
+  } catch (error) {
+    console.warn('Failed to save recognition engine', error);
+  }
+};

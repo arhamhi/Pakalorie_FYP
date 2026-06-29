@@ -8,6 +8,7 @@
 // device smoke test passes; the scan screen decides which path to use.
 
 import type { FoodIdentificationResult } from './gemini';
+import { DEFAULT_RECOGNITION_ENGINE, type RecognitionEngine } from './preferences';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Config
@@ -154,6 +155,8 @@ export interface GroundedMeta {
   dataSource: string | null;
   /** `source_rows[0].food_label` — the DB row the answer is grounded in. */
   matchedLabel: string | null;
+  /** Which recognition engine produced the dish label (for the demo badge). */
+  engine: RecognitionEngine;
 }
 
 /** The Gemini fallback returns `FoodIdentificationResult`; the backend path
@@ -240,8 +243,15 @@ function inferMimeType(uri: string): string {
   return 'image/jpeg';
 }
 
-/** `POST /recognize` — multipart upload of the food image (field `image`). */
-export async function recognizeFood(imageUri: string): Promise<RecognizeData> {
+/**
+ * `POST /recognize` — multipart upload of the food image (field `image`).
+ * `engine` selects the server-side recognizer: `gemini` (default, recommended)
+ * or `yolo` (our trained model demo). Both return the same `RecognizeData` shape.
+ */
+export async function recognizeFood(
+  imageUri: string,
+  engine: RecognitionEngine = DEFAULT_RECOGNITION_ENGINE,
+): Promise<RecognizeData> {
   const form = new FormData();
   form.append('image', {
     uri: imageUri,
@@ -249,6 +259,7 @@ export async function recognizeFood(imageUri: string): Promise<RecognizeData> {
     type: inferMimeType(imageUri),
     // RN's FormData file part is not typed like the DOM's.
   } as unknown as Blob);
+  form.append('engine', engine);
 
   const response = await fetchWithTimeout(
     '/recognize',
@@ -342,8 +353,11 @@ function roundOrNull(value: number | null | undefined): number | undefined {
  * Throws on any failure (no recognition, "Unknown", or a backend error) so the
  * caller can fall back to the Gemini client and still show a full result.
  */
-export async function recognizeAndGroundFood(imageUri: string): Promise<GroundedScanResult> {
-  const recognition = await recognizeFood(imageUri);
+export async function recognizeAndGroundFood(
+  imageUri: string,
+  engine: RecognitionEngine = DEFAULT_RECOGNITION_ENGINE,
+): Promise<GroundedScanResult> {
+  const recognition = await recognizeFood(imageUri, engine);
 
   const label = recognition.food_label?.trim();
   if (!label || label.toLowerCase() === 'unknown') {
@@ -375,6 +389,7 @@ export async function recognizeAndGroundFood(imageUri: string): Promise<Grounded
       modelUsed: grounded.model_used,
       dataSource: topRow?.source ?? null,
       matchedLabel: topRow?.food_label ?? null,
+      engine,
     },
   };
 }
