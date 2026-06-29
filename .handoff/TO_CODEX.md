@@ -5,6 +5,29 @@ Read `STATE.md` first. After each session, update `STATE.md`, append to `DECISIO
 
 ---
 
+## 2026-06-29 (Claude) — CDX-009: YOLO recognition engine + in-app switch (NEW, ACTIVE, optional demo)
+
+**Note:** Codex is unavailable, so **one Claude session does BOTH the backend and the app** for this task. Decision logged in `DECISIONS.md` (2026-06-29).
+
+**Context:** YOLOv8 training is DONE (top-1 0.5848 / top-5 0.8659, 217 classes). `best.pt` + `best.onnx` are committed at `ml/artifacts/checkpoints/`. Arham wants an in-app switch to choose the recognition engine — **Gemini (default)** vs **our trained model** — as a live demo of the model. This is NOT required for any graded module (the trained model is already a complete deliverable); it's demo polish.
+
+**Backend (mirror the existing ONNX pattern in `app/services/depth.py`):**
+1. `app/services/yolo_recognition.py`: load `best.onnx` once via `onnxruntime.InferenceSession(..., providers=["CPUExecutionProvider"])`. Preprocess to 224×224 (RGB, /255, CHW, float32, batch dim — match YOLOv8-cls), run, softmax, top-5, map indices → class names.
+2. **Class names (do this first):** extract the authoritative list from the trained weights — `from ultralytics import YOLO; YOLO('ml/artifacts/checkpoints/best.pt').names` — and write index-ordered `ml/artifacts/checkpoints/class_names.json`, then commit it. ONNX output index order == this list. Cross-check the count is 217 against `ml/reports/per_class_recall.csv`.
+3. `POST /recognize`: add optional `engine` field — `gemini` (default) | `yolo`. The `yolo` path returns the **same `RecognitionResponse` shape** (`{food_label, confidence, alternatives:[{food_label, confidence}]}`) so the client doesn't branch on engine.
+4. Deploy: the VPS api container needs `best.onnx` + `class_names.json` present (copy into the image or a mounted volume, same as MiDaS); add to `backend/docs/DEPLOY.md`.
+
+**App (Claude lane):**
+5. Settings toggle: "Recognition engine: Gemini (recommended) / Our model (YOLOv8)". Persist via `src/lib/preferences.ts` (AsyncStorage).
+6. `src/lib/api.ts`: `recognizeFood(imageUri, engine?)` passes `engine` to `/recognize`; thread it through `recognizeAndGroundFood()` and `app/(tabs)/scan.tsx`. Gemini stays default; the client-side Gemini fallback is unchanged.
+7. Optional: show which engine produced the result on the Results screen (small label) — nice for the demo.
+
+**Honesty guardrail:** Gemini stays default and recommended; the YOLO path is a "show our own model" demo — expect visibly lower accuracy and only its 217 classes. Do NOT make YOLO the default.
+
+**Acceptance:** `/recognize` with `engine=yolo` returns a valid label on `test_food.webp` end-to-end; the app switch flips engines and a scan returns a result via each; Gemini default preserved; identical response shape both ways.
+
+---
+
 ## 2026-06-10 (Claude) — CDX-007 is DONE (Arham-authorized lane crossover); contract addition on /calories
 
 Arham asked Claude to close out P1 Final, including MiDaS. **CDX-007 is implemented, tested, and merged to `main` (PR #4)** — do not re-implement. `POST /portion` (MiDaS v2.1 small ONNX, CPU) returns `{bucket, multiplier, depth_stats, why, limitations, model_used}`; methodology + limitations in `backend/docs/DEPTH_NOTES.md`.

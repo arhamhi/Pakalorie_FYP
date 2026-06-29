@@ -279,3 +279,23 @@ Format: `## YYYY-MM-DD — <decision title>` then the decision, the rationale, a
 - **Added a live-DB integration suite** (`backend/tests/test_integration.py`, marker `integration`) that auto-skips when no DB is reachable, so the fast unit run still works with no DB. This is the safety net the backend lacked: real seed counts, search, detail + fiber semantics, modifier math + 422s, grounded fallback.
 
 **Verified:** `alembic upgrade head` on the live DB; seed = `foods=160, desi_v1=30, usda=130` (idempotent); every endpoint smoke-tested incl. `gemini_grounded` and `local_grounded_fallback` paths and both 422s; `ruff` clean; `pytest` green (9 unit + 8 integration). Real-desi-photo recognition verified 2026-06-04: `test_food.webp` -> `Haleem` @ 0.98 with sensible alternatives (Dal Gosht, Hareesa, Khichra).
+
+---
+
+## 2026-06-29 — Recognition engine switch: server-side ONNX, Gemini default, YOLO as a demo toggle
+
+**Decision:** Add an optional in-app "recognition engine" switch — **Gemini (default / recommended)** vs **our trained YOLOv8 model**. The YOLO model runs **server-side** in the existing FastAPI backend via `onnxruntime`, exposed through an `engine` parameter on `POST /recognize`. On-device inference is NOT done now.
+
+**Why:**
+- The backend already runs an ONNX model in production (MiDaS, `app/services/depth.py`), so loading `best.onnx` reuses installed machinery — low risk, no new infra.
+- On-device inference is the documented **P2** path: it needs a native ML runtime + a custom dev build, which breaks the Expo Go `npx expo start` → QR workflow we demo with.
+- The switch is a **demonstration of our own model and the accuracy/cost tradeoff** (a strong defense talking point), NOT a better recognizer: YOLO is 58.5% top-1 and only knows its 217 classes, so Gemini stays default. Both engines return the **same `RecognitionResponse` shape** so the app stays engine-agnostic.
+
+**Scope:** new `CDX-009`. **Not required for any graded module** — the trained model is already a complete deliverable; this is pure demo polish.
+
+**Rejected:** (a) on-device ONNX/TFLite now — P2, breaks Expo Go; (b) making YOLO the default — visibly worse than Gemini and limited to 217 classes.
+
+**Implementation notes (2026-06-29, done + deployed):**
+- **Class names extracted from `best.onnx` metadata, not `best.pt` via ultralytics.** The spec said load `YOLO('best.pt').names`, but unpickling a YOLO `.pt` requires the full torch+ultralytics stack (~2 GB) for a one-time dict read. Ultralytics writes the same `names` map into the ONNX export metadata, and the metadata order is the `output0` logit order, so reading it from the exact file the server loads (`ml/scripts/extract_class_names.py`) is both lighter and *more* guaranteed to be index-aligned. Count cross-checked (217) against `ml/reports/per_class_recall.csv`.
+- **`best.onnx` already softmaxes.** Its output is a probability vector (sums to 1), so the service uses it directly; re-softmaxing flattened it to near-uniform. A guard re-softmaxes only if a future export emits raw logits. Empirically: `test_food.webp` → Haleem @ 0.57 (vs Gemini @ 0.98) — the intended "our model is real but less accurate" demo story.
+- **Deploy:** artifacts are git-committed (unlike MiDaS, downloaded on-box), so deploy is `git pull` + copy into the host-mounted `backend/models/yolo/` + rebuild. No `.env` change.
