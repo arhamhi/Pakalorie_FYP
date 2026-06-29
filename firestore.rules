@@ -1,0 +1,17 @@
+rules_version = '2';
+
+// Pakalorie FYP — Firestore security rules.
+// The app stores only the per-user profile here (users/{uid}); all logging
+// data (food, water, weight) lives in Supabase. So the only access needed is:
+// a signed-in user may read and write their own profile document, nothing else.
+//
+// Deploy: paste into Firebase Console > Firestore Database > Rules > Publish,
+// or `firebase deploy --only firestore:rules` once a firebase.json exists.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+  }
+}
