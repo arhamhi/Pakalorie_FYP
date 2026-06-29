@@ -33,6 +33,26 @@ const ACCENT_COLORS: { value: AccentColor; label: string; color: string }[] = [
   { value: 'coral', label: 'Coral', color: Colors.accent.coral },
 ];
 
+const ENGINE_OPTIONS: {
+  value: RecognitionEngine;
+  title: string;
+  subtitle: string;
+  icon: React.ComponentProps<typeof MaterialIcons>['name'];
+}[] = [
+  {
+    value: 'gemini',
+    title: 'Gemini (recommended)',
+    subtitle: 'Best accuracy. Identifies most dishes server-side.',
+    icon: 'auto-awesome',
+  },
+  {
+    value: 'yolo',
+    title: 'Our model (YOLOv8)',
+    subtitle: 'Our trained model — 217 dishes, lower accuracy. Demo only.',
+    icon: 'psychology',
+  },
+];
+
 // Minimum hydration goal - shared constant to ensure consistency with water.tsx
 export const HYDRATION_MIN_GOAL = 4;
 
@@ -64,9 +84,8 @@ export default function SettingsScreen() {
     getRecognitionEngine().then(setRecognitionEngineState);
   }, []);
 
-  const handleEngineToggle = async (useYolo: boolean) => {
+  const handleEngineSelect = async (engine: RecognitionEngine) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    const engine: RecognitionEngine = useYolo ? 'yolo' : 'gemini';
     setRecognitionEngineState(engine);
     await setRecognitionEngine(engine);
   };
@@ -205,46 +224,54 @@ export default function SettingsScreen() {
           Recognition Engine
         </Text>
         <Card style={{ marginBottom: 24 }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              paddingVertical: 12,
-            }}
-          >
-            <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, paddingRight: 12 }}>
-              <MaterialIcons name="psychology" size={22} color={colors.text.secondary} />
-              <View style={{ marginLeft: 12, flex: 1 }}>
-                <Text
-                  style={{
-                    fontFamily: 'PlusJakartaSans_500Medium',
-                    fontSize: 16,
-                    color: colors.text.primary,
-                  }}
-                >
-                  {recognitionEngine === 'yolo' ? 'Our model (YOLOv8)' : 'Gemini (recommended)'}
-                </Text>
-                <Text
-                  style={{
-                    fontFamily: 'PlusJakartaSans_400Regular',
-                    fontSize: 12,
-                    color: colors.text.tertiary,
-                  }}
-                >
-                  {recognitionEngine === 'yolo'
-                    ? 'Our trained model — 217 dishes, lower accuracy. Demo only.'
-                    : 'Best accuracy. Identifies most dishes server-side.'}
-                </Text>
-              </View>
-            </View>
-            <Switch
-              value={recognitionEngine === 'yolo'}
-              onValueChange={handleEngineToggle}
-              trackColor={{ false: colors.surface.tertiary, true: accent }}
-              thumbColor="#fff"
-            />
-          </View>
+          {ENGINE_OPTIONS.map((opt) => {
+            const selected = recognitionEngine === opt.value;
+            return (
+              <TouchableOpacity
+                key={opt.value}
+                onPress={() => handleEngineSelect(opt.value)}
+                activeOpacity={0.7}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingVertical: 14,
+                  paddingHorizontal: 12,
+                  borderRadius: 12,
+                  borderWidth: 2,
+                  borderColor: selected ? accent : 'transparent',
+                  backgroundColor: selected ? accent + '14' : 'transparent',
+                  marginBottom: 8,
+                }}
+              >
+                <MaterialIcons
+                  name={opt.icon}
+                  size={22}
+                  color={selected ? accent : colors.text.secondary}
+                />
+                <View style={{ marginLeft: 12, flex: 1, paddingRight: 12 }}>
+                  <Text
+                    style={{
+                      fontFamily: 'PlusJakartaSans_500Medium',
+                      fontSize: 16,
+                      color: colors.text.primary,
+                    }}
+                  >
+                    {opt.title}
+                  </Text>
+                  <Text
+                    style={{
+                      fontFamily: 'PlusJakartaSans_400Regular',
+                      fontSize: 12,
+                      color: colors.text.tertiary,
+                    }}
+                  >
+                    {opt.subtitle}
+                  </Text>
+                </View>
+                {selected && <MaterialIcons name="check-circle" size={22} color={accent} />}
+              </TouchableOpacity>
+            );
+          })}
         </Card>
 
         {/* Notifications */}
