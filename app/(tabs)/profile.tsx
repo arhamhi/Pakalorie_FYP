@@ -16,7 +16,7 @@ import * as Haptics from 'expo-haptics';
 import { useQuery } from '@tanstack/react-query';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
-import { Card, Button, FadeInView } from '../../src/components/ui';
+import { Card, Button, FadeInView, AnimatedPressable } from '../../src/components/ui';
 import { supabase } from '../../src/lib/supabase';
 import { getHydrationGoal, HYDRATION_DEFAULT_GOAL } from '../../src/lib/preferences';
 import { computeAchievements, aggregateCalories, aggregateHydration, buildDateRange } from '../../src/lib/analytics';
@@ -215,6 +215,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* User Info Card */}
+        <FadeInView direction="up" delay={0}>
         <Card style={{ marginBottom: 20, alignItems: 'center' }}>
           <View
             style={{
@@ -307,8 +308,10 @@ export default function ProfileScreen() {
             </View>
           )}
         </Card>
+        </FadeInView>
 
         {/* Stats Grid */}
+        <FadeInView direction="up" delay={80}>
         <View style={{ flexDirection: 'row', gap: 12, marginBottom: 20 }}>
           <Card style={{ flex: 1, alignItems: 'center' }}>
             <MaterialIcons name="local-fire-department" size={28} color="#FF6B6B" />
@@ -356,8 +359,10 @@ export default function ProfileScreen() {
             </Text>
           </Card>
         </View>
+        </FadeInView>
 
         {/* Current Stats */}
+        <FadeInView direction="up" delay={140}>
         <Card style={{ marginBottom: 20 }}>
           <Text
             style={{
@@ -439,11 +444,13 @@ export default function ProfileScreen() {
             </View>
           </View>
         </Card>
+        </FadeInView>
 
         {/* Quick Actions - Featured */}
+        <FadeInView direction="up" delay={200}>
         <View style={{ gap: 12, marginBottom: 12 }}>
           {/* Trends Button - Accent styled */}
-          <TouchableOpacity
+          <AnimatedPressable
             onPress={() => router.push('/(tabs)/trends')}
             style={{
               flexDirection: 'row',
@@ -489,10 +496,10 @@ export default function ProfileScreen() {
               </Text>
             </View>
             <MaterialIcons name="chevron-right" size={22} color={accent} />
-          </TouchableOpacity>
+          </AnimatedPressable>
 
           {/* Calendar Button - Gold styled */}
-          <TouchableOpacity
+          <AnimatedPressable
             onPress={() => router.push('/(tabs)/calendar-log')}
             style={{
               flexDirection: 'row',
@@ -538,10 +545,12 @@ export default function ProfileScreen() {
               </Text>
             </View>
             <MaterialIcons name="chevron-right" size={22} color="#FFC107" />
-          </TouchableOpacity>
+          </AnimatedPressable>
         </View>
+        </FadeInView>
 
         {/* Achievements Preview */}
+        <FadeInView direction="up" delay={260}>
         <View style={{ marginBottom: 20 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
             <Text
@@ -628,8 +637,10 @@ export default function ProfileScreen() {
             ))}
           </View>
         </View>
+        </FadeInView>
 
         {/* Quick Actions - Standard */}
+        <FadeInView direction="up" delay={320}>
         <View style={{ gap: 12 }}>
           <TouchableOpacity
             onPress={() => router.push('/(tabs)/water')}
@@ -666,6 +677,7 @@ export default function ProfileScreen() {
             fullWidth
           />
         </View>
+        </FadeInView>
       </ScrollView>
     </View>
   );

@@ -27,7 +27,7 @@ import { useAuth } from '../../src/contexts/AuthContext';
 import { useLanguage } from '../../src/contexts/LanguageContext';
 import { supabase } from '../../src/lib/supabase';
 import { getUstadAdvice } from '../../src/lib/gemini';
-import { Card, ProgressRing, MacroBar } from '../../src/components/ui';
+import { Card, ProgressRing, MacroBar, FadeInView, AnimatedPressable } from '../../src/components/ui';
 import { calculateMacros } from '../../src/constants/nutrition';
 import { FoodLog } from '../../src/types/database';
 import { getHydrationGoal, HYDRATION_DEFAULT_GOAL } from '../../src/lib/preferences';
@@ -380,6 +380,7 @@ export default function HomeScreen() {
         </View>
 
         {/* Swipable Cards Carousel */}
+        <FadeInView direction="up" delay={60}>
         <View style={{ marginHorizontal: -20, marginBottom: 20 }}>
           <ScrollView
             ref={carouselRef}
@@ -682,8 +683,10 @@ export default function HomeScreen() {
             ))}
           </View>
         </View>
+        </FadeInView>
 
         {/* Hydration Card */}
+        <FadeInView direction="up" delay={120}>
         <Card style={{ marginBottom: 16 }}>
           <View
             style={{
@@ -796,8 +799,10 @@ export default function HomeScreen() {
             />
           </View>
         </Card>
+        </FadeInView>
 
         {/* Premium Restaurant Discovery */}
+        <FadeInView direction="up" delay={180}>
         {profile?.is_premium ? (
           <TouchableOpacity onPress={() => router.push('/discover')} activeOpacity={0.8}>
             <Card style={{ marginBottom: 16 }}>
@@ -908,8 +913,10 @@ export default function HomeScreen() {
             </Card>
           </TouchableOpacity>
         )}
+        </FadeInView>
 
         {/* Quick log — Stitch dashboard tiles (Photo / Search / Manual) */}
+        <FadeInView direction="up" delay={240}>
         <Text
           style={{
             ...Type.labelCaps,
@@ -940,8 +947,10 @@ export default function HomeScreen() {
             colors={colors}
           />
         </View>
+        </FadeInView>
 
         {/* Today's meals — Stitch list: caps meal-type kicker + serif kcal */}
+        <FadeInView direction="up" delay={300}>
         <View style={{ marginTop: 8 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
             <Text
@@ -1038,6 +1047,7 @@ export default function HomeScreen() {
             </Card>
           )}
         </View>
+        </FadeInView>
       </ScrollView>
     </View>
   );
@@ -1053,9 +1063,8 @@ interface QuickLogTileProps {
 // White Stitch tile with a deep-green icon chip (dashboard "Quick log" row).
 function QuickLogTile({ label, icon, onPress, colors }: QuickLogTileProps) {
   return (
-    <TouchableOpacity
+    <AnimatedPressable
       onPress={onPress}
-      activeOpacity={0.85}
       accessibilityRole="button"
       accessibilityLabel={`${label} log`}
       style={{
@@ -1089,6 +1098,6 @@ function QuickLogTile({ label, icon, onPress, colors }: QuickLogTileProps) {
       >
         {label}
       </Text>
-    </TouchableOpacity>
+    </AnimatedPressable>
   );
 }

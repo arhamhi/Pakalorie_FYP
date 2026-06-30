@@ -1,7 +1,24 @@
 ﻿# STATE â€” single source of truth on current code state
 
-**Last updated:** 2026-06-29 by Claude (CDX-009 DONE + DEPLOYED LIVE: server-side YOLOv8 recognition engine + in-app Gemini/YOLO switch; verified `engine=yolo` -> Haleem @0.57 and Gemini default -> Haleem @0.98 on the live VPS)
-**Next action owner:** Arham — on-device Expo Go smoke of the Settings toggle (flip to "Our model (YOLOv8)", scan, confirm the engine badge on the result). Everything else for CDX-009 is live.
+**Last updated:** 2026-06-30 by Claude (mobile bug-fix + motion pass: login-button dead-tap fixed, Ustad/Gemini truncation fixed client-side, chat keyboard-hidden input fixed, refined animations added across the 5 core tabs + tab bar; `npx tsc --noEmit` = 0 errors)
+**Next action owner:** Arham — on-device Expo Go smoke of the 4 items below.
+
+## 2026-06-30 (Claude) — Login fix + Ustad truncation + chat keyboard + app-wide motion
+
+Four mobile/UI issues reported from a real device, all fixed. `npx tsc --noEmit` = 0 errors. Not yet device-smoked.
+
+- **Login button did nothing (critical):** the routing decision lived only in `app/index.tsx` (the `/` route). Signing in while sitting on `/(auth)/login` flipped `user` but nothing re-evaluated routing, so the screen never moved — the button looked dead. Signup had the same latent bug. Fix: one reactive auth guard in `app/_layout.tsx` `RootLayoutNav` (`useSegments` + `useEffect`) — when `user` is set and `segments[0] === '(auth)'`, `router.replace('/')` and let index decide tabs vs onboarding. Covers login, signup, and Google in one place.
+- **Ustad (Gemini) replies cut off mid-sentence:** client `src/lib/gemini.ts` still hit `gemini-3-flash-preview` (a thinking model) with low `maxOutputTokens`, so reasoning tokens ate the answer — the same bug already fixed server-side on 2026-06-04. Applied the same fix client-side: `thinkingConfig: { thinkingBudget: 0 }` on all 4 calls (`chatWithUstad`, `identifyFood`, `generateMealFromDescription`, `getUstadAdvice`), bumped `chatWithUstad` 256→1024 and `getUstadAdvice` 64→256, and now join all `content.parts[].text` instead of only `parts[0]`.
+- **Chat input hidden behind keyboard:** the input is `position:absolute` (to clear the floating tab bar), so `KeyboardAvoidingView` couldn't move it and Android had `behavior:undefined`. Replaced KAV with manual `Keyboard.addListener('keyboardDidShow/Hide')` driving a reanimated shared value for the input's `bottom` (100 closed / keyboardHeight+12 open), `withTiming` both ways, scrollToEnd on show. Works identically on iOS + Android.
+- **App felt bland — refined motion added (reused existing `FadeInView`/`AnimatedPressable`, no new deps):** staggered section entrances on Home (`index.tsx`), Profile, and chat; `AnimatedPressable` press feedback on Home quick-log tiles and Profile's Trends/Calendar cards; chat message bubbles now animate in (`FadeInUp`) and suggestion chips stagger; Search food rows get `entering` + `LinearTransition` (animate in / reflow on filter); active tab-bar icon springs a gentle scale (`_layout.tsx` `AnimatedTabIcon`). Light-mode only, colors via `useTheme()`, no legacy font/icon migration (legacy chat/search/profile screens left on `@expo/vector-icons` per the piecemeal-migration guardrail). Skipped (lower value): Home pagination-dot / hydration-bar reanimated interpolation, Search section-level staggers.
+
+**Files touched:** `app/_layout.tsx`, `src/lib/gemini.ts`, `app/(tabs)/chat.tsx`, `app/(tabs)/_layout.tsx`, `app/(tabs)/index.tsx`, `app/(tabs)/profile.tsx`, `app/(tabs)/search.tsx`. No `package.json` change.
+
+**Arham to device-smoke:** (1) forgot-password → change → **login now lands on tabs** (no dead tap); (2) Ustad replies are full multi-sentence, not cut off; (3) tap the chat input → field rides above the keyboard, returns above the tab bar on dismiss; (4) tab through Home/Chat/Search/Profile → sections fade in, taps spring, active tab icon pops.
+
+## 2026-06-29 (Claude) — CDX-009 DONE + DEPLOYED LIVE: server-side YOLOv8 recognition engine + in-app Gemini/YOLO switch
+
+(Previous next-action: Arham — on-device Expo Go smoke of the Settings YOLO toggle. Still open.)
 
 ## 2026-06-29 (Claude) — CDX-009 DONE + DEPLOYED: YOLO recognition engine + in-app switch
 

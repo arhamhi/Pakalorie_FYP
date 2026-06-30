@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Stack, useRouter } from 'expo-router';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { View, ActivityIndicator } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -53,9 +53,23 @@ const ONBOARDING_KEY = '@pakalorie_onboarding_complete';
 
 function RootLayoutNav() {
   const { theme, colors } = useTheme();
-  const { user, profile } = useAuth();
+  const { user, profile, loading } = useAuth();
   const router = useRouter();
+  const segments = useSegments();
   const notificationListener = useRef<(() => void) | null>(null);
+
+  // Reactive auth guard. The routing decision in app/index.tsx only runs while
+  // mounted at '/', so a user who signs in while sitting on an (auth) screen
+  // (login/signup/Google) never gets redirected — the button looked dead.
+  // When auth flips and we're still in the (auth) group, bounce to '/' and let
+  // index decide tabs vs onboarding. ponytail: single guard covers all entry
+  // points instead of router.replace in each screen.
+  useEffect(() => {
+    if (loading) return;
+    if (user && segments[0] === '(auth)') {
+      router.replace('/');
+    }
+  }, [user, loading, segments, router]);
 
   // Notification setup runs only once the user is signed in AND onboarded —
   // otherwise the OS permission dialog pops over the welcome/onboarding

@@ -5,11 +5,17 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  KeyboardAvoidingView,
-  Platform,
+  Keyboard,
   ActivityIndicator,
 } from 'react-native';
+import Animated, {
+  FadeInUp,
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from 'react-native-reanimated';
 import { MaterialIcons } from '@expo/vector-icons';
+import { FadeInView } from '../../src/components/ui/FadeInView';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
@@ -97,6 +103,28 @@ export default function ChatScreen() {
   const [isTyping, setIsTyping] = useState(false);
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [suggestions, setSuggestions] = useState<string[]>([]);
+
+  // The input is absolutely positioned (to clear the floating tab bar), so
+  // KeyboardAvoidingView can't shift it. Track the keyboard height ourselves
+  // and animate the input's `bottom`. ponytail: one shared value holds the
+  // actual bottom (100 closed / keyboardHeight+12 open) so it animates both
+  // ways with no jump, no platform branch.
+  const inputBottom = useSharedValue(100);
+  const inputBarStyle = useAnimatedStyle(() => ({ bottom: inputBottom.value }));
+
+  useEffect(() => {
+    const show = Keyboard.addListener('keyboardDidShow', (e) => {
+      inputBottom.value = withTiming(e.endCoordinates.height + 12, { duration: 220 });
+      scrollRef.current?.scrollToEnd({ animated: true });
+    });
+    const hide = Keyboard.addListener('keyboardDidHide', () => {
+      inputBottom.value = withTiming(100, { duration: 220 });
+    });
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, [inputBottom]);
 
   // Fetch today's stats for context
   const today = new Date().toISOString().split('T')[0];
@@ -279,11 +307,7 @@ export default function ChatScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: colors.surface.primary }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={0}
-    >
+    <View style={{ flex: 1, backgroundColor: colors.surface.primary }}>
       {/* Header */}
       <View
         style={{
@@ -405,35 +429,36 @@ export default function ChatScreen() {
               </Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 10 }}>
                 {suggestions.map((suggestion, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => handleSuggestionTap(suggestion)}
-                    style={{
-                      backgroundColor: colors.surface.secondary,
-                      borderRadius: 20,
-                      paddingHorizontal: 16,
-                      paddingVertical: 12,
-                      borderWidth: 1,
-                      borderColor: theme === 'light' ? colors.border : colors.surface.tertiary,
-                      ...(theme === 'light' ? {
-                        shadowColor: '#000',
-                        shadowOffset: { width: 0, height: 1 },
-                        shadowOpacity: 0.04,
-                        shadowRadius: 4,
-                        elevation: 1,
-                      } : {}),
-                    }}
-                  >
-                    <Text
+                  <FadeInView key={index} delay={index * 70} direction="up" distance={12}>
+                    <TouchableOpacity
+                      onPress={() => handleSuggestionTap(suggestion)}
                       style={{
-                        fontFamily: 'PlusJakartaSans_500Medium',
-                        fontSize: 14,
-                        color: colors.text.primary,
+                        backgroundColor: colors.surface.secondary,
+                        borderRadius: 20,
+                        paddingHorizontal: 16,
+                        paddingVertical: 12,
+                        borderWidth: 1,
+                        borderColor: theme === 'light' ? colors.border : colors.surface.tertiary,
+                        ...(theme === 'light' ? {
+                          shadowColor: '#000',
+                          shadowOffset: { width: 0, height: 1 },
+                          shadowOpacity: 0.04,
+                          shadowRadius: 4,
+                          elevation: 1,
+                        } : {}),
                       }}
                     >
-                      {suggestion}
-                    </Text>
-                  </TouchableOpacity>
+                      <Text
+                        style={{
+                          fontFamily: 'PlusJakartaSans_500Medium',
+                          fontSize: 14,
+                          color: colors.text.primary,
+                        }}
+                      >
+                        {suggestion}
+                      </Text>
+                    </TouchableOpacity>
+                  </FadeInView>
                 ))}
               </View>
             </View>
@@ -441,8 +466,9 @@ export default function ChatScreen() {
         )}
 
         {messages.map((message, index) => (
-          <View
+          <Animated.View
             key={index}
+            entering={FadeInUp.duration(300)}
             style={{
               alignSelf: message.role === 'user' ? 'flex-end' : 'flex-start',
               backgroundColor:
@@ -465,7 +491,7 @@ export default function ChatScreen() {
             >
               {message.text}
             </Text>
-          </View>
+          </Animated.View>
         ))}
 
         {isTyping && (
@@ -484,28 +510,30 @@ export default function ChatScreen() {
       </ScrollView>
 
       {/* Input */}
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 100,
-          left: 20,
-          right: 20,
-          flexDirection: 'row',
-          alignItems: 'center',
-          backgroundColor: colors.surface.secondary,
-          borderRadius: 24,
-          paddingHorizontal: 16,
-          paddingVertical: 8,
-          borderWidth: theme === 'light' ? 1 : 0,
-          borderColor: theme === 'light' ? colors.border : 'transparent',
-          ...(theme === 'light' ? {
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.06,
-            shadowRadius: 8,
-            elevation: 3,
-          } : {}),
-        }}
+      <Animated.View
+        style={[
+          {
+            position: 'absolute',
+            left: 20,
+            right: 20,
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor: colors.surface.secondary,
+            borderRadius: 24,
+            paddingHorizontal: 16,
+            paddingVertical: 8,
+            borderWidth: theme === 'light' ? 1 : 0,
+            borderColor: theme === 'light' ? colors.border : 'transparent',
+            ...(theme === 'light' ? {
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.06,
+              shadowRadius: 8,
+              elevation: 3,
+            } : {}),
+          },
+          inputBarStyle,
+        ]}
       >
         <TextInput
           value={input}
@@ -539,7 +567,7 @@ export default function ChatScreen() {
             color={input.trim() ? '#fff' : colors.text.tertiary}
           />
         </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+      </Animated.View>
+    </View>
   );
 }

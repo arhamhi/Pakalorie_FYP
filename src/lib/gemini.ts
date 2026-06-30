@@ -172,6 +172,8 @@ export async function identifyFood(imageUri: string): Promise<FoodIdentification
           topK: 40,
           topP: 0.95,
           maxOutputTokens: 1024,
+          // Thinking model: keep reasoning tokens from eating the JSON output.
+          thinkingConfig: { thinkingBudget: 0 },
         },
       }),
     });
@@ -276,7 +278,11 @@ USER CONTEXT:
           temperature: 0.7,
           topK: 40,
           topP: 0.95,
-          maxOutputTokens: 256,
+          maxOutputTokens: 1024,
+          // gemini-3-flash-preview is a thinking model; reasoning tokens count
+          // against maxOutputTokens, which truncated replies mid-sentence at
+          // 256. Same fix the backend already applied (see STATE.md 2026-06-04).
+          thinkingConfig: { thinkingBudget: 0 },
         },
       }),
     });
@@ -286,7 +292,9 @@ USER CONTEXT:
     }
 
     const data = await response.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    // Thinking models can split output across multiple parts; join them all.
+    const parts = data.candidates?.[0]?.content?.parts ?? [];
+    const text = parts.map((p: { text?: string }) => p.text ?? '').join('').trim();
 
     if (!text) {
       throw new Error('No response from AI');
@@ -348,7 +356,9 @@ RESPOND IN EXACT JSON FORMAT (no markdown):
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {
           temperature: 0.3,
-          maxOutputTokens: 256,
+          maxOutputTokens: 512,
+          // Thinking model: keep reasoning tokens from eating the JSON output.
+          thinkingConfig: { thinkingBudget: 0 },
         },
       }),
     });
@@ -358,7 +368,8 @@ RESPOND IN EXACT JSON FORMAT (no markdown):
     }
 
     const data = await response.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    const parts = data.candidates?.[0]?.content?.parts ?? [];
+    const text = parts.map((p: { text?: string }) => p.text ?? '').join('');
 
     if (!text) {
       throw new Error('No response from AI');
@@ -422,13 +433,18 @@ Example outputs:
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {
           temperature: 0.8,
-          maxOutputTokens: 64,
+          maxOutputTokens: 256,
+          // Thinking model: 64 tokens were entirely consumed by reasoning,
+          // returning empty advice. Disable thinking for this one-liner.
+          thinkingConfig: { thinkingBudget: 0 },
         },
       }),
     });
 
     const data = await response.json();
-    return data.candidates?.[0]?.content?.parts?.[0]?.text || "Lage raho, consistency is key!";
+    const parts = data.candidates?.[0]?.content?.parts ?? [];
+    const text = parts.map((p: { text?: string }) => p.text ?? '').join('').trim();
+    return text || "Lage raho, consistency is key!";
   } catch {
     return "Lage raho, consistency is key!";
   }

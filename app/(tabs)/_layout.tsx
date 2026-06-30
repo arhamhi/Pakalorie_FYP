@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'expo-router';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
 import {
   HouseIcon,
   ChatTeardropDotsIcon,
@@ -10,6 +15,17 @@ import {
   UserIcon,
 } from 'phosphor-react-native';
 import { useTheme } from '../../src/contexts/ThemeContext';
+
+// Springs the active tab icon up slightly so tab switches feel alive.
+// ponytail: gentle scale only, no bounce — matches the refined motion spec.
+function AnimatedTabIcon({ focused, children }: { focused: boolean; children: React.ReactNode }) {
+  const scale = useSharedValue(focused ? 1.12 : 1);
+  useEffect(() => {
+    scale.value = withSpring(focused ? 1.12 : 1, { damping: 14, stiffness: 180 });
+  }, [focused, scale]);
+  const style = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+  return <Animated.View style={style}>{children}</Animated.View>;
+}
 import { useAuth } from '../../src/contexts/AuthContext';
 import { Colors, Elevation } from '../../src/constants/colors';
 import { FontFamily } from '../../src/constants/fonts';
@@ -55,7 +71,9 @@ export default function TabsLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
-            <HouseIcon size={26} color={color} weight={focused ? 'duotone' : 'regular'} />
+            <AnimatedTabIcon focused={focused}>
+              <HouseIcon size={26} color={color} weight={focused ? 'duotone' : 'regular'} />
+            </AnimatedTabIcon>
           ),
         }}
       />
@@ -64,7 +82,9 @@ export default function TabsLayout() {
         options={{
           title: 'Ustad',
           tabBarIcon: ({ color, focused }) => (
-            <ChatTeardropDotsIcon size={26} color={color} weight={focused ? 'duotone' : 'regular'} />
+            <AnimatedTabIcon focused={focused}>
+              <ChatTeardropDotsIcon size={26} color={color} weight={focused ? 'duotone' : 'regular'} />
+            </AnimatedTabIcon>
           ),
         }}
       />
@@ -105,12 +125,15 @@ export default function TabsLayout() {
         name="search"
         options={{
           title: isPremium ? 'Suggestions' : 'Search',
-          tabBarIcon: ({ color, focused }) =>
-            isPremium ? (
-              <MapPinIcon size={26} color={color} weight={focused ? 'duotone' : 'regular'} />
-            ) : (
-              <MagnifyingGlassIcon size={26} color={color} weight={focused ? 'duotone' : 'regular'} />
-            ),
+          tabBarIcon: ({ color, focused }) => (
+            <AnimatedTabIcon focused={focused}>
+              {isPremium ? (
+                <MapPinIcon size={26} color={color} weight={focused ? 'duotone' : 'regular'} />
+              ) : (
+                <MagnifyingGlassIcon size={26} color={color} weight={focused ? 'duotone' : 'regular'} />
+              )}
+            </AnimatedTabIcon>
+          ),
         }}
       />
       <Tabs.Screen
@@ -118,7 +141,9 @@ export default function TabsLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: ({ color, focused }) => (
-            <UserIcon size={26} color={color} weight={focused ? 'duotone' : 'regular'} />
+            <AnimatedTabIcon focused={focused}>
+              <UserIcon size={26} color={color} weight={focused ? 'duotone' : 'regular'} />
+            </AnimatedTabIcon>
           ),
         }}
       />

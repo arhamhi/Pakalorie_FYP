@@ -16,7 +16,8 @@ import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { supabase } from '../../src/lib/supabase';
 import type { Json } from '../../src/types/database';
-import { Card, Button, Input } from '../../src/components/ui';
+import Animated, { FadeInUp, LinearTransition } from 'react-native-reanimated';
+import { Card, Button, Input, FadeInView } from '../../src/components/ui';
 import { COMMON_FOODS, FOOD_MODIFIERS } from '../../src/constants/nutrition';
 
 type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
@@ -891,8 +892,12 @@ export default function SearchScreen() {
           const selectedItem = combinationItems.find((item) => item.food.name === food.name);
 
           return (
-            <TouchableOpacity
+            <Animated.View
               key={index}
+              entering={FadeInUp.duration(220)}
+              layout={LinearTransition.duration(180)}
+            >
+            <TouchableOpacity
               onPress={() => combinationMode ? toggleCombinationItem(food) : setSelectedFood(food)}
               style={{
                 flexDirection: 'row',
@@ -990,6 +995,7 @@ export default function SearchScreen() {
                 </View>
               )}
             </TouchableOpacity>
+            </Animated.View>
           );
         })}
 
