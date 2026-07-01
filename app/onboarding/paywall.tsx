@@ -44,12 +44,21 @@ export default function PaywallScreen() {
   // Already-onboarded users land here from the Home "Unlock Premium" upsell.
   // For them, continuing into /onboarding/name would re-run the whole flow and
   // end with completeOnboarding() writing the blank OnboardingContext over
-  // their real Firestore profile — so save the choice and go back instead.
+  // their real Firestore profile — so save the choice, SAY SO (a silent
+  // router.back() read as "the button does nothing"), and land on the tabs.
   const finishChoice = async (isPremium: boolean) => {
     if (profile?.onboarding_complete) {
       try {
         await updateProfile({ is_premium: isPremium });
-        router.back();
+        if (isPremium) {
+          Alert.alert(
+            'Premium unlocked',
+            'Your 7-day trial is active — premium features are switched on.',
+            [{ text: 'OK', onPress: () => router.replace('/(tabs)') }],
+          );
+        } else {
+          router.replace('/(tabs)');
+        }
       } catch {
         Alert.alert('Something went wrong', 'Could not update your plan. Please try again.');
       }
