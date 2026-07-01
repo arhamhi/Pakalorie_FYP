@@ -8,10 +8,20 @@ interface ThemeContextType {
   accentColor: AccentColor;
   colors: ThemeColors;
   accent: string;
+  /** Darker shade of the selected accent for active nav / focus text+icons —
+   * the raw accent (esp. gold/coral) lacks contrast on white surfaces. */
+  accentDeep: string;
   setTheme: (theme: ThemeMode) => Promise<void>;
   setAccentColor: (color: AccentColor) => Promise<void>;
   toggleTheme: () => Promise<void>;
 }
+
+// Same hue as each accent, lightness dropped for contrast on white cards.
+const ACCENT_DEEP: Record<AccentColor, string> = {
+  green: Colors.accentDeep, // #006D3D — the designed Stitch deep green
+  gold: '#8A6D00',
+  coral: '#C6403F',
+};
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
@@ -70,6 +80,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const colors = getThemeColors(theme);
   const accent = Colors.accent[accentColor];
+  const accentDeep = ACCENT_DEEP[accentColor] || Colors.accentDeep;
 
   if (!isLoaded) {
     return null;
@@ -82,6 +93,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         accentColor,
         colors,
         accent,
+        accentDeep,
         setTheme,
         setAccentColor,
         toggleTheme,

@@ -1,7 +1,20 @@
 ﻿# STATE â€” single source of truth on current code state
 
-**Last updated:** 2026-07-02 by Claude (full audit of all prior Claude/Opus work + "not food" scan state + 12-fix bug batch; `npx tsc --noEmit` = 0 errors, `api-smoke.mjs` = 10/10)
-**Next action owner:** Arham — on-device Expo Go smoke of the 5 items in the 2026-07-02 section.
+**Last updated:** 2026-07-02 by Claude, session 2 (CRITICAL: the Supabase project is DELETED — every Supabase-backed feature is dead; accent-theme fix shipped; `npx tsc --noEmit` = 0 errors)
+**Next action owner:** Arham — decide the data-plane path (new Supabase project vs CDX-001 Firestore migration now), then device smoke.
+
+## 2026-07-02 (Claude, session 2) — Supabase project is GONE + accent theme fix
+
+**CRITICAL FINDING — the Supabase project no longer exists.** `prpvgqjeapmxyfroojfp.supabase.co` (the only URL in `.env`, unchanged since 2026-05-19) is NXDOMAIN, verified against both the local resolver and Google DNS (8.8.8.8), while `supabase.co` itself resolves fine. Free-tier Supabase projects get paused on inactivity and eventually removed — that lines up with a May-19 setup and sporadic use. Consequences:
+
+- **Every Supabase-backed feature is currently broken at the network level:** food-log save + history (Home/Calendar/Trends/Achievements), water logging, chat-session persistence, favorites, weight logs, avatar upload. Auth/profiles (Firebase) and Ustad replies + scanning (Gemini/FastAPI) still work — exactly the split Arham observed on device.
+- **The water-logging bug is closed as "root cause found":** the flicker-and-revert came from Home's optimistic hydration update rolling back / silently no-op'ing against a failing backend (an earlier session's uncommitted 0-row RLS guard in `water.tsx` — swept into `cfb46c6` — suspected the same class of problem while the project was still half-alive). No client fix can help now; the data plane itself is gone.
+- **Decision needed from Arham (asked in chat):** (a) create a fresh Supabase project (fast restore, ~30 min: he creates it, Claude generates the schema SQL from `src/types/database.ts`, swap `.env`) — but keeps the two-database split, the anon-key authorization hole, and the free-tier pause risk right before a demo; or (b) do CDX-001 now — migrate the data plane to Firestore (bigger, ~10 screens/libs, but the logged end-state, kills the Supabase dependency + the top security finding, matches the FYP doc's Firebase story).
+
+**Shipped this session — accent theme now actually applies (Arham-reported bug):**
+- `ThemeContext` exposes `accentDeep` (green keeps the designed `#006D3D`; gold `#8A6D00`, coral `#C6403F` — same hue, darkened for contrast on white).
+- Tab bar active icon/label (`(tabs)/_layout.tsx` was hardcoded `Colors.accentDeep`), Home quick-log tiles + "Ustad says" accents, auth-input focus ring, and the legacy `#1BAD66` literals in Search (fat macro, "adjustments applied" chip) + Create-meal (fat macro) all follow the selected accent now. Left alone on purpose: boot spinner (renders before preferences load) and Discover's open/closed green (semantic status, not accent).
+- `npx tsc --noEmit` = 0 errors.
 
 ## 2026-07-02 (Claude) — Full audit + not-food edge case + bug batch
 

@@ -31,13 +31,14 @@ import { Colors, Elevation } from '../../src/constants/colors';
 import { FontFamily } from '../../src/constants/fonts';
 
 export default function TabsLayout() {
-  const { colors, accent } = useTheme();
+  const { colors, accent, accentDeep } = useTheme();
   const { profile } = useAuth();
   const isPremium = profile?.is_premium || false;
 
   // Stitch tab bar: floating pill geometry (kept from v2 — docked mockup
   // variant rejected, it ripples into every screen's bottom padding), solid
-  // white, borderless, ambient shadow. Active = deep-green duotone.
+  // white, borderless, ambient shadow. Active = the user's accent (deep
+  // variant for contrast), not a hardcoded green.
   return (
     <Tabs
       screenOptions={{
@@ -54,7 +55,7 @@ export default function TabsLayout() {
           ...Elevation.ambient,
           paddingBottom: 0,
         },
-        tabBarActiveTintColor: Colors.accentDeep,
+        tabBarActiveTintColor: accentDeep,
         tabBarInactiveTintColor: colors.text.tertiary,
         tabBarLabelStyle: {
           fontFamily: FontFamily.geistMedium,

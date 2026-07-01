@@ -458,7 +458,7 @@ export default function SearchScreen() {
                 </Text>
               </View>
               <View style={{ alignItems: 'center' }}>
-                <Text style={{ fontFamily: 'IBMPlexMono_600SemiBold', fontSize: 18, color: '#1BAD66' }}>
+                <Text style={{ fontFamily: 'IBMPlexMono_600SemiBold', fontSize: 18, color: accent }}>
                   {adjustmentsApplied ? calculateFinalMacro(selectedFood.fat, true) : calculateFinalMacro(selectedFood.fat)}g
                 </Text>
                 <Text style={{ fontFamily: 'PlusJakartaSans_400Regular', fontSize: 12, color: colors.text.tertiary }}>
@@ -628,7 +628,7 @@ export default function SearchScreen() {
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: '#1BAD66' + '15',
+                backgroundColor: accent + '15',
                 borderRadius: 12,
                 paddingVertical: 12,
                 paddingHorizontal: 16,
@@ -636,12 +636,12 @@ export default function SearchScreen() {
                 gap: 8,
               }}
             >
-              <MaterialIcons name="check-circle" size={18} color="#1BAD66" />
+              <MaterialIcons name="check-circle" size={18} color={accent} />
               <Text
                 style={{
                   fontFamily: 'PlusJakartaSans_500Medium',
                   fontSize: 13,
-                  color: '#1BAD66',
+                  color: accent,
                 }}
               >
                 Adjustments applied to nutrition values
@@ -1101,7 +1101,7 @@ export default function SearchScreen() {
               </Text>
             </View>
             <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontFamily: 'IBMPlexMono_600SemiBold', fontSize: 16, color: '#1BAD66' }}>
+              <Text style={{ fontFamily: 'IBMPlexMono_600SemiBold', fontSize: 16, color: accent }}>
                 {Math.round(combinationTotals.fat)}g
               </Text>
               <Text style={{ fontFamily: 'PlusJakartaSans_400Regular', fontSize: 11, color: colors.text.tertiary }}>

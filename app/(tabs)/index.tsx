@@ -43,7 +43,7 @@ const CARD_WIDTH = SCREEN_WIDTH - (CARD_PADDING * 2); // Full width minus paddin
 const CARD_HEIGHT = Math.max(520, SCREEN_HEIGHT * 0.55); // Larger cards - 55% of screen height
 
 export default function HomeScreen() {
-  const { colors, accent, theme } = useTheme();
+  const { colors, accent, accentDeep, theme } = useTheme();
   const { profile, user } = useAuth();
   const { getDynamicGreeting, getHydrationFeedback, getTimeOfDay, t } = useLanguage();
   const queryClient = useQueryClient();
@@ -942,19 +942,19 @@ export default function HomeScreen() {
         <View style={{ flexDirection: 'row', gap: 12, marginBottom: 16 }}>
           <QuickLogTile
             label="Photo"
-            icon={<CameraIcon size={24} color={Colors.accentDeep} weight="duotone" />}
+            icon={<CameraIcon size={24} color={accentDeep} weight="duotone" />}
             onPress={() => router.push('/(tabs)/scan')}
             colors={colors}
           />
           <QuickLogTile
             label="Search"
-            icon={<MagnifyingGlassIcon size={24} color={Colors.accentDeep} weight="duotone" />}
+            icon={<MagnifyingGlassIcon size={24} color={accentDeep} weight="duotone" />}
             onPress={() => router.push('/(tabs)/search')}
             colors={colors}
           />
           <QuickLogTile
             label="Manual"
-            icon={<PencilSimpleIcon size={24} color={Colors.accentDeep} weight="duotone" />}
+            icon={<PencilSimpleIcon size={24} color={accentDeep} weight="duotone" />}
             onPress={() => router.push('/(tabs)/create-meal')}
             colors={colors}
           />
@@ -978,7 +978,7 @@ export default function HomeScreen() {
                 style={{
                   fontFamily: FontFamily.geistMedium,
                   fontSize: 14,
-                  color: Colors.accentDeep,
+                  color: accentDeep,
                 }}
               >
                 View all
@@ -1001,7 +1001,7 @@ export default function HomeScreen() {
                       style={{
                         ...Type.labelCaps,
                         textTransform: 'uppercase',
-                        color: Colors.accentDeep,
+                        color: accentDeep,
                         marginBottom: 2,
                       }}
                     >
@@ -1072,8 +1072,9 @@ interface QuickLogTileProps {
   colors: ReturnType<typeof useTheme>['colors'];
 }
 
-// White Stitch tile with a deep-green icon chip (dashboard "Quick log" row).
+// White Stitch tile with an accent-deep icon chip (dashboard "Quick log" row).
 function QuickLogTile({ label, icon, onPress, colors }: QuickLogTileProps) {
+  const { accentDeep } = useTheme();
   return (
     <AnimatedPressable
       onPress={onPress}
@@ -1093,7 +1094,7 @@ function QuickLogTile({ label, icon, onPress, colors }: QuickLogTileProps) {
           width: 44,
           height: 44,
           borderRadius: 22,
-          backgroundColor: Colors.accentDeep + '1A',
+          backgroundColor: accentDeep + '1A',
           alignItems: 'center',
           justifyContent: 'center',
           marginBottom: 8,

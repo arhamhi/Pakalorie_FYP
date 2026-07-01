@@ -93,15 +93,15 @@ interface AuthInputProps extends TextInputProps {
 }
 
 export function AuthInput({ label, error, hint, rightSlot, ...textInputProps }: AuthInputProps) {
-  const { colors, accent } = useTheme();
+  const { colors, accent, accentDeep } = useTheme();
   const [isFocused, setIsFocused] = useState(false);
 
-  // Stitch inputs: soft fill, borderless at rest; deep-green focus ring,
+  // Stitch inputs: soft fill, borderless at rest; accent-deep focus ring,
   // error keeps the system red.
   const borderColor = error
     ? Colors.system.error
     : isFocused
-    ? Colors.accentDeep
+    ? accentDeep
     : 'transparent';
 
   return (

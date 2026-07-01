@@ -450,7 +450,7 @@ export default function CreateMealScreen() {
               </Text>
             </View>
             <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontFamily: 'IBMPlexMono_600SemiBold', fontSize: 18, color: '#1BAD66' }}>
+              <Text style={{ fontFamily: 'IBMPlexMono_600SemiBold', fontSize: 18, color: accent }}>
                 {Math.round(generatedMeal.fat * servings)}g
               </Text>
               <Text style={{ fontFamily: 'PlusJakartaSans_400Regular', fontSize: 12, color: colors.text.tertiary }}>
