@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import * as Haptics from 'expo-haptics';
 import { useQuery } from '@tanstack/react-query';
@@ -89,8 +88,10 @@ export default function ProfileScreen() {
           onPress: async () => {
             try {
               await signOut();
-              await AsyncStorage.removeItem('@pakalorie_onboarding_complete');
-              router.replace('/');
+              // Go straight to welcome — routing via '/' raced the auth-state
+              // flip: index.tsx could still see the stale signed-in user and
+              // redirect back into (tabs). (signOut clears the onboarding flag.)
+              router.replace('/(auth)/welcome');
             } catch (error: any) {
               Alert.alert('Error', error.message);
             }

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Alert, Switch, TextInput } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useTheme } from '../../src/contexts/ThemeContext';
@@ -189,8 +188,9 @@ export default function SettingsScreen() {
   const handleSignOut = async () => {
     try {
       await signOut();
-      await AsyncStorage.removeItem('@pakalorie_onboarding_complete');
-      router.replace('/');
+      // Straight to welcome — via '/' the stale signed-in user could win the
+      // race in index.tsx and land back on (tabs). signOut clears the flag.
+      router.replace('/(auth)/welcome');
     } catch (error: any) {
       Alert.alert('Error', error.message);
     }
