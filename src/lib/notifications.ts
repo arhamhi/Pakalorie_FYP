@@ -6,6 +6,7 @@ import * as Device from 'expo-device';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { supabase } from './supabase'; // Import supabase for checking logs
+import { dayBounds, todayKey } from './analytics';
 import { Profile } from '../types/database';
 import {
   MEAL_REMINDERS,
@@ -307,15 +308,15 @@ export async function scheduleDailyMealReminders(profile: Profile | null): Promi
 export async function hasLoggedMealsToday(userId: string): Promise<boolean> {
   if (!userId) return false;
   
-  const today = new Date().toISOString().split('T')[0];
-  
+  const bounds = dayBounds(todayKey());
+
   // Check food logs
   const { count: foodCount, error: foodError } = await supabase
     .from('food_logs')
     .select('*', { count: 'exact', head: true })
     .eq('user_id', userId)
-    .gte('created_at', `${today}T00:00:00`)
-    .lte('created_at', `${today}T23:59:59`);
+    .gte('created_at', bounds.start)
+    .lt('created_at', bounds.end);
     
   if (!foodError && foodCount !== null && foodCount > 0) return true;
   

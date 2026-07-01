@@ -19,7 +19,7 @@ import { useAuth } from '../../src/contexts/AuthContext';
 import { Card, Button, FadeInView, AnimatedPressable } from '../../src/components/ui';
 import { supabase } from '../../src/lib/supabase';
 import { getHydrationGoal, HYDRATION_DEFAULT_GOAL } from '../../src/lib/preferences';
-import { computeAchievements, aggregateCalories, aggregateHydration, buildDateRange } from '../../src/lib/analytics';
+import { computeAchievements, aggregateCalories, aggregateHydration, buildDateRange, dayBounds } from '../../src/lib/analytics';
 
 export default function ProfileScreen() {
   const { colors, accent } = useTheme();
@@ -60,13 +60,14 @@ export default function ProfileScreen() {
     enabled: !!user,
     queryFn: async () => {
       if (!user) return { food: [], hydration: [], weight: [] };
+      const bounds = dayBounds(achievementStart, achievementEnd);
       const [foodRes, hydrationRes, weightRes] = await Promise.all([
         supabase
           .from('food_logs')
           .select('*')
           .eq('user_id', user.id)
-          .gte('created_at', `${achievementStart}T00:00:00`)
-          .lte('created_at', `${achievementEnd}T23:59:59`),
+          .gte('created_at', bounds.start)
+          .lt('created_at', bounds.end),
         supabase
           .from('hydration_logs')
           .select('*')
@@ -77,8 +78,8 @@ export default function ProfileScreen() {
           .from('weight_logs')
           .select('*')
           .eq('user_id', user.id)
-          .gte('logged_at', `${achievementStart}T00:00:00`)
-          .lte('logged_at', `${achievementEnd}T23:59:59`),
+          .gte('logged_at', bounds.start)
+          .lt('logged_at', bounds.end),
       ]);
       return {
         food: foodRes.data || [],

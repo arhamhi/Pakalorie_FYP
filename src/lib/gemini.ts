@@ -4,6 +4,32 @@ const GEMINI_API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
 // Using gemini-3.0-flash for stable image analysis
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent';
 
+const GEMINI_TIMEOUT_MS = 20_000;
+// Vision (base64 image upload) needs a longer ceiling, matching api.ts.
+const GEMINI_VISION_TIMEOUT_MS = 30_000;
+
+/** All Gemini calls go through here: bare `fetch` has no timeout on RN, so a
+ * dropped connection would hang the caller (and its spinner) forever. */
+async function fetchGemini(body: unknown, timeoutMs: number = GEMINI_TIMEOUT_MS): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error('The AI request timed out. Check your connection and try again.');
+    }
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 // Helper to read file as base64 using new API
 async function readFileAsBase64(uri: string): Promise<string> {
   const file = new File(uri);
@@ -148,12 +174,8 @@ export async function identifyFood(imageUri: string): Promise<FoodIdentification
 
     console.log('Sending request to Gemini API...');
 
-    const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    const response = await fetchGemini(
+      {
         contents: [
           {
             parts: [
@@ -175,8 +197,9 @@ export async function identifyFood(imageUri: string): Promise<FoodIdentification
           // Thinking model: keep reasoning tokens from eating the JSON output.
           thinkingConfig: { thinkingBudget: 0 },
         },
-      }),
-    });
+      },
+      GEMINI_VISION_TIMEOUT_MS
+    );
 
     console.log('API response status:', response.status);
 
@@ -267,24 +290,18 @@ USER CONTEXT:
       },
     ];
 
-    const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetchGemini({
+      contents: messages,
+      generationConfig: {
+        temperature: 0.7,
+        topK: 40,
+        topP: 0.95,
+        maxOutputTokens: 1024,
+        // gemini-3-flash-preview is a thinking model; reasoning tokens count
+        // against maxOutputTokens, which truncated replies mid-sentence at
+        // 256. Same fix the backend already applied (see STATE.md 2026-06-04).
+        thinkingConfig: { thinkingBudget: 0 },
       },
-      body: JSON.stringify({
-        contents: messages,
-        generationConfig: {
-          temperature: 0.7,
-          topK: 40,
-          topP: 0.95,
-          maxOutputTokens: 1024,
-          // gemini-3-flash-preview is a thinking model; reasoning tokens count
-          // against maxOutputTokens, which truncated replies mid-sentence at
-          // 256. Same fix the backend already applied (see STATE.md 2026-06-04).
-          thinkingConfig: { thinkingBudget: 0 },
-        },
-      }),
     });
 
     if (!response.ok) {
@@ -349,18 +366,14 @@ RESPOND IN EXACT JSON FORMAT (no markdown):
 }`;
 
   try {
-    const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          temperature: 0.3,
-          maxOutputTokens: 512,
-          // Thinking model: keep reasoning tokens from eating the JSON output.
-          thinkingConfig: { thinkingBudget: 0 },
-        },
-      }),
+    const response = await fetchGemini({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: {
+        temperature: 0.3,
+        maxOutputTokens: 512,
+        // Thinking model: keep reasoning tokens from eating the JSON output.
+        thinkingConfig: { thinkingBudget: 0 },
+      },
     });
 
     if (!response.ok) {
@@ -424,21 +437,15 @@ Example outputs:
 - "Dinner mein light rakhna, on track ho"`;
 
   try {
-    const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetchGemini({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: {
+        temperature: 0.8,
+        maxOutputTokens: 256,
+        // Thinking model: 64 tokens were entirely consumed by reasoning,
+        // returning empty advice. Disable thinking for this one-liner.
+        thinkingConfig: { thinkingBudget: 0 },
       },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          temperature: 0.8,
-          maxOutputTokens: 256,
-          // Thinking model: 64 tokens were entirely consumed by reasoning,
-          // returning empty advice. Disable thinking for this one-liner.
-          thinkingConfig: { thinkingBudget: 0 },
-        },
-      }),
     });
 
     const data = await response.json();

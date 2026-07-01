@@ -31,7 +31,7 @@ import { Card, ProgressRing, MacroBar, FadeInView, AnimatedPressable } from '../
 import { calculateMacros } from '../../src/constants/nutrition';
 import { FoodLog } from '../../src/types/database';
 import { getHydrationGoal, HYDRATION_DEFAULT_GOAL } from '../../src/lib/preferences';
-import { aggregateCalories, buildDateRange, normalizeSeries } from '../../src/lib/analytics';
+import { aggregateCalories, buildDateRange, dayBounds, normalizeSeries, todayKey } from '../../src/lib/analytics';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 // Hydration keeps its own blue — water is the one surface that isn't the
@@ -75,9 +75,10 @@ export default function HomeScreen() {
 
   // Time of day is provided by useLanguage hook
 
-  // Fetch today's food logs
-  const today = new Date().toISOString().split('T')[0];
-  const { data: foodLogs, isLoading, refetch } = useQuery({
+  // Fetch today's food logs (local calendar day, not UTC)
+  const today = todayKey();
+  const todayBounds = dayBounds(today);
+  const { data: foodLogs, isLoading, isRefetching, refetch } = useQuery({
     queryKey: ['foodLogs', user?.id, today],
     queryFn: async () => {
       if (!user) return [];
@@ -85,8 +86,8 @@ export default function HomeScreen() {
         .from('food_logs')
         .select('*')
         .eq('user_id', user.id)
-        .gte('created_at', `${today}T00:00:00`)
-        .lte('created_at', `${today}T23:59:59`)
+        .gte('created_at', todayBounds.start)
+        .lt('created_at', todayBounds.end)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -122,12 +123,13 @@ export default function HomeScreen() {
     queryKey: ['trends7d', user?.id],
     queryFn: async () => {
       if (!user) return [];
+      const trendBounds = dayBounds(trendStart, trendEnd);
       const { data, error } = await supabase
         .from('food_logs')
         .select('*')
         .eq('user_id', user.id)
-        .gte('created_at', `${trendStart}T00:00:00`)
-        .lte('created_at', `${trendEnd}T23:59:59`);
+        .gte('created_at', trendBounds.start)
+        .lt('created_at', trendBounds.end);
       if (error) throw error;
       return data as FoodLog[];
     },
@@ -260,6 +262,7 @@ export default function HomeScreen() {
 
   // Fetch dynamic Ustad advice
   useEffect(() => {
+    let cancelled = false;
     const fetchAdvice = async () => {
       if (remainingCalories !== undefined) {
         const advice = await getUstadAdvice({
@@ -268,11 +271,18 @@ export default function HomeScreen() {
           goal: profile?.goal_type || 'maintain',
           waterCount,
         });
-        setUstadAdvice(advice);
+        if (!cancelled) setUstadAdvice(advice);
       }
     };
     fetchAdvice();
-  }, [remainingCalories, waterCount, profile?.goal_type]);
+    return () => {
+      cancelled = true;
+    };
+    // waterCount is deliberately NOT a dependency: every hydration +/- tap
+    // would fire another Gemini call (and race the previous one). The advice
+    // simply reads the latest count whenever it does refresh.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [remainingCalories, profile?.goal_type]);
 
   // Handle carousel scroll
   const handleCarouselScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -310,7 +320,9 @@ export default function HomeScreen() {
         }}
         refreshControl={
           <RefreshControl
-            refreshing={isLoading}
+            // React Query v5: isLoading is first-load only; manual refetch()
+            // toggles isRefetching, so the pull spinner needs that.
+            refreshing={isRefetching}
             onRefresh={refetch}
             tintColor={accent}
           />

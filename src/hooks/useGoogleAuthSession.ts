@@ -49,11 +49,22 @@ function authSessionError(code: AuthError['code'], message: string): AuthError {
   return { code, message };
 }
 
+// How long to wait for the code→id_token follow-up response before giving up
+// (otherwise the sign-in button spins forever if it never arrives).
+const ID_TOKEN_FOLLOWUP_TIMEOUT_MS = 20_000;
+
 export function useGoogleAuthSession(onIdToken: OnIdToken) {
   const clientIds = useMemo(getGoogleClientIds, []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<AuthError | null>(null);
   const handledResultRef = useRef<AuthSessionResult | null>(null);
+  const pendingTokenTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (pendingTokenTimerRef.current) clearTimeout(pendingTokenTimerRef.current);
+    };
+  }, []);
 
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
     clientId: clientIds.selectedClientId || 'missing-google-client-id',
@@ -65,6 +76,11 @@ export function useGoogleAuthSession(onIdToken: OnIdToken) {
 
   const finishWithResult = useCallback(
     async (result: AuthSessionResult) => {
+      if (pendingTokenTimerRef.current) {
+        clearTimeout(pendingTokenTimerRef.current);
+        pendingTokenTimerRef.current = null;
+      }
+
       if (result.type !== 'success') {
         setLoading(false);
         if (result.type === 'cancel' || result.type === 'dismiss') {
@@ -78,7 +94,13 @@ export function useGoogleAuthSession(onIdToken: OnIdToken) {
       const idToken = result.params.id_token;
       if (!idToken) {
         // Native AuthSession initially returns a code, then the hook response
-        // receives the exchanged id_token. Wait for that follow-up response.
+        // receives the exchanged id_token. Wait for that follow-up response —
+        // but not forever, or the button spins with no way out.
+        pendingTokenTimerRef.current = setTimeout(() => {
+          pendingTokenTimerRef.current = null;
+          setLoading(false);
+          setError(authSessionError('unknown', 'Google sign-in did not complete. Try again.'));
+        }, ID_TOKEN_FOLLOWUP_TIMEOUT_MS);
         return;
       }
 

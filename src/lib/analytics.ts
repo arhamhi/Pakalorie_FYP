@@ -17,9 +17,36 @@ export interface DailyHydration {
 
 export type TrendRange = '7d' | '30d' | '90d';
 
+const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
+
+/** YYYY-MM-DD of the LOCAL calendar day. `toISOString()` gives the UTC day,
+ * which is 5h behind local midnight in Pakistan, so late-night meals were
+ * bucketing into the wrong day. Date-only strings pass through untouched. */
 export const dateKey = (date: string | Date): string => {
+  if (typeof date === 'string' && DATE_ONLY.test(date)) return date;
   const d = typeof date === 'string' ? new Date(date) : date;
-  return d.toISOString().split('T')[0];
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}-${month}-${day}`;
+};
+
+/** Local calendar date of "now" as YYYY-MM-DD. */
+export const todayKey = (): string => dateKey(new Date());
+
+/** ISO-instant bounds `[start, end)` covering the local days `startDay..endDay`
+ * (YYYY-MM-DD local keys), for querying `timestamptz` columns. Use
+ * `.gte(col, start).lt(col, end)` — naive `T00:00:00` strings are read as UTC
+ * by Postgres and miss the 23:59:59→midnight second. */
+export const dayBounds = (
+  startDay: string,
+  endDay: string = startDay
+): { start: string; end: string } => {
+  const [sy, sm, sd] = startDay.split('-').map(Number);
+  const [ey, em, ed] = endDay.split('-').map(Number);
+  return {
+    start: new Date(sy, sm - 1, sd).toISOString(),
+    end: new Date(ey, em - 1, ed + 1).toISOString(),
+  };
 };
 
 export const buildDateRange = (days: number, end: Date = new Date()): string[] => {

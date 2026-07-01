@@ -7,7 +7,7 @@ import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { supabase } from '../../src/lib/supabase';
 import { Card, FadeInView } from '../../src/components/ui';
-import { computeAchievements, aggregateCalories, aggregateHydration, buildDateRange } from '../../src/lib/analytics';
+import { computeAchievements, aggregateCalories, aggregateHydration, buildDateRange, dayBounds } from '../../src/lib/analytics';
 import { getHydrationGoal, HYDRATION_DEFAULT_GOAL } from '../../src/lib/preferences';
 
 export default function AchievementsScreen() {
@@ -28,13 +28,14 @@ export default function AchievementsScreen() {
     enabled: !!user,
     queryFn: async () => {
       if (!user) return { food: [], hydration: [], weight: [] };
+      const bounds = dayBounds(startDate, endDate);
       const [foodRes, hydrationRes, weightRes] = await Promise.all([
         supabase
           .from('food_logs')
           .select('*')
           .eq('user_id', user.id)
-          .gte('created_at', `${startDate}T00:00:00`)
-          .lte('created_at', `${endDate}T23:59:59`),
+          .gte('created_at', bounds.start)
+          .lt('created_at', bounds.end),
         supabase
           .from('hydration_logs')
           .select('*')
@@ -45,8 +46,8 @@ export default function AchievementsScreen() {
           .from('weight_logs')
           .select('*')
           .eq('user_id', user.id)
-          .gte('logged_at', `${startDate}T00:00:00`)
-          .lte('logged_at', `${endDate}T23:59:59`),
+          .gte('logged_at', bounds.start)
+          .lt('logged_at', bounds.end),
       ]);
 
       return {

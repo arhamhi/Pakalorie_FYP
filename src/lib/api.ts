@@ -29,6 +29,10 @@ export const API_BASE_URL = (
 const DEFAULT_TIMEOUT_MS = 20_000;
 // Recognition runs a server-side vision model, so it needs a longer ceiling.
 const RECOGNIZE_TIMEOUT_MS = 30_000;
+// Below this top-1 confidence, a YOLO result is treated as "not food" (the
+// classifier has no abstain class). Calibrated on the live API: non-food
+// probes score 0.015–0.199; a real dish photo scores 0.57.
+const YOLO_NOT_FOOD_FLOOR = 0.25;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Wire types (mirror backend/docs/API_CONTRACT.md exactly)
@@ -172,10 +176,14 @@ export type GroundedScanResult = FoodIdentificationResult & {
 
 export class ApiError extends Error {
   status?: number;
-  constructor(message: string, status?: number) {
+  /** `not-food` = the pipeline worked and decided the image isn't food; the
+   * caller should NOT retry or fall back to another recognizer. */
+  code?: 'not-food';
+  constructor(message: string, status?: number, code?: 'not-food') {
     super(message);
     this.name = 'ApiError';
     this.status = status;
+    this.code = code;
   }
 }
 
@@ -361,7 +369,14 @@ export async function recognizeAndGroundFood(
 
   const label = recognition.food_label?.trim();
   if (!label || label.toLowerCase() === 'unknown') {
-    throw new ApiError('No food recognized in the image.');
+    throw new ApiError('No food recognized in the image.', undefined, 'not-food');
+  }
+  // ponytail: client-side abstain floor. The 217-class YOLO model always names
+  // SOME dish (live calibration 2026-07-02: sky 0.199 "Misti Doi", noise 0.091,
+  // wall 0.015 vs real haleem 0.570). Proper fix is a server-side abstain in
+  // yolo_recognition.py — handed to Codex.
+  if (engine === 'yolo' && recognition.confidence < YOLO_NOT_FOOD_FLOOR) {
+    throw new ApiError('No food recognized in the image.', undefined, 'not-food');
   }
 
   const grounded = await groundCalories({ recognized_dish: label, top_k: 3 });

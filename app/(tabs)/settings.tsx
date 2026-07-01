@@ -141,8 +141,14 @@ export default function SettingsScreen() {
     const heightNum = Number(height);
     const activityNum = Number(activityLevel);
 
-    if (!Number.isFinite(weightNum) || !Number.isFinite(heightNum)) {
-      Alert.alert('Invalid numbers', 'Please provide valid height and weight.');
+    // Number('') === 0, so blank inputs pass a NaN-only check and produce a
+    // garbage daily target. Bounds cover any human (20–400 kg, 90–250 cm).
+    if (!Number.isFinite(weightNum) || weightNum < 20 || weightNum > 400) {
+      Alert.alert('Invalid weight', 'Enter your weight in kg (20–400).');
+      return;
+    }
+    if (!Number.isFinite(heightNum) || heightNum < 90 || heightNum > 250) {
+      Alert.alert('Invalid height', 'Enter your height in cm (90–250).');
       return;
     }
 

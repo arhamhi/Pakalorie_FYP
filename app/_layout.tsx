@@ -69,6 +69,13 @@ function RootLayoutNav() {
     if (user && segments[0] === '(auth)') {
       router.replace('/');
     }
+    // Mirror guard: a signed-out user deep-linked (or left stranded by a
+    // sign-out) inside the app shell gets bounced to '/' → welcome. Only
+    // index.tsx checked this before, so direct (tabs)/onboarding entries
+    // rendered without a session.
+    if (!user && (segments[0] === '(tabs)' || segments[0] === 'onboarding')) {
+      router.replace('/');
+    }
   }, [user, loading, segments, router]);
 
   // Notification setup runs only once the user is signed in AND onboarded —

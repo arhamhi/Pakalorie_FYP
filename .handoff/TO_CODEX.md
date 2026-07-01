@@ -5,6 +5,18 @@ Read `STATE.md` first. After each session, update `STATE.md`, append to `DECISIO
 
 ---
 
+## 2026-07-02 (Claude) — Backend findings from the full audit (priority order)
+
+A full audit of the app (auth, scan pipeline, all tabs) landed these backend items. None block the demo; 1–2 matter for the report's security posture.
+
+1. **YOLO abstain server-side.** `engine=yolo` on `/recognize` always names a dish — live probes: sky → "Misti Doi" @ 0.199, RGB noise → "White Boiled Rice" @ 0.091, gray wall → 0.015, vs real haleem @ 0.570. The client now floors at 0.25 (`src/lib/api.ts`, marked `ponytail:`), but the honest fix is in `app/services/yolo_recognition.py`: below ~0.25 top-1, return the same `{food_label:"Unknown", confidence:0}` shape the Gemini path uses.
+2. **API auth + abuse controls.** The public API is fully unauthenticated: anyone can hit `/recognize` and burn Gemini quota. Minimal: verify a Firebase ID token (`Authorization: Bearer`) via Firebase Admin on the mutating/costly routes + a size cap on the `/recognize` upload (`await image.read()` is unbounded) + basic rate limiting.
+3. **`chat_sessions.expires_at` round-trip.** The app filters `.gte('expires_at', now)` on fetch but never sets `expires_at` on insert. If the column has no DB default, chat history NEVER reloads and every app open inserts another session row. Check the schema; add a default (e.g. `now() + interval '30 days'`) or drop the filter.
+4. **Unguarded `json.loads`** in `app/services/gemini.py:125` (regex-extracted branch) — malformed-but-brace-matched text raises a raw 500 instead of the clean 502 the first branch returns.
+5. **Standing reminder (CDX-001):** all user data still sits in Supabase behind the bundled anon key with client-supplied `user_id` scoping — no enforceable authorization. The Firestore (or authed-API) migration is the real fix; until then this is a documented honesty flag, not demo-blocking.
+
+---
+
 ## 2026-06-29 (Claude) — CDX-009: YOLO recognition engine + in-app switch (NEW, ACTIVE, optional demo)
 
 **Note:** Codex is unavailable, so **one Claude session does BOTH the backend and the app** for this task. Decision logged in `DECISIONS.md` (2026-06-29).

@@ -7,6 +7,7 @@ import {
   ScrollView,
   Keyboard,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import Animated, {
   FadeInUp,
@@ -21,6 +22,7 @@ import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { supabase } from '../../src/lib/supabase';
 import { chatWithUstad, ChatMessage } from '../../src/lib/gemini';
+import { dayBounds, todayKey } from '../../src/lib/analytics';
 import type { Json } from '../../src/types/database';
 
 interface Message {
@@ -108,16 +110,20 @@ export default function ChatScreen() {
   // KeyboardAvoidingView can't shift it. Track the keyboard height ourselves
   // and animate the input's `bottom`. ponytail: one shared value holds the
   // actual bottom (100 closed / keyboardHeight+12 open) so it animates both
-  // ways with no jump, no platform branch.
+  // ways with no jump.
   const inputBottom = useSharedValue(100);
   const inputBarStyle = useAnimatedStyle(() => ({ bottom: inputBottom.value }));
 
   useEffect(() => {
-    const show = Keyboard.addListener('keyboardDidShow', (e) => {
+    // iOS fires Will* before the keyboard animates (smooth ride-along);
+    // Android only fires Did*.
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+    const show = Keyboard.addListener(showEvent, (e) => {
       inputBottom.value = withTiming(e.endCoordinates.height + 12, { duration: 220 });
       scrollRef.current?.scrollToEnd({ animated: true });
     });
-    const hide = Keyboard.addListener('keyboardDidHide', () => {
+    const hide = Keyboard.addListener(hideEvent, () => {
       inputBottom.value = withTiming(100, { duration: 220 });
     });
     return () => {
@@ -126,8 +132,9 @@ export default function ChatScreen() {
     };
   }, [inputBottom]);
 
-  // Fetch today's stats for context
-  const today = new Date().toISOString().split('T')[0];
+  // Fetch today's stats for context (local calendar day, not UTC)
+  const today = todayKey();
+  const todayBounds = dayBounds(today);
   const { data: todayStats } = useQuery({
     queryKey: ['todayStats', user?.id, today],
     queryFn: async () => {
@@ -138,8 +145,8 @@ export default function ChatScreen() {
           .from('food_logs')
           .select('calories, protein, carbs, fat')
           .eq('user_id', user.id)
-          .gte('created_at', `${today}T00:00:00`)
-          .lte('created_at', `${today}T23:59:59`),
+          .gte('created_at', todayBounds.start)
+          .lt('created_at', todayBounds.end),
         supabase
           .from('hydration_logs')
           .select('count')
@@ -263,20 +270,25 @@ export default function ChatScreen() {
       setInput('');
       setIsTyping(true);
 
-      const response = await generateResponse(text);
-      const assistantMessage: Message = { role: 'assistant', text: response };
-      const finalMessages = [...newMessages, assistantMessage];
+      let finalMessages: Message[];
+      try {
+        const response = await generateResponse(text);
+        finalMessages = [...newMessages, { role: 'assistant', text: response }];
+        // Show the reply before persisting — a failed save must not eat it
+        // or leave the typing indicator spinning.
+        setMessages(finalMessages);
+      } finally {
+        setIsTyping(false);
+      }
 
-      // Save to Supabase
+      // Save to Supabase (best-effort; the reply is already on screen)
       if (session && user) {
-        await supabase
+        const { error } = await supabase
           .from('chat_sessions')
           .update({ messages: finalMessages as unknown as Json })
           .eq('id', session.id);
+        if (error) console.warn('[chat] failed to persist session:', error.message);
       }
-
-      setMessages(finalMessages);
-      setIsTyping(false);
 
       return finalMessages;
     },

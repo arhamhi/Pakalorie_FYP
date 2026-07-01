@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
@@ -175,6 +176,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       await firebaseSignOut(auth);
       setProfile(null);
+      // The onboarding-complete flag (see app/_layout.tsx / app/index.tsx) is
+      // device-global, so left set it would let the NEXT account on this
+      // device skip onboarding. Firestore's `onboarding_complete` remains the
+      // durable per-user flag, so the same user isn't re-onboarded.
+      await AsyncStorage.removeItem('@pakalorie_onboarding_complete').catch(() => {});
     } catch (error) {
       throw normalizeAuthError(error);
     }
@@ -193,8 +199,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
 
       const ref = doc(firestore, USERS_COLLECTION, firebaseUser.uid);
+      // `merge:true` skips absent keys but still writes explicit null/undefined,
+      // so a caller passing blank fields would wipe real profile data. No caller
+      // legitimately clears a field to null; drop them.
+      const defined = Object.fromEntries(
+        Object.entries(updates).filter(([, value]) => value !== null && value !== undefined)
+      ) as Partial<Profile>;
       const next = {
-        ...updates,
+        ...defined,
         updated_at: new Date().toISOString(),
       };
       await setDoc(ref, next, { merge: true });

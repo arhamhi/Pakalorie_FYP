@@ -11,6 +11,7 @@ import {
   aggregateCalories,
   aggregateHydration,
   buildDateRange,
+  dayBounds,
   normalizeSeries,
 } from '../../src/lib/analytics';
 import { Card, FadeInView } from '../../src/components/ui';
@@ -33,13 +34,14 @@ export default function TrendsScreen() {
     enabled: !!user,
     queryFn: async () => {
       if (!user) return { food: [], hydration: [], weight: [] };
+      const bounds = dayBounds(startDate, endDate);
       const [foodRes, hydrationRes, weightRes] = await Promise.all([
         supabase
           .from('food_logs')
           .select('*')
           .eq('user_id', user.id)
-          .gte('created_at', `${startDate}T00:00:00`)
-          .lte('created_at', `${endDate}T23:59:59`),
+          .gte('created_at', bounds.start)
+          .lt('created_at', bounds.end),
         supabase
           .from('hydration_logs')
           .select('*')
@@ -50,8 +52,8 @@ export default function TrendsScreen() {
           .from('weight_logs')
           .select('*')
           .eq('user_id', user.id)
-          .gte('logged_at', `${startDate}T00:00:00`)
-          .lte('logged_at', `${endDate}T23:59:59`)
+          .gte('logged_at', bounds.start)
+          .lt('logged_at', bounds.end)
           .order('logged_at', { ascending: true }),
       ]);
 

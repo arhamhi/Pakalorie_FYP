@@ -38,6 +38,7 @@ import { useAuth } from '../../src/contexts/AuthContext';
 import { supabase } from '../../src/lib/supabase';
 import { identifyFood } from '../../src/lib/gemini';
 import {
+  ApiError,
   recognizeAndGroundFood,
   type GroundedScanResult,
   type GroundedMeta,
@@ -54,7 +55,14 @@ type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
 
 type ScanResult = GroundedScanResult;
 
+/** `not-food` = recognition worked and said the image isn't food (retrying the
+ * same image is pointless); `generic` = something failed and retrying helps. */
+type ScanError = { kind: 'not-food' | 'generic'; message: string };
+
 const CONFIDENCE_LOW_THRESHOLD = 0.7;
+
+const NOT_FOOD_MESSAGE =
+  "We couldn't spot a meal in this photo. Try a clear shot of what you're eating.";
 
 const MEAL_TYPES: { value: MealType; label: string; Icon: typeof CoffeeIcon }[] = [
   { value: 'breakfast', label: 'Breakfast', Icon: CoffeeIcon },
@@ -80,7 +88,7 @@ export default function ScanScreen() {
   const [additionalNotes, setAdditionalNotes] = useState('');
   const [adjustmentsApplied, setAdjustmentsApplied] = useState(false);
   const [isCameraReady, setIsCameraReady] = useState(false);
-  const [scanError, setScanError] = useState<string | null>(null);
+  const [scanError, setScanError] = useState<ScanError | null>(null);
   const [logged, setLogged] = useState(false);
 
   const isMountedRef = useRef(true);
@@ -123,6 +131,14 @@ export default function ScanScreen() {
         // The recognition engine is the user's Settings choice (Gemini default).
         scanResult = await recognizeAndGroundFood(uri, engine);
       } catch (backendError) {
+        // The pipeline WORKED and said "not food" (or the YOLO demo model
+        // couldn't clear its abstain floor) — a second vision call would reach
+        // the same verdict, so surface the not-food state directly.
+        if (backendError instanceof ApiError && backendError.code === 'not-food') {
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+          setScanError({ kind: 'not-food', message: NOT_FOOD_MESSAGE });
+          return;
+        }
         // Fallback: keep the demo alive with the on-device Gemini path until the
         // backend pipeline is smoke-tested on device (Phase 5 guardrail). The
         // result carries no `grounded` provenance, which the UI surfaces as an
@@ -138,15 +154,16 @@ export default function ScanScreen() {
         setState('result');
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       } else {
-        // Stay on the preview and surface an inline, recoverable error instead
+        // The Gemini fallback's prompt returns "Unknown" for not-food images.
+        // Stay on the preview and surface an inline, recoverable state instead
         // of a blocking alert that strands the user with no path forward.
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-        setScanError("We couldn't identify the food in this photo. Try a clearer, well-lit shot.");
+        setScanError({ kind: 'not-food', message: NOT_FOOD_MESSAGE });
       }
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'Failed to analyze image.';
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-      setScanError(`${msg} Check your connection and try again.`);
+      setScanError({ kind: 'generic', message: `${msg} Check your connection and try again.` });
     } finally {
       analyzingRef.current = false;
       setIsAnalyzing(false);
@@ -520,7 +537,20 @@ export default function ScanScreen() {
             borderTopRightRadius: Radius.card * 1.5,
           }}
         >
-          {scanError && !isAnalyzing && (
+          {scanError && !isAnalyzing && scanError.kind === 'not-food' && (
+            <View style={{ gap: Spacing.xs, marginBottom: Spacing.md }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.xs }}>
+                <ForkKnifeIcon size={20} color={colors.text.primary} weight="duotone" />
+                <Text style={{ ...Type.headingSm, color: colors.text.primary }}>
+                  {"That's not food"}
+                </Text>
+              </View>
+              <Text style={{ ...Type.bodyMd, color: colors.text.secondary }}>
+                {scanError.message}
+              </Text>
+            </View>
+          )}
+          {scanError && !isAnalyzing && scanError.kind === 'generic' && (
             <View
               style={{
                 flexDirection: 'row',
@@ -531,27 +561,36 @@ export default function ScanScreen() {
             >
               <WarningCircleIcon size={20} color={Colors.system.warning} weight="fill" />
               <Text style={{ ...Type.bodyMd, color: colors.text.secondary, flex: 1 }}>
-                {scanError}
+                {scanError.message}
               </Text>
             </View>
           )}
-          <View style={{ flexDirection: 'row', gap: Spacing.sm }}>
-            <PillButton
-              variant="secondary"
-              label="Retake"
-              onPress={resetScanner}
-              disabled={isAnalyzing}
-              flex
-            />
-            <PillButton
-              variant="primary"
-              label={isAnalyzing ? 'Analyzing…' : scanError ? 'Try again' : 'Analyze'}
-              onPress={() => imageUri && runAnalysis(imageUri)}
-              loading={isAnalyzing}
-              disabled={isAnalyzing}
-              flex
-            />
-          </View>
+          {scanError?.kind === 'not-food' ? (
+            // Re-analyzing the same image would return the same verdict, so the
+            // actions offer a different photo instead of a doomed "Try again".
+            <View style={{ flexDirection: 'row', gap: Spacing.sm }}>
+              <PillButton variant="secondary" label="Choose photo" onPress={pickImage} flex />
+              <PillButton variant="primary" label="Retake photo" onPress={resetScanner} flex />
+            </View>
+          ) : (
+            <View style={{ flexDirection: 'row', gap: Spacing.sm }}>
+              <PillButton
+                variant="secondary"
+                label="Retake"
+                onPress={resetScanner}
+                disabled={isAnalyzing}
+                flex
+              />
+              <PillButton
+                variant="primary"
+                label={isAnalyzing ? 'Analyzing…' : scanError ? 'Try again' : 'Analyze'}
+                onPress={() => imageUri && runAnalysis(imageUri)}
+                loading={isAnalyzing}
+                disabled={isAnalyzing}
+                flex
+              />
+            </View>
+          )}
         </View>
       </View>
     );

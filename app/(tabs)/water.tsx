@@ -10,6 +10,7 @@ import { useLanguage } from '../../src/contexts/LanguageContext';
 import { supabase } from '../../src/lib/supabase';
 import { Card, Button, FadeInView } from '../../src/components/ui';
 import { getHydrationGoal, setHydrationGoal, HYDRATION_DEFAULT_GOAL } from '../../src/lib/preferences';
+import { todayKey } from '../../src/lib/analytics';
 import { HYDRATION_MIN_GOAL } from './settings';
 
 export default function WaterScreen() {
@@ -19,7 +20,8 @@ export default function WaterScreen() {
   const queryClient = useQueryClient();
   
   // Helper to get current date to avoid stale date after midnight
-  const getToday = () => new Date().toISOString().split('T')[0];
+  // (local calendar day — toISOString would give the UTC day, 5h off in PK)
+  const getToday = () => todayKey();
   const today = getToday();
 
   const [goal, setGoal] = useState<number>(HYDRATION_DEFAULT_GOAL);
@@ -52,11 +54,17 @@ export default function WaterScreen() {
       if (!user) throw new Error('Not logged in');
       const currentToday = getToday(); // Get fresh date at mutation time
       if (hydration) {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('hydration_logs')
           .update({ count: waterCount + 1 })
-          .eq('id', hydration.id);
+          .eq('id', hydration.id)
+          .select();
         if (error) throw error;
+        // RLS / a filtered USING clause can make an UPDATE match 0 rows with no
+        // error (silent no-op) — which presents as "stuck at 1". Surface it.
+        if (!data || data.length === 0) {
+          throw new Error('Water update changed 0 rows — Supabase RLS/policy on hydration_logs is blocking the update.');
+        }
       } else {
         const { error } = await supabase
           .from('hydration_logs')

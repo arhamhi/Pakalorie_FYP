@@ -1,7 +1,25 @@
 ﻿# STATE â€” single source of truth on current code state
 
-**Last updated:** 2026-06-30 by Claude (mobile bug-fix + motion pass: login-button dead-tap fixed, Ustad/Gemini truncation fixed client-side, chat keyboard-hidden input fixed, refined animations added across the 5 core tabs + tab bar; `npx tsc --noEmit` = 0 errors)
-**Next action owner:** Arham — on-device Expo Go smoke of the 4 items below.
+**Last updated:** 2026-07-02 by Claude (full audit of all prior Claude/Opus work + "not food" scan state + 12-fix bug batch; `npx tsc --noEmit` = 0 errors, `api-smoke.mjs` = 10/10)
+**Next action owner:** Arham — on-device Expo Go smoke of the 5 items in the 2026-07-02 section.
+
+## 2026-07-02 (Claude) — Full audit + not-food edge case + bug batch
+
+Arham asked for a full audit of everything prior Claude sessions built, "not food" handling for the scanner, and fixes for real bugs. Three audit passes ran (auth stack, scan pipeline, all remaining tabs); findings below are what shipped vs. what's handed off. Gates: tsc 0 errors, api-smoke 10/10. Not yet device-smoked.
+
+- **"Not food" scan state (the feature):** backend Gemini already returns `Unknown` for non-food, but the client misread that as "backend down", burned a second on-device Gemini call, then showed a generic error. Now: `api.ts` `ApiError` carries `code:'not-food'`; scan skips the fallback and shows a first-class "That's not food" state on the preview (ForkKnife + ink title + explainer, actions become **Choose photo / Retake photo** since re-analyzing the same image is pointless). The Gemini-fallback `Unknown` path lands in the same state. **YOLO had NO abstain** (a 217-class classifier always names a dish) — live calibration: sky → "Misti Doi" @ 0.199, noise @ 0.091, wall @ 0.015 vs haleem @ 0.570 → client-side floor 0.25 in `api.ts` (`ponytail:` marked; server-side abstain queued for Codex in TO_CODEX.md).
+- **Profile-wipe (CRITICAL, fixed):** Home "Unlock Premium" → paywall → pushed `/onboarding/name` → chain ended in `completeOnboarding()` writing blank `OnboardingContext` (all nulls) over the real Firestore profile (`merge:true` still writes explicit nulls). Two guards: paywall short-circuits for onboarded users (saves `is_premium`, `router.back()`); `AuthContext.updateProfile` strips null/undefined before `setDoc`.
+- **UTC day-boundary (fixed, 8 files):** `dateKey()` was `toISOString()` = UTC day, 5h off PKT — late-night meals bucketed into the wrong day and Home's header date disagreed with its totals near midnight. `dateKey` is now local (date-only strings pass through), new `todayKey()`/`dayBounds()` in `analytics.ts`; all 7 screen query sites + `notifications.ts` now use real instant bounds (`.gte start` / `.lt end` — also fixes the missing 23:59:59→midnight second).
+- **Chat:** Ustad reply now renders BEFORE the Supabase persist and the typing indicator resets in a `finally` (a failed save used to eat the reply and spin forever — persist errors were also silently ignored, now warned). iOS keyboard events switched to `keyboardWillShow/Hide` (`Did*` made the input bar jump ~220ms late; Android keeps `Did*`).
+- **Home:** Ustad advice effect no longer re-fires a Gemini call on EVERY water tap (`waterCount` out of deps + cancel flag for the race); pull-to-refresh spinner uses `isRefetching` (RQ v5: `isLoading` is first-load only).
+- **Settings:** weight/height now bounds-checked (blank inputs passed the NaN-only guard as 0 → garbage `daily_target_kcal` driving every ring).
+- **gemini.ts:** all 4 calls go through `fetchGemini()` with AbortController timeouts (30s vision / 20s text) — a dropped connection can no longer hang "Analyzing…" forever.
+- **Auth papercuts:** `signOut` clears the device-global `@pakalorie_onboarding_complete` flag (next account on the device no longer skips onboarding; Firestore flag keeps the same user from re-onboarding); `_layout.tsx` guard now also bounces signed-out users out of `(tabs)`/`onboarding`; Google sign-in's wait-for-id_token branch gets a 20s timeout instead of an infinite spinner.
+- **Report-only (NOT fixed — in TO_CODEX.md queue / honesty flags):** Supabase anon-key authorization hole (CDX-001), unauthenticated backend API, self-grantable `is_premium`, `chat_sessions.expires_at` never set on insert (history may never round-trip — schema check queued), avatar `fetch(uri).blob()` 0-byte RN pitfall (verify on device first), `food_logs.image_path` stores ephemeral `file://` URIs, streaks still display-only.
+
+**Files touched:** `src/lib/{api,gemini,analytics,notifications}.ts`, `src/contexts/AuthContext.tsx`, `src/hooks/useGoogleAuthSession.ts`, `app/_layout.tsx`, `app/onboarding/paywall.tsx`, `app/(tabs)/{scan,index,chat,trends,calendar-log,achievements,profile,water,settings}.tsx`. No `package.json` change, no backend change.
+
+**Arham to device-smoke:** (1) scan the sky / a random object → "That's not food" card with Choose photo / Retake (try both engines via Settings); (2) real food scan unchanged (DB-grounded pill etc.); (3) as an existing user tap Home's "Unlock Premium" → pick either option → back on Home with profile intact (weight/name/target unchanged in Profile); (4) log a meal after ~10 PM → it shows on today, and Home totals match the header date; (5) airplane-mode a chat send → reply still appears (persist warns in console), typing dots stop.
 
 ## 2026-06-30 (Claude) — Login fix + Ustad truncation + chat keyboard + app-wide motion
 

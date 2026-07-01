@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, ScrollView, Alert, Linking } from 'react-
 import { router } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '../../src/contexts/ThemeContext';
+import { useAuth } from '../../src/contexts/AuthContext';
 import { useOnboarding } from '../../src/contexts/OnboardingContext';
 import { Button } from '../../src/components/ui';
 import { OnboardingBackground } from '../../src/components/onboarding/OnboardingBackground';
@@ -33,19 +34,37 @@ const FREE_FEATURES = [
 
 export default function PaywallScreen() {
   const { colors, accent } = useTheme();
+  const { profile, updateProfile } = useAuth();
   const { updateData } = useOnboarding();
   const [selectedTier, setSelectedTier] = useState('biannual');
 
   // Users are already authenticated before onboarding (the (auth) group runs
   // first), so the flow continues straight to profile setup.
-  const handlePremium = () => {
-    updateData({ isPremium: true });
+  //
+  // Already-onboarded users land here from the Home "Unlock Premium" upsell.
+  // For them, continuing into /onboarding/name would re-run the whole flow and
+  // end with completeOnboarding() writing the blank OnboardingContext over
+  // their real Firestore profile — so save the choice and go back instead.
+  const finishChoice = async (isPremium: boolean) => {
+    if (profile?.onboarding_complete) {
+      try {
+        await updateProfile({ is_premium: isPremium });
+        router.back();
+      } catch {
+        Alert.alert('Something went wrong', 'Could not update your plan. Please try again.');
+      }
+      return;
+    }
+    updateData({ isPremium });
     router.push('/onboarding/name');
   };
 
+  const handlePremium = () => {
+    void finishChoice(true);
+  };
+
   const handleFree = () => {
-    updateData({ isPremium: false });
-    router.push('/onboarding/name');
+    void finishChoice(false);
   };
 
   const handleRestorePurchase = async () => {

@@ -6,7 +6,7 @@ import { router } from 'expo-router';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { supabase } from '../../src/lib/supabase';
-import { aggregateCalories, aggregateHydration, buildDateRange, normalizeSeries } from '../../src/lib/analytics';
+import { aggregateCalories, aggregateHydration, buildDateRange, dayBounds, normalizeSeries } from '../../src/lib/analytics';
 import { Card, FadeInView } from '../../src/components/ui';
 
 export default function CalendarLogScreen() {
@@ -23,13 +23,14 @@ export default function CalendarLogScreen() {
     enabled: !!user,
     queryFn: async () => {
       if (!user) return { food: [], hydration: [] };
+      const bounds = dayBounds(startDate, endDate);
       const [foodRes, hydrationRes] = await Promise.all([
         supabase
           .from('food_logs')
           .select('*')
           .eq('user_id', user.id)
-          .gte('created_at', `${startDate}T00:00:00`)
-          .lte('created_at', `${endDate}T23:59:59`),
+          .gte('created_at', bounds.start)
+          .lt('created_at', bounds.end),
         supabase
           .from('hydration_logs')
           .select('*')
