@@ -16,7 +16,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as Haptics from 'expo-haptics';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
-import { supabase } from '../../src/lib/supabase';
+import { addFavorite, addFoodLog } from '../../src/lib/db';
 import { Card, Button } from '../../src/components/ui';
 import { generateMealFromDescription } from '../../src/lib/gemini';
 
@@ -81,9 +81,7 @@ export default function CreateMealScreen() {
     mutationFn: async () => {
       if (!user || !generatedMeal) throw new Error('Missing data');
 
-      // Log to food_logs
-      const { error: logError } = await supabase.from('food_logs').insert({
-        user_id: user.id,
+      await addFoodLog(user.id, {
         name: generatedMeal.name,
         calories: Math.round(generatedMeal.calories * servings),
         protein: Math.round(generatedMeal.protein * servings),
@@ -92,24 +90,24 @@ export default function CreateMealScreen() {
         meal_type: mealType,
       });
 
-      if (logError) throw logError;
-
-      // Optionally save to favorites
+      // Optionally save to favorites (best-effort; the meal is already logged)
       if (saveToFavorites) {
-        const { error: favError } = await supabase.from('favorites').insert({
-          user_id: user.id,
-          food_data: {
-            name: generatedMeal.name,
-            calories: generatedMeal.calories,
-            protein: generatedMeal.protein,
-            carbs: generatedMeal.carbs,
-            fat: generatedMeal.fat,
-            unit: generatedMeal.servingSize,
-          },
-          is_combination: false,
-        });
-
-        if (favError) console.error('Failed to save to favorites:', favError);
+        try {
+          await addFavorite(
+            user.id,
+            {
+              name: generatedMeal.name,
+              calories: generatedMeal.calories,
+              protein: generatedMeal.protein,
+              carbs: generatedMeal.carbs,
+              fat: generatedMeal.fat,
+              unit: generatedMeal.servingSize ?? null,
+            },
+            false,
+          );
+        } catch (favError) {
+          console.error('Failed to save to favorites:', favError);
+        }
       }
     },
     onSuccess: () => {

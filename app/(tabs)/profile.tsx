@@ -17,9 +17,9 @@ import { useQuery } from '@tanstack/react-query';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { Card, Button, FadeInView, AnimatedPressable } from '../../src/components/ui';
-import { supabase } from '../../src/lib/supabase';
+import { getFoodLogsInRange, getHydrationInRange, getWeightLogsInRange } from '../../src/lib/db';
 import { getHydrationGoal, HYDRATION_DEFAULT_GOAL } from '../../src/lib/preferences';
-import { computeAchievements, aggregateCalories, aggregateHydration, buildDateRange, dayBounds } from '../../src/lib/analytics';
+import { computeAchievements, aggregateCalories, aggregateHydration, buildDateRange } from '../../src/lib/analytics';
 
 export default function ProfileScreen() {
   const { colors, accent } = useTheme();
@@ -38,13 +38,11 @@ export default function ProfileScreen() {
   }, []);
 
   useEffect(() => {
-    if (profile?.avatar_url) {
-      if (profile.avatar_url.startsWith('http')) {
-        setAvatarUrl(profile.avatar_url);
-      } else {
-        const { data } = supabase.storage.from('avatars').getPublicUrl(profile.avatar_url);
-        setAvatarUrl(data.publicUrl);
-      }
+    // Avatars are stored as data URIs in the profile doc (post-Supabase).
+    // Old http(s) Supabase-storage URLs are dead links, so only data:/http
+    // values render; legacy storage paths fall back to initials.
+    if (profile?.avatar_url && /^(data:|https?:)/.test(profile.avatar_url)) {
+      setAvatarUrl(profile.avatar_url);
     } else {
       setAvatarUrl(null);
     }
@@ -60,32 +58,12 @@ export default function ProfileScreen() {
     enabled: !!user,
     queryFn: async () => {
       if (!user) return { food: [], hydration: [], weight: [] };
-      const bounds = dayBounds(achievementStart, achievementEnd);
-      const [foodRes, hydrationRes, weightRes] = await Promise.all([
-        supabase
-          .from('food_logs')
-          .select('*')
-          .eq('user_id', user.id)
-          .gte('created_at', bounds.start)
-          .lt('created_at', bounds.end),
-        supabase
-          .from('hydration_logs')
-          .select('*')
-          .eq('user_id', user.id)
-          .gte('log_date', achievementStart)
-          .lte('log_date', achievementEnd),
-        supabase
-          .from('weight_logs')
-          .select('*')
-          .eq('user_id', user.id)
-          .gte('logged_at', bounds.start)
-          .lt('logged_at', bounds.end),
+      const [food, hydration, weight] = await Promise.all([
+        getFoodLogsInRange(user.id, achievementStart, achievementEnd),
+        getHydrationInRange(user.id, achievementStart, achievementEnd),
+        getWeightLogsInRange(user.id, achievementStart, achievementEnd),
       ]);
-      return {
-        food: foodRes.data || [],
-        hydration: hydrationRes.data || [],
-        weight: weightRes.data || [],
-      };
+      return { food, hydration, weight };
     },
   });
 
@@ -133,38 +111,35 @@ export default function ProfileScreen() {
     const result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 0.8,
+      quality: 0.3,
       mediaTypes: ['images'],
+      base64: true,
     });
 
     if (result.canceled || !result.assets?.length) return;
 
     const asset = result.assets[0];
-    const fileExt = asset.fileName?.split('.').pop() || 'jpg';
-    const filePath = `${user.id}/${Date.now()}.${fileExt}`;
+    if (!asset.base64) {
+      Alert.alert('Upload failed', 'Could not read the selected image. Try another one.');
+      return;
+    }
+    // The avatar lives as a data URI inside the Firestore profile doc (1 MiB
+    // doc limit). ponytail: quality 0.3 + this guard covers phone photos; add
+    // expo-image-manipulator resizing if large sources start getting rejected.
+    if (asset.base64.length > 700_000) {
+      Alert.alert('Image too large', 'Pick a smaller photo (or crop tighter) and try again.');
+      return;
+    }
 
     try {
       setIsUploading(true);
-      const response = await fetch(asset.uri);
-      const blob = await response.blob();
-
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(filePath, blob, {
-          cacheControl: '3600',
-          upsert: true,
-          contentType: asset.mimeType || 'image/jpeg',
-        });
-
-      if (uploadError) throw uploadError;
-
-      const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
-      await updateProfile({ avatar_url: data.publicUrl });
-      setAvatarUrl(data.publicUrl);
+      const dataUri = `data:${asset.mimeType || 'image/jpeg'};base64,${asset.base64}`;
+      await updateProfile({ avatar_url: dataUri });
+      setAvatarUrl(dataUri);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     } catch (error: any) {
       console.error('Avatar upload error', error);
-      Alert.alert('Upload failed', error?.message || 'Could not upload image right now.');
+      Alert.alert('Upload failed', error?.message || 'Could not save the image right now.');
     } finally {
       setIsUploading(false);
     }

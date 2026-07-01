@@ -25,13 +25,13 @@ import { Colors, Elevation } from '../../src/constants/colors';
 import { Type, FontFamily } from '../../src/constants/fonts';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useLanguage } from '../../src/contexts/LanguageContext';
-import { supabase } from '../../src/lib/supabase';
+import { changeHydration, getFoodLogsInRange, getHydration } from '../../src/lib/db';
 import { getUstadAdvice } from '../../src/lib/gemini';
 import { Card, ProgressRing, MacroBar, FadeInView, AnimatedPressable } from '../../src/components/ui';
 import { calculateMacros } from '../../src/constants/nutrition';
 import { FoodLog } from '../../src/types/database';
 import { getHydrationGoal, HYDRATION_DEFAULT_GOAL } from '../../src/lib/preferences';
-import { aggregateCalories, buildDateRange, dayBounds, normalizeSeries, todayKey } from '../../src/lib/analytics';
+import { aggregateCalories, buildDateRange, normalizeSeries, todayKey } from '../../src/lib/analytics';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 // Hydration keeps its own blue — water is the one surface that isn't the
@@ -77,40 +77,16 @@ export default function HomeScreen() {
 
   // Fetch today's food logs (local calendar day, not UTC)
   const today = todayKey();
-  const todayBounds = dayBounds(today);
   const { data: foodLogs, isLoading, isRefetching, refetch } = useQuery({
     queryKey: ['foodLogs', user?.id, today],
-    queryFn: async () => {
-      if (!user) return [];
-      const { data, error } = await supabase
-        .from('food_logs')
-        .select('*')
-        .eq('user_id', user.id)
-        .gte('created_at', todayBounds.start)
-        .lt('created_at', todayBounds.end)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      return data as FoodLog[];
-    },
+    queryFn: async (): Promise<FoodLog[]> => (user ? getFoodLogsInRange(user.id, today) : []),
     enabled: !!user,
   });
 
   // Fetch today's hydration
   const { data: hydration } = useQuery({
     queryKey: ['hydration', user?.id, today],
-    queryFn: async () => {
-      if (!user) return null;
-      const { data, error } = await supabase
-        .from('hydration_logs')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('log_date', today)
-        .single();
-
-      if (error && error.code !== 'PGRST116') throw error;
-      return data;
-    },
+    queryFn: async () => (user ? getHydration(user.id, today) : null),
     enabled: !!user,
   });
 
@@ -121,18 +97,8 @@ export default function HomeScreen() {
 
   const { data: trendData } = useQuery({
     queryKey: ['trends7d', user?.id],
-    queryFn: async () => {
-      if (!user) return [];
-      const trendBounds = dayBounds(trendStart, trendEnd);
-      const { data, error } = await supabase
-        .from('food_logs')
-        .select('*')
-        .eq('user_id', user.id)
-        .gte('created_at', trendBounds.start)
-        .lt('created_at', trendBounds.end);
-      if (error) throw error;
-      return data as FoodLog[];
-    },
+    queryFn: async (): Promise<FoodLog[]> =>
+      user ? getFoodLogsInRange(user.id, trendStart, trendEnd) : [],
     enabled: !!user,
   });
 
@@ -175,26 +141,8 @@ export default function HomeScreen() {
   const incrementWater = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error('Not logged in');
-      const currentCount = hydration?.count || 0;
-
-      if (hydration) {
-        // Update existing record
-        const { error } = await supabase
-          .from('hydration_logs')
-          .update({ count: currentCount + 1 })
-          .eq('id', hydration.id);
-        if (error) throw error;
-      } else {
-        // Create new record
-        const { error } = await supabase
-          .from('hydration_logs')
-          .insert({
-            user_id: user.id,
-            log_date: today,
-            count: 1,
-          });
-        if (error) throw error;
-      }
+      // Atomic per-day counter — no update-vs-insert branch, no stale-row race.
+      await changeHydration(user.id, today, 1);
     },
     onMutate: async () => {
       // Cancel outgoing refetches
@@ -231,12 +179,7 @@ export default function HomeScreen() {
       if (!user || !hydration) return;
       const currentCount = hydration?.count || 0;
       if (currentCount <= 0) return;
-
-      const { error } = await supabase
-        .from('hydration_logs')
-        .update({ count: Math.max(0, currentCount - 1) })
-        .eq('id', hydration.id);
-      if (error) throw error;
+      await changeHydration(user.id, today, -1);
     },
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ['hydration', user?.id, today] });

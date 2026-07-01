@@ -35,7 +35,7 @@ import {
 } from 'phosphor-react-native';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
-import { supabase } from '../../src/lib/supabase';
+import { addFoodLog } from '../../src/lib/db';
 import { identifyFood } from '../../src/lib/gemini';
 import {
   ApiError,
@@ -257,11 +257,7 @@ export default function ScanScreen() {
     mutationFn: async () => {
       if (!user || !result) throw new Error('Missing data');
       const useAdjusted = adjustmentsApplied && selectedModifiers.length > 0;
-      // NOTE: still writes to Supabase until CDX-001 ships. The history-reading
-      // surfaces (home tab, calendar log) read from Supabase too, so flipping
-      // to Firestore in isolation would break them. Migration is paired work.
-      const { error } = await supabase.from('food_logs').insert({
-        user_id: user.id,
+      await addFoodLog(user.id, {
         name: result.name,
         calories: calculateFinalCalories(useAdjusted),
         protein: calculateFinalMacro(result.protein, useAdjusted),
@@ -270,7 +266,6 @@ export default function ScanScreen() {
         meal_type: mealType,
         image_path: imageUri,
       });
-      if (error) throw error;
     },
     onSuccess: () => {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);

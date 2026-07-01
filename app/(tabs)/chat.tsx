@@ -20,9 +20,15 @@ import { FadeInView } from '../../src/components/ui/FadeInView';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
-import { supabase } from '../../src/lib/supabase';
+import {
+  createChatSession,
+  getFoodLogsInRange,
+  getHydration,
+  getLatestChatSession,
+  updateChatSessionMessages,
+} from '../../src/lib/db';
 import { chatWithUstad, ChatMessage } from '../../src/lib/gemini';
-import { dayBounds, todayKey } from '../../src/lib/analytics';
+import { todayKey } from '../../src/lib/analytics';
 import type { Json } from '../../src/types/database';
 
 interface Message {
@@ -134,28 +140,16 @@ export default function ChatScreen() {
 
   // Fetch today's stats for context (local calendar day, not UTC)
   const today = todayKey();
-  const todayBounds = dayBounds(today);
   const { data: todayStats } = useQuery({
     queryKey: ['todayStats', user?.id, today],
     queryFn: async () => {
       if (!user) return null;
 
-      const [foodLogsRes, hydrationRes] = await Promise.all([
-        supabase
-          .from('food_logs')
-          .select('calories, protein, carbs, fat')
-          .eq('user_id', user.id)
-          .gte('created_at', todayBounds.start)
-          .lt('created_at', todayBounds.end),
-        supabase
-          .from('hydration_logs')
-          .select('count')
-          .eq('user_id', user.id)
-          .eq('log_date', today)
-          .single()
+      const [logs, hydration] = await Promise.all([
+        getFoodLogsInRange(user.id, today),
+        getHydration(user.id, today),
       ]);
 
-      const logs = foodLogsRes.data || [];
       const totalCalories = logs.reduce((sum, log) => sum + log.calories, 0);
       const totalProtein = logs.reduce((sum, log) => sum + (log.protein || 0), 0);
       const totalCarbs = logs.reduce((sum, log) => sum + (log.carbs || 0), 0);
@@ -165,50 +159,26 @@ export default function ChatScreen() {
       return {
         remainingCalories: targetCalories - totalCalories,
         todaysMacros: { protein: totalProtein, carbs: totalCarbs, fat: totalFat },
-        waterCount: hydrationRes.data?.count || 0,
+        waterCount: hydration?.count || 0,
       };
     },
     enabled: !!user,
   });
 
-  // Fetch or create chat session
+  // Fetch or create chat session (latest non-expired one, else a fresh one)
   const { data: session, isLoading } = useQuery({
     queryKey: ['chatSession', user?.id],
     queryFn: async () => {
       if (!user) return null;
-
-      const { data, error } = await supabase
-        .from('chat_sessions')
-        .select('*')
-        .eq('user_id', user.id)
-        .gte('expires_at', new Date().toISOString())
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
-
-      if (error && error.code === 'PGRST116') {
-        // No active session, create one
-        const { data: newSession, error: createError } = await supabase
-          .from('chat_sessions')
-          .insert({
-            user_id: user.id,
-            messages: [],
-          })
-          .select()
-          .single();
-
-        if (createError) throw createError;
-        return newSession;
-      }
-      if (error) throw error;
-      return data;
+      const existing = await getLatestChatSession(user.id);
+      return existing ?? (await createChatSession(user.id));
     },
     enabled: !!user,
   });
 
   useEffect(() => {
     if (session?.messages) {
-      // The messages column is Supabase Json; it always round-trips the
+      // The messages field is stored as Json; it always round-trips the
       // Message[] shape written below, so the narrowing is safe at runtime.
       const stored = session.messages as unknown as Message[];
       setMessages(stored);
@@ -281,13 +251,13 @@ export default function ChatScreen() {
         setIsTyping(false);
       }
 
-      // Save to Supabase (best-effort; the reply is already on screen)
+      // Persist (best-effort; the reply is already on screen)
       if (session && user) {
-        const { error } = await supabase
-          .from('chat_sessions')
-          .update({ messages: finalMessages as unknown as Json })
-          .eq('id', session.id);
-        if (error) console.warn('[chat] failed to persist session:', error.message);
+        try {
+          await updateChatSessionMessages(user.id, session.id, finalMessages as unknown as Json);
+        } catch (persistError) {
+          console.warn('[chat] failed to persist session:', persistError);
+        }
       }
 
       return finalMessages;
@@ -302,19 +272,13 @@ export default function ChatScreen() {
 
   const handleNewChat = async () => {
     if (!user) return;
-
-    const { data, error } = await supabase
-      .from('chat_sessions')
-      .insert({
-        user_id: user.id,
-        messages: [],
-      })
-      .select()
-      .single();
-
-    if (!error) {
+    try {
+      await createChatSession(user.id);
       setMessages([]);
+      setChatHistory([]);
       queryClient.invalidateQueries({ queryKey: ['chatSession', user.id] });
+    } catch (error) {
+      console.warn('[chat] failed to start a new session:', error);
     }
   };
 

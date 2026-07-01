@@ -14,7 +14,7 @@ import * as Haptics from 'expo-haptics';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
-import { supabase } from '../../src/lib/supabase';
+import { addFavorite, addFoodLog, getFavorites } from '../../src/lib/db';
 import type { Json } from '../../src/types/database';
 import Animated, { FadeInUp, LinearTransition } from 'react-native-reanimated';
 import { Card, Button, Input, FadeInView } from '../../src/components/ui';
@@ -59,14 +59,7 @@ export default function SearchScreen() {
     queryKey: ['favorites', user?.id],
     queryFn: async () => {
       if (!user) return [];
-      const { data, error } = await supabase
-        .from('favorites')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      return data;
+      return getFavorites(user.id);
     },
     enabled: !!user,
   });
@@ -147,8 +140,7 @@ export default function SearchScreen() {
 
       const notes = buildNotesString();
       const useAdjusted = adjustmentsApplied && selectedModifiers.length > 0;
-      const { error } = await supabase.from('food_logs').insert({
-        user_id: user.id,
+      await addFoodLog(user.id, {
         name: selectedFood.name,
         calories: calculateFinalCalories(useAdjusted),
         protein: calculateFinalMacro(selectedFood.protein, useAdjusted),
@@ -157,8 +149,6 @@ export default function SearchScreen() {
         meal_type: mealType,
         notes: notes || null,
       });
-
-      if (error) throw error;
     },
     onSuccess: () => {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -179,15 +169,9 @@ export default function SearchScreen() {
     mutationFn: async (food: FoodItem) => {
       if (!user) throw new Error('Not logged in');
 
-      const { error } = await supabase.from('favorites').insert({
-        user_id: user.id,
-        // FoodItem is a plain JSON-serializable shape; Supabase's Json type
-        // just can't see that structurally.
-        food_data: food as unknown as Json,
-        is_combination: false,
-      });
-
-      if (error) throw error;
+      // FoodItem is a plain JSON-serializable shape; the Json type just
+      // can't see that structurally.
+      await addFavorite(user.id, food as unknown as Json, false);
     },
     onSuccess: () => {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -240,13 +224,7 @@ export default function SearchScreen() {
         })),
       };
 
-      const { error } = await supabase.from('favorites').insert({
-        user_id: user.id,
-        food_data: combinedFood,
-        is_combination: true,
-      });
-
-      if (error) throw error;
+      await addFavorite(user.id, combinedFood as unknown as Json, true);
     },
     onSuccess: () => {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);

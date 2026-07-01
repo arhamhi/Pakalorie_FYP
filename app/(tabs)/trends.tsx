@@ -6,12 +6,11 @@ import Svg, { Path, Rect } from 'react-native-svg';
 import { router } from 'expo-router';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
-import { supabase } from '../../src/lib/supabase';
+import { getFoodLogsInRange, getHydrationInRange, getWeightLogsInRange } from '../../src/lib/db';
 import {
   aggregateCalories,
   aggregateHydration,
   buildDateRange,
-  dayBounds,
   normalizeSeries,
 } from '../../src/lib/analytics';
 import { Card, FadeInView } from '../../src/components/ui';
@@ -34,34 +33,12 @@ export default function TrendsScreen() {
     enabled: !!user,
     queryFn: async () => {
       if (!user) return { food: [], hydration: [], weight: [] };
-      const bounds = dayBounds(startDate, endDate);
-      const [foodRes, hydrationRes, weightRes] = await Promise.all([
-        supabase
-          .from('food_logs')
-          .select('*')
-          .eq('user_id', user.id)
-          .gte('created_at', bounds.start)
-          .lt('created_at', bounds.end),
-        supabase
-          .from('hydration_logs')
-          .select('*')
-          .eq('user_id', user.id)
-          .gte('log_date', startDate)
-          .lte('log_date', endDate),
-        supabase
-          .from('weight_logs')
-          .select('*')
-          .eq('user_id', user.id)
-          .gte('logged_at', bounds.start)
-          .lt('logged_at', bounds.end)
-          .order('logged_at', { ascending: true }),
+      const [food, hydration, weight] = await Promise.all([
+        getFoodLogsInRange(user.id, startDate, endDate),
+        getHydrationInRange(user.id, startDate, endDate),
+        getWeightLogsInRange(user.id, startDate, endDate),
       ]);
-
-      return {
-        food: foodRes.data || [],
-        hydration: hydrationRes.data || [],
-        weight: weightRes.data || [],
-      };
+      return { food, hydration, weight };
     },
   });
 

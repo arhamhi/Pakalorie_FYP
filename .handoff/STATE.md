@@ -1,7 +1,22 @@
 ﻿# STATE â€” single source of truth on current code state
 
-**Last updated:** 2026-07-02 by Claude, session 2 (CRITICAL: the Supabase project is DELETED — every Supabase-backed feature is dead; accent-theme fix shipped; `npx tsc --noEmit` = 0 errors)
-**Next action owner:** Arham — decide the data-plane path (new Supabase project vs CDX-001 Firestore migration now), then device smoke.
+**Last updated:** 2026-07-02 by Claude, session 2 (Supabase project found DELETED → **CDX-001 EXECUTED: full data plane migrated to Firestore**; accent-theme fix shipped; `npx tsc --noEmit` = 0 errors)
+**Next action owner:** Arham — deploy the updated Firestore rules (`npx firebase-tools deploy --only firestore:rules`), then device smoke.
+
+## 2026-07-02 (Claude, session 2b) — CDX-001 DONE: data plane migrated Supabase → Firestore
+
+Arham picked the Firestore path after the dead-project finding. The whole data plane now lives in Firestore under `users/{uid}/...`; Supabase is fully removed from the app.
+
+- **New `src/lib/db.ts`** — the only data-access layer. Per-user subcollections: `food_logs`, `hydration`, `chat_sessions`, `favorites`, `weight_logs`. All range queries filter + sort on ONE field (`created_at`/`logged_at` ISO strings via `dayBounds()`), so **no composite indexes are ever needed**. Row shapes mirror `src/types/database.ts`, so screens render unchanged.
+- **Hydration redesigned:** one doc per LOCAL day (`users/{uid}/hydration/{YYYY-MM-DD}`) with Firestore `increment()` — atomic, no update-vs-insert branch, no duplicate day rows, no silent 0-row no-ops. This permanently kills the "water count flickers back to 1" bug class.
+- **Migrated call sites (11 files):** scan (log meal), create-meal (log + favorite), search (favorites list/add, quick log, combinations), Home (today logs, hydration ± with optimistic updates kept, 7d trends), chat (today stats, session fetch/create/persist/new-chat — sessions now fetch-latest + client-side expiry, no more write-inside-queryFn duplicating on retry), water, trends, calendar-log, achievements, profile (analytics + avatar), `notifications.ts` (meal check).
+- **Avatars:** Supabase Storage → base64 **data URI stored in the profile doc** (picker `quality 0.3` + `base64:true`, 700KB guard; RN `Image` renders data URIs natively). No Firebase Storage needed (new buckets require Blaze). Old storage URLs fall back to initials.
+- **Deleted `src/lib/supabase.ts`.** No `supabase` references remain in `app/`/`src/` (comments aside). `@supabase/supabase-js` left in package.json to avoid lockfile churn — drop it in a future cleanup. The dead `EXPO_PUBLIC_SUPABASE_*` lines in the local `.env` are inert and can be deleted.
+- **`firestore.rules` extended** to the subcollections (owner-only, default-deny otherwise). **NOT YET DEPLOYED — this is the one blocking step:** Arham runs `npx firebase-tools deploy --only firestore:rules` from the repo (Claude's deploy attempt was permission-blocked). Until then every new read/write fails with "Missing or insufficient permissions" (Arham already saw this mid-migration while hot-reloading).
+- **Data note:** the old Supabase data died with the project; Firestore starts empty. Nothing to backfill.
+- **Gates:** `npx tsc --noEmit` = 0 errors. (api-smoke unaffected — FastAPI food-DB lane untouched.)
+
+**Arham to do, in order:** (1) `npx firebase-tools deploy --only firestore:rules` (from repo root, logged in as arhamhfz77@gmail.com); (2) reload the app; (3) smoke: log a meal → appears on Home; water ± on Home AND Water screen (flicker gone, decrement works); chat → send → kill app → reopen → history still there; favorite a food in Search; set an avatar; check Trends/Calendar populate as days accrue.
 
 ## 2026-07-02 (Claude, session 2) — Supabase project is GONE + accent theme fix
 

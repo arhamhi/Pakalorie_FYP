@@ -7,7 +7,7 @@ import * as Haptics from 'expo-haptics';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useLanguage } from '../../src/contexts/LanguageContext';
-import { supabase } from '../../src/lib/supabase';
+import { changeHydration, getHydration } from '../../src/lib/db';
 import { Card, Button, FadeInView } from '../../src/components/ui';
 import { getHydrationGoal, setHydrationGoal, HYDRATION_DEFAULT_GOAL } from '../../src/lib/preferences';
 import { todayKey } from '../../src/lib/analytics';
@@ -33,17 +33,7 @@ export default function WaterScreen() {
   const { data: hydration } = useQuery({
     queryKey: ['hydration', user?.id, today],
     enabled: !!user,
-    queryFn: async () => {
-      if (!user) return null;
-      const { data, error } = await supabase
-        .from('hydration_logs')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('log_date', today)
-        .single();
-      if (error && error.code !== 'PGRST116') throw error;
-      return data;
-    },
+    queryFn: async () => (user ? getHydration(user.id, today) : null),
   });
 
   const waterCount = hydration?.count || 0;
@@ -52,29 +42,9 @@ export default function WaterScreen() {
   const incrementWater = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error('Not logged in');
-      const currentToday = getToday(); // Get fresh date at mutation time
-      if (hydration) {
-        const { data, error } = await supabase
-          .from('hydration_logs')
-          .update({ count: waterCount + 1 })
-          .eq('id', hydration.id)
-          .select();
-        if (error) throw error;
-        // RLS / a filtered USING clause can make an UPDATE match 0 rows with no
-        // error (silent no-op) — which presents as "stuck at 1". Surface it.
-        if (!data || data.length === 0) {
-          throw new Error('Water update changed 0 rows — Supabase RLS/policy on hydration_logs is blocking the update.');
-        }
-      } else {
-        const { error } = await supabase
-          .from('hydration_logs')
-          .insert({
-            user_id: user.id,
-            log_date: currentToday,
-            count: 1,
-          });
-        if (error) throw error;
-      }
+      // Firestore atomic counter on the per-day doc — creates it on first tap,
+      // no update-vs-insert branch, no silent 0-row no-ops.
+      await changeHydration(user.id, getToday(), 1);
     },
     onSuccess: () => {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -90,11 +60,7 @@ export default function WaterScreen() {
   const decrementWater = useMutation({
     mutationFn: async () => {
       if (!user || !hydration || waterCount <= 0) return;
-      const { error } = await supabase
-        .from('hydration_logs')
-        .update({ count: Math.max(0, waterCount - 1) })
-        .eq('id', hydration.id);
-      if (error) throw error;
+      await changeHydration(user.id, getToday(), -1);
     },
     onSuccess: () => {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
