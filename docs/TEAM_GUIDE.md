@@ -10,68 +10,43 @@ Last updated: 2026-11-08.
 
 ## 0. Read this first (November 2026)
 
-I'm not on the FYP anymore, so this guide is yours now. Most of it still works,
-except two things, and Claude Code can sort out both of them for you.
+I'm not on the FYP anymore, so this guide is yours now. Three things changed
+since the rest of it was written:
 
-- **The old server is gone.** `api.srv987636.hstgr.cloud` doesn't exist
-  anymore. Anywhere this guide says that URL, or says the backend is "LIVE",
-  it's out of date. You'll run your own backend.
-- **The keys were all on my accounts.** You need your own Firebase project and
-  your own Gemini key. Ignore the "ask Arham for..." bits further down.
+- **The backend has a new address:** `https://pakalorie-api.theredolanse.com`.
+  It runs on my server and I'm keeping it up for you. Anywhere this guide says
+  `api.srv987636.hstgr.cloud`, use the new address instead. The app already
+  points at it.
+- **The AI is Claude now, not Gemini.** Dish recognition and the calorie
+  write-up both call the Claude API on the server. The key lives on the server
+  only, so you don't need it for the app. In the report, wherever it says
+  Gemini on the server side, it's Claude (`claude-opus-5-5`).
+- **Firebase:** Hussnain is an Editor on the `pakalorie-fyp` project. Get the
+  `EXPO_PUBLIC_FIREBASE_*` values from Firebase console, Project settings,
+  General, Your apps (web app config), and put them in `.env`.
 
-Do the keys first, the backend needs the Gemini key.
+Check the backend any time: `https://pakalorie-api.theredolanse.com/healthz`
+should say `{"status":"ok"}`. If it doesn't, message me.
 
-### Step 1: your own keys
+The on-device fallback (`src/lib/gemini.ts`) still uses Gemini and only runs
+when the backend is unreachable. Leave `EXPO_PUBLIC_GEMINI_API_KEY` empty
+unless you want it.
+
+### If you ever want your own backend
 
 Open Claude Code in the repo root and paste this:
 
 ```
-Set up my own keys for this project (Pakalorie, Expo app + FastAPI backend).
-Read docs/TEAM_GUIDE.md, .env.example and backend/.env.example first.
-
-1. Firebase: help me make a new Firebase project with Email/Password auth and
-   Firestore turned on. Put its web config in a new .env as the
-   EXPO_PUBLIC_FIREBASE_* values, point .firebaserc at the new project, and
-   deploy firestore.rules to it.
-2. Gemini: help me get a free API key from aistudio.google.com. Put it in
-   backend/.env as GEMINI_API_KEY and in .env as EXPO_PUBLIC_GEMINI_API_KEY.
-
-Leave the Google OAuth client IDs empty, the demo uses email/password.
-Tell me exactly what I have to click myself, do everything else.
+Get this project's FastAPI backend (backend/) running on a server I control.
+Read docs/TEAM_GUIDE.md, backend/README.md and backend/docs/DEPLOY.md first.
+Run Postgres + the API with backend/docker-compose.yml, with my own
+ANTHROPIC_API_KEY in backend/.env. Run the migrations,
+backend/scripts/seed_foods.py (160 foods) and backend/scripts/download_midas.py.
+Give me a public HTTPS URL, set EXPO_PUBLIC_API_BASE_URL in .env and
+DEFAULT_API_BASE_URL in src/lib/api.ts to it, then check /healthz and
+/foods/search?q=nihari work and a scan in Expo Go shows the green DB-grounded pill.
 Never commit any .env file.
 ```
-
-You'll have to make the Firebase project and the Gemini key yourself in the
-browser, Claude Code will tell you when.
-
-### Step 2: get the backend running again
-
-Same thing, paste this:
-
-```
-The backend for this app used to be live at https://api.srv987636.hstgr.cloud
-but that server is gone. Get it running again for our FYP demo.
-Read docs/TEAM_GUIDE.md, backend/README.md and backend/docs/DEPLOY.md first.
-
-1. Run Postgres + the API with backend/docker-compose.yml, using the
-   GEMINI_API_KEY in backend/.env.
-2. Run the migrations and backend/scripts/seed_foods.py so the 160 foods are
-   in the DB. Run backend/scripts/download_midas.py so POST /portion works.
-3. Give me a public HTTPS URL my phone can reach (a free tunnel or a free
-   host, whichever is simpler and works reliably on demo day).
-4. Set EXPO_PUBLIC_API_BASE_URL in .env to that URL, and change
-   DEFAULT_API_BASE_URL in src/lib/api.ts to it too.
-5. Check /healthz and /foods/search?q=nihari both work from that URL, then
-   run the app in Expo Go and confirm a scan shows the green DB-grounded pill.
-```
-
-When it's done, open `<your url>/healthz` in a browser. If it says
-`{"status":"ok"}` you're good. Use your URL wherever sections 3 to 5 say the
-old one.
-
-If the backend runs off someone's laptop through a tunnel, that laptop has to
-stay on and online for the whole demo. Do a full run the day before, not the
-morning of.
 
 ---
 

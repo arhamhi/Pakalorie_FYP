@@ -1,6 +1,6 @@
 // Typed client for the Pakalorie FastAPI backend.
 //
-// Live base URL (verified over public HTTPS): https://api.srv987636.hstgr.cloud
+// Live base URL (verified over public HTTPS): https://pakalorie-api.theredolanse.com
 // Endpoint contract: backend/docs/API_CONTRACT.md
 //
 // This is the real recognition -> grounded-calorie pipeline. The existing
@@ -14,7 +14,7 @@ import { DEFAULT_RECOGNITION_ENGINE, type RecognitionEngine } from './preference
 // Config
 // ─────────────────────────────────────────────────────────────────────────────
 
-const DEFAULT_API_BASE_URL = 'https://api.srv987636.hstgr.cloud';
+const DEFAULT_API_BASE_URL = 'https://pakalorie-api.theredolanse.com';
 
 /**
  * Base URL for the FastAPI backend. Reads `EXPO_PUBLIC_API_BASE_URL` when set
