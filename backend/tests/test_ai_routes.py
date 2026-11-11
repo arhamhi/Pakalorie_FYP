@@ -13,7 +13,7 @@ def test_chat_sends_alternating_history(monkeypatch) -> None:
     async def fake_generate_text(self, system, messages, *, max_output_tokens=1024):
         seen["system"] = system
         seen["messages"] = messages
-        return "Acha, daal lo."
+        return "Daal lo, 300 kcal.\n---\nPaani bhi pi lo."
 
     monkeypatch.setattr("app.services.claude.ClaudeClient.generate_text", fake_generate_text)
     response = client.post(
@@ -29,7 +29,7 @@ def test_chat_sends_alternating_history(monkeypatch) -> None:
         },
     )
     assert response.status_code == 200
-    assert response.json()["data"]["reply"] == "Acha, daal lo."
+    assert response.json()["data"]["replies"] == ["Daal lo, 300 kcal.", "Paani bhi pi lo."]
     assert [m["role"] for m in seen["messages"]] == ["user", "assistant", "user"]
     assert seen["messages"][-1]["content"] == "dinner mein kya khaun?"
     assert "Ayesha" in seen["system"] and "600 kcal" in seen["system"]
@@ -76,3 +76,10 @@ def test_identify_accepts_image(monkeypatch) -> None:
     assert response.status_code == 200
     assert data["name"] == "Haleem"
     assert data["alternatives"][0]["name"] == "Nihari"
+
+
+def test_split_bubbles_caps_at_three() -> None:
+    from app.services.coach import split_bubbles
+
+    assert split_bubbles("one") == ["one"]
+    assert split_bubbles("a\n---\nb\n---\nc\n---\nd") == ["a", "b", "c\nd"]

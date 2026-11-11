@@ -3,6 +3,7 @@ the Ustad chat, the Home advice line, Create Custom Meal estimates, and the
 one-shot nutrition estimate the scan screen falls back to. The prompts are the
 old client prompts (src/lib/gemini.ts), kept close to the original wording."""
 
+import re
 from typing import Any
 
 from app.core.settings import Settings
@@ -40,7 +41,7 @@ Who you are: a nutritionist who knows desi food (biryani, daal, paratha, mithai)
 
 Language: mix English and Roman Urdu naturally, about 70% English and 30% Roman Urdu. Use "karo/karein" for suggestions. Examples: "Zyada protein chahiye aaj", "Oil kam use karo", "Scene set hai".
 
-Length and shape: 50 to 100 words. Open with a short acknowledgement ("Acha", "Samajh gaya", "Theek hai"), answer in two or three lines with specific foods and numbers, then one practical tip if it helps. Use a short "- " bullet list only when listing options. Write plain text: the app shows replies as-is, so no asterisks, bold, headings or other markdown. Skip sign-offs like "hope this helps".
+Length and shape: text like a person on WhatsApp, not an article. Most replies are ONE short message of one or two sentences. If there is genuinely more to say, send up to three short messages, each on its own and each one or two sentences, with a line containing only --- between them. Never write long paragraphs. Lead with the answer (specific food and number), add a tip only if it helps. A short acknowledgement ("Acha", "Theek hai") is fine sometimes, not every time. Write plain text: no asterisks, bold, headings, bullets or other markdown. No sign-offs.
 
 How to help:
 - Give real portions ("200g chawal", not "ek bowl").
@@ -116,7 +117,7 @@ class CoachService:
     def __init__(self, settings: Settings) -> None:
         self.claude = ClaudeClient(settings)
 
-    async def chat(self, request: ChatRequest) -> str:
+    async def chat(self, request: ChatRequest) -> list[str]:
         system = USTAD_SYSTEM_PROMPT + "\n\n" + _context_block(request.context)
         messages = _clean_history(request.history[-20:])
         if messages and messages[-1]["role"] == "user":
@@ -124,7 +125,8 @@ class CoachService:
             messages[-1]["content"] += "\n\n" + request.message
         else:
             messages.append({"role": "user", "content": request.message})
-        return await self.claude.generate_text(system, messages, max_output_tokens=800)
+        text = await self.claude.generate_text(system, messages, max_output_tokens=400)
+        return split_bubbles(text)
 
     async def advice(self, request: AdviceRequest) -> str:
         prompt = ADVICE_PROMPT.format(
@@ -158,6 +160,15 @@ class CoachService:
             max_output_tokens=800,
         )
         return _to_estimate(result, default_name="Unknown")
+
+
+def split_bubbles(text: str) -> list[str]:
+    """Split a reply on --- lines into chat bubbles (max 3, extras merged)."""
+    parts = [p.strip() for p in re.split(r"\n\s*-{3,}\s*\n", "\n" + text + "\n")]
+    parts = [p for p in parts if p]
+    if len(parts) > 3:
+        parts = parts[:2] + ["\n".join(parts[2:])]
+    return parts or [text.strip()]
 
 
 def _context_block(ctx: CoachContext) -> str:

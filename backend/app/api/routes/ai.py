@@ -21,8 +21,8 @@ MAX_IMAGE_BYTES = 8 * 1024 * 1024
 @router.post("/chat", response_model=ApiResponse[ChatResponse])
 async def chat(request: ChatRequest):
     """Ustad coach reply (Claude). `history` is the earlier turns, oldest first."""
-    reply = await CoachService(get_settings()).chat(request)
-    return envelope(ChatResponse(reply=reply))
+    replies = await CoachService(get_settings()).chat(request)
+    return envelope(ChatResponse(replies=replies, reply="\n\n".join(replies)))
 
 
 @router.post("/advice", response_model=ApiResponse[AdviceResponse])

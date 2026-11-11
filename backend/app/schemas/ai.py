@@ -26,7 +26,8 @@ class ChatRequest(BaseModel):
 
 
 class ChatResponse(BaseModel):
-    reply: str
+    replies: list[str]  # one chat bubble each, in order
+    reply: str  # all bubbles joined, for older app builds
 
 
 class AdviceRequest(BaseModel):

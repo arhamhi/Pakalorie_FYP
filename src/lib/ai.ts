@@ -98,6 +98,7 @@ export async function identifyFood(imageUri: string): Promise<FoodIdentification
   return fromWire(await unwrapEnvelope<NutritionEstimateWire>(response, '/ai/identify'));
 }
 
+/** Ustad's reply as 1-3 short chat bubbles, in order. */
 export async function chatWithUstad(
   message: string,
   context: {
@@ -108,9 +109,9 @@ export async function chatWithUstad(
     waterCount?: number;
   },
   history: ChatMessage[] = [],
-): Promise<string> {
+): Promise<string[]> {
   try {
-    const data = await postJson<{ reply: string }>('/ai/chat', {
+    const data = await postJson<{ replies?: string[]; reply: string }>('/ai/chat', {
       message,
       context: {
         user_name: context.userName,
@@ -128,10 +129,11 @@ export async function chatWithUstad(
         text: turn.parts.map((p) => p.text).join('').slice(0, 4000),
       })),
     });
-    return data.reply?.trim() || CHAT_ERROR_REPLY;
+    const replies = (data.replies ?? [data.reply]).map((r) => r?.trim()).filter(Boolean);
+    return replies.length ? replies : [CHAT_ERROR_REPLY];
   } catch (error) {
     console.error('Chat error:', error);
-    return CHAT_ERROR_REPLY;
+    return [CHAT_ERROR_REPLY];
   }
 }
 
