@@ -28,7 +28,7 @@ import { useLanguage } from '../../src/contexts/LanguageContext';
 import { addActivityLog, changeHydration, getActivityInRange, getFoodLogsInRange, getHydration } from '../../src/lib/db';
 import { BudgetCard } from '../../src/components/home/BudgetCard';
 import { computeCompensation, estimateBurn, type ActivityKey } from '../../src/lib/compensation';
-import { getUstadAdvice } from '../../src/lib/gemini';
+import { getUstadAdvice } from '../../src/lib/ai';
 import { Card, ProgressRing, MacroBar, FadeInView, AnimatedPressable } from '../../src/components/ui';
 import { calculateMacros } from '../../src/constants/nutrition';
 import { FoodLog } from '../../src/types/database';

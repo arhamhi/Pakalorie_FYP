@@ -59,7 +59,39 @@ class ClaudeClient:
         content.append(
             {"type": "text", "text": prompt + "\n\nReply with only the JSON object."}
         )
+        text = await self._create(
+            messages=[{"role": "user", "content": content}],
+            max_output_tokens=max_output_tokens,
+        )
+        return _parse_json(text)
 
+    async def generate_text(
+        self,
+        system: str,
+        messages: list[dict[str, Any]],
+        *,
+        max_output_tokens: int = 1024,
+    ) -> str:
+        """Plain-text reply for chat-style calls (Ustad coach, advice line).
+        `messages` alternate user/assistant and end with a user turn."""
+        if not self.configured:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="ANTHROPIC_API_KEY is not configured",
+            )
+        text = await self._create(
+            messages=messages, max_output_tokens=max_output_tokens, system=system
+        )
+        return text.strip()
+
+    async def _create(
+        self,
+        *,
+        messages: list[dict[str, Any]],
+        max_output_tokens: int,
+        system: str | None = None,
+    ) -> str:
+        extra: dict[str, Any] = {"system": system} if system else {}
         try:
             # Sonnet 5.5 at low effort: fast and cheap enough for a scan.
             # Server-side fallback re-runs a refused request on another model.
@@ -69,7 +101,8 @@ class ClaudeClient:
                 output_config={"effort": self.settings.claude_effort},
                 betas=["server-side-fallback-2026-07-01"],
                 fallbacks="default",
-                messages=[{"role": "user", "content": content}],
+                messages=messages,
+                **extra,
             )
         except anthropic.APIStatusError as exc:
             raise HTTPException(
@@ -93,7 +126,7 @@ class ClaudeClient:
                 status_code=status.HTTP_502_BAD_GATEWAY,
                 detail="Claude returned no text",
             )
-        return _parse_json(text)
+        return text
 
 
 def _parse_json(text: str) -> dict[str, Any]:

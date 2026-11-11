@@ -27,7 +27,7 @@ import {
   getLatestChatSession,
   updateChatSessionMessages,
 } from '../../src/lib/db';
-import { chatWithUstad, ChatMessage } from '../../src/lib/gemini';
+import { chatWithUstad, ChatMessage } from '../../src/lib/ai';
 import { todayKey } from '../../src/lib/analytics';
 import type { Json } from '../../src/types/database';
 
@@ -182,7 +182,7 @@ export default function ChatScreen() {
       // Message[] shape written below, so the narrowing is safe at runtime.
       const stored = session.messages as unknown as Message[];
       setMessages(stored);
-      // Convert to ChatMessage format for Gemini API
+      // Convert to the ChatMessage history format sent to /ai/chat
       const history: ChatMessage[] = stored.map(msg => ({
         role: msg.role === 'user' ? 'user' : 'model',
         parts: [{ text: msg.text }],
@@ -208,9 +208,9 @@ export default function ChatScreen() {
     sendMessage.mutate(suggestion);
   };
 
-  // Use real Gemini API for Ustad responses
-  const generateResponse = async (userMessage: string): Promise<string> => {
-    const response = await chatWithUstad(
+  // Ustad runs on the backend (Claude). Replies come back as 1-3 short bubbles.
+  const generateResponse = async (userMessage: string): Promise<string[]> => {
+    const replies = await chatWithUstad(
       userMessage,
       {
         userName: profile?.display_name || undefined,
@@ -226,10 +226,10 @@ export default function ChatScreen() {
     setChatHistory(prev => [
       ...prev,
       { role: 'user', parts: [{ text: userMessage }] },
-      { role: 'model', parts: [{ text: response }] },
+      ...replies.map((text) => ({ role: 'model' as const, parts: [{ text }] })),
     ]);
 
-    return response;
+    return replies;
   };
 
   const sendMessage = useMutation({
@@ -240,13 +240,17 @@ export default function ChatScreen() {
       setInput('');
       setIsTyping(true);
 
-      let finalMessages: Message[];
+      let finalMessages: Message[] = newMessages;
       try {
-        const response = await generateResponse(text);
-        finalMessages = [...newMessages, { role: 'assistant', text: response }];
+        const replies = await generateResponse(text);
+        // Drop the bubbles in one at a time, like someone texting back.
         // Show the reply before persisting — a failed save must not eat it
         // or leave the typing indicator spinning.
-        setMessages(finalMessages);
+        for (let i = 0; i < replies.length; i++) {
+          if (i > 0) await new Promise((resolve) => setTimeout(resolve, 900));
+          finalMessages = [...finalMessages, { role: 'assistant', text: replies[i] }];
+          setMessages(finalMessages);
+        }
       } finally {
         setIsTyping(false);
       }

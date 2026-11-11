@@ -28,9 +28,11 @@ since the rest of it was written:
 Check the backend any time: `https://pakalorie-api.theredolanse.com/healthz`
 should say `{"status":"ok"}`. If it doesn't, message me.
 
-The on-device fallback (`src/lib/gemini.ts`) still uses Gemini and only runs
-when the backend is unreachable. Leave `EXPO_PUBLIC_GEMINI_API_KEY` empty
-unless you want it.
+All AI runs on the backend with Claude (Sonnet 5.5): scan recognition,
+calories, the Ustad chat, Create Custom Meal and the Home advice line
+(`/recognize`, `/calories`, `/ai/*`). The app has no AI key, and there is no
+Gemini anywhere any more. If you see `EXPO_PUBLIC_GEMINI_API_KEY` in an old
+`.env`, delete it.
 
 ### If you ever want your own backend
 
@@ -139,8 +141,8 @@ deleting awkward classes.
    ```
 2. Fill `.env`: ask Arham for the `EXPO_PUBLIC_FIREBASE_*` values (Firebase
    web config — safe for clients, but our repo keeps them out of git).
-   `EXPO_PUBLIC_API_BASE_URL` already points at the live API. Optionally set
-   `EXPO_PUBLIC_GEMINI_API_KEY` to enable the offline fallback path.
+   `EXPO_PUBLIC_API_BASE_URL` already points at the live API. No AI key is
+   needed in the app.
 3. Install **Expo Go** on your phone (Play Store / App Store).
 4. Start the dev server (the worker cap matters on Windows + OneDrive):
    ```powershell
@@ -159,7 +161,7 @@ locally only if you're changing backend code:
 ```powershell
 cd backend
 uv sync                                  # Python 3.11+; install uv first
-Copy-Item .env.example .env              # leave GEMINI_API_KEY empty for the offline fallback
+Copy-Item .env.example .env              # AI calls need ANTHROPIC_API_KEY; tests mock it
 uv run uvicorn app.main:app --reload     # http://127.0.0.1:8000/docs
 uv run pytest                            # unit tests pass with no DB; integration tests auto-skip
 ```
