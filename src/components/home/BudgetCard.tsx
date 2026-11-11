@@ -63,6 +63,10 @@ export function BudgetCard({ comp, onAddActivity }: Props) {
         </Text>
       )}
 
+      <Text style={{ ...Type.bodyMd, color: colors.text.tertiary, marginTop: 6, fontSize: 11 }}>
+        Estimates only, not medical advice.
+      </Text>
+
       {open && (
         <View style={{ marginTop: 14 }}>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>

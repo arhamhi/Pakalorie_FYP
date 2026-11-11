@@ -26,7 +26,8 @@ Measured on 1,516 local validation images (CPU, onnxruntime):
 - Rule (single source: `src/lib/compensation.ts`):
   `target = base + carryOver + burnedToday`.
   Surplus or deficit from the last 3 *logged* days is spread over 3 days and capped at +-15% of base.
-  Days with no logs are ignored.
+  Days with no logs are ignored. The target never drops below a 1200 kcal safe minimum (or the user's own
+  base, if lower), and the card carries an "estimates only, not medical advice" disclaimer.
 - Burned calories are **manual estimates**: MET x weight x time, entered through "Log activity" on Home.
   Not measured; Health Sync is a P2 Final module.
 - UI: `src/components/home/BudgetCard.tsx` on Home shows today's budget and a one-line "why".

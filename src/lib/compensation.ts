@@ -21,6 +21,9 @@
 
 export const COMPENSATION_DAYS = 3;
 export const CAP_FRACTION = 0.15;
+/** Safe minimum: compensation never pushes the target below this (or below the
+ * user's own base target, if that is already lower). */
+export const MIN_TARGET_KCAL = 1200;
 
 export interface DayTotals {
   date: string; // YYYY-MM-DD local
@@ -35,6 +38,8 @@ export interface Compensation {
   burnedToday: number;
   target: number;
   capped: boolean;
+  /** True when the safe minimum stopped the target from dropping further. */
+  floored: boolean;
   daysUsed: number;
 }
 
@@ -72,14 +77,13 @@ export function computeCompensation(
   const capped = Math.abs(carryOver) > cap;
   carryOver = Math.round(Math.max(-cap, Math.min(cap, carryOver)));
 
-  return {
-    base,
-    carryOver,
-    burnedToday,
-    target: Math.round(base + carryOver + burnedToday),
-    capped,
-    daysUsed: used.length,
-  };
+  // Safe minimum: never go below MIN_TARGET_KCAL (or below the user's own base).
+  const floor = Math.min(base, MIN_TARGET_KCAL);
+  const target = Math.max(Math.round(base + carryOver + burnedToday), floor);
+  const floored = base + carryOver + burnedToday < floor;
+  if (floored) carryOver = target - base - burnedToday;
+
+  return { base, carryOver, burnedToday, target, capped, floored, daysUsed: used.length };
 }
 
 /** One-line honest explanation for the UI. */
@@ -87,7 +91,7 @@ export function explainCompensation(c: Compensation): string {
   const parts: string[] = [];
   if (c.carryOver !== 0) {
     parts.push(
-      `${c.carryOver > 0 ? '+' : ''}${c.carryOver} kcal carried over from your last ${c.daysUsed} logged day${c.daysUsed === 1 ? '' : 's'}${c.capped ? ' (capped at 15%)' : ''}`,
+      `${c.carryOver > 0 ? '+' : ''}${c.carryOver} kcal carried over from your last ${c.daysUsed} logged day${c.daysUsed === 1 ? '' : 's'}${c.capped ? ' (capped at 15%)' : ''}${c.floored ? `, held at the ${MIN_TARGET_KCAL} kcal safe minimum` : ''}`,
     );
   }
   if (c.burnedToday > 0) parts.push(`+${c.burnedToday} kcal from logged activity`);

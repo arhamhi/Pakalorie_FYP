@@ -1,0 +1,204 @@
+% ============================================================================
+% P2 Mid replacement text for the Pakalorie FYP report (Overleaf).
+% Every number below was measured on the built system; see docs/P2_MID.md.
+% Each block says which existing section it replaces. Plain LaTeX only
+% (tabular + \hline), so it should compile in your existing class.
+% Adjust \section / \subsection levels to match your template.
+% ============================================================================
+
+
+% ----------------------------------------------------------------------------
+% REPLACES 4.4.7 "Module 7: Model Optimisation and Quantisation"
+% ----------------------------------------------------------------------------
+\subsubsection{Module 7: Model Optimisation and Quantisation}
+\textbf{Purpose:} make the recognition model smaller so it can be downloaded
+and, later, run on a phone. \textbf{Inputs:} the trained YOLOv8n classification
+model in ONNX format (217 classes, 224$\times$224 input).
+\textbf{Processing:} the model is quantised to 8-bit integers in two ways:
+dynamic quantisation, which converts only the weights, and static quantisation,
+which also converts the activations using 200 calibration images. Each version
+is compared with the original for file size, CPU latency and accuracy on the
+same held-out images. \textbf{Outputs:} a comparison table (Table~\ref{tab:quant})
+and the recommended model file.
+
+
+% ----------------------------------------------------------------------------
+% REPLACES 4.4.8 "Module 8: Data Visualisation and Calorie Compensation"
+% ----------------------------------------------------------------------------
+\subsubsection{Module 8: Data Visualisation and Calorie Compensation}
+\textbf{Purpose:} help the user see trends and keep to the daily goal after a
+heavy or light day. \textbf{Inputs:} saved meals, activities logged by the user,
+and the daily calorie goal. \textbf{Processing:} meals are grouped by day. The
+module looks at the last three days on which the user logged meals. The surplus
+(calories eaten minus the goal plus calories burned that day) is added up and
+divided by three, so each day's surplus is repaid over three days. The change to
+today's goal is limited to 15\% of the base goal and is never allowed to take the
+goal below a safe minimum of 1200~kcal (or below the user's own goal, if that is
+already lower). Calories burned by logged activity are added to today's goal.
+\textbf{Outputs:} an adjusted daily goal with a one-line explanation, a disclaimer
+that the numbers are estimates and not medical advice, and charts of calories,
+macronutrient share, weight and water intake.
+
+
+% ----------------------------------------------------------------------------
+% REPLACES 4.4.9 "Module 9: Real-Time Inference Pipeline"
+% ----------------------------------------------------------------------------
+\subsubsection{Module 9: Real-Time Inference Pipeline}
+\textbf{Purpose:} give the user a result while the camera is pointed at the food,
+without pressing the shutter. \textbf{Processing:} in live mode the app captures a
+small, low-quality camera frame, sends it to the server's recognition service
+with the YOLOv8 engine, and shows the best guess with its confidence. Only one
+frame is in flight at a time; the next frame is captured as soon as the reply
+arrives, so the server latency sets the frame rate. Guesses below 35\% confidence
+are labelled ``low confidence''. The live mode uses only the YOLOv8 model, so it
+does not call any paid language-model service. \textbf{Outputs:} a live label,
+the confidence, the round-trip time and the frames per second.
+In this version the pipeline is streamed from the phone to the server; running
+the quantised model on the phone itself is listed as future work.
+
+
+% ----------------------------------------------------------------------------
+% REPLACES 5.4.4 "Optimisation and Quantisation (Module 7)"
+% ----------------------------------------------------------------------------
+\subsubsection{Optimisation and Quantisation (Module 7)}
+The trained model was exported to ONNX and quantised to 8-bit integers with the
+ONNX Runtime quantisation tools, using a script kept in the repository
+(\texttt{ml/scripts/quantize.py}). Two variants were built: dynamic quantisation
+and static quantisation in QDQ format, calibrated on 200 images that were left out
+of the test set. All three models were then run on 1516 held-out images on a CPU.
+An FP16 version was not built. Table~\ref{tab:quant} shows the result.
+
+\begin{table}[h]
+\centering
+\caption{Quantisation results (CPU, 1516 held-out images)}
+\label{tab:quant}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Model} & \textbf{Size (MB)} & \textbf{Latency (ms)} & \textbf{Top-1} & \textbf{Top-5} \\
+\hline
+Original (FP32)      & 6.89 & 2.4 & 0.700 & 0.927 \\
+INT8 dynamic         & 1.79 & 6.6 & 0.592 & 0.885 \\
+INT8 static (QDQ)    & 1.89 & 2.1 & 0.663 & 0.925 \\
+\hline
+\end{tabular}
+\end{table}
+
+Static INT8 quantisation is the version to use. It is 3.6 times smaller than the
+original, as fast on this CPU, and loses 3.7 points of top-1 accuracy and 0.2 points
+of top-5 accuracy. Dynamic quantisation gives the smallest file but loses 10.8
+points of top-1 accuracy and is slower, because the CPU runtime has no fast
+integer convolution, so it is not recommended.
+
+\textit{Limitation.} The test images were rebuilt on a new computer from the two
+Kaggle datasets with the same split settings. The trained model has 217 classes,
+while the earlier training notes list 218, so some of these images may have been
+seen during training. This is why the original model scores 0.700 here but 0.585
+top-1 (0.866 top-5) in the official evaluation of Section~6.4. Use Table~\ref{tab:quant}
+to compare the three versions with each other, and cite the official figures for the
+accuracy of the model.
+
+
+% ----------------------------------------------------------------------------
+% REPLACES 5.5.7 "Calorie Compensation (Module 8)"
+% ----------------------------------------------------------------------------
+\subsubsection{Calorie Compensation (Module 8)}
+The rule is kept in one function in the app (\texttt{compensation.ts}):
+\[
+\text{target} = \text{base} + \text{carry-over} + \text{burned today}
+\]
+The carry-over is minus the total surplus of the last three logged days divided by
+three. The surplus of one day is the calories eaten minus (base goal + calories
+burned that day). Days with no saved meals are ignored. The carry-over is limited
+to $\pm 15\%$ of the base goal, and the final target is never below 1200~kcal or
+the user's own base goal if that is lower. Example: with a base goal of 2000~kcal, a
+day with 2600~kcal gives a surplus of 600~kcal and lowers the next day's goal by
+200~kcal.
+
+Calories burned come from activities that the user logs by hand (walking, running,
+cycling, gym, swimming or sports) and a duration. The estimate is
+$\text{kcal} = \text{MET} \times \text{weight (kg)} \times \text{hours}$, so 30 minutes
+of walking (MET 3.5) for a 70~kg user adds 123~kcal. These values are estimates and
+are not measured by a sensor; automatic activity data is planned with the Health
+Data Sync module. The home screen shows the adjusted goal, the reason for it and the
+disclaimer, and activities are stored in the user's \texttt{activity\_logs} collection
+in Firestore.
+
+\textit{Difference from the original design.} The first design divided a weekly
+surplus over the remaining days of the week. The built version uses a rolling three-day
+window instead, because it reacts the next day and needs no week boundary.
+
+
+% ----------------------------------------------------------------------------
+% ADD to 5.6.3 "History and Dashboard (Modules 2 and 8)"
+% ----------------------------------------------------------------------------
+The Trends screen also shows a \textbf{Macro Split} card. It adds up protein, carbohydrate
+and fat for the chosen range (7, 30 or 90 days) and shows each as a share of the total
+calories, using 4, 4 and 9~kcal per gram, with the average grams per logged day. When
+no meals are saved in the range the card says so and shows no numbers.
+
+
+% ----------------------------------------------------------------------------
+% ADD a new subsection near 5.5.4 (Recognition Pipeline) for Module 9, and
+% relabel the asyncio.gather listing in 5.5.4 as "target design, not built".
+% ----------------------------------------------------------------------------
+\subsubsection{Live Recognition (Module 9)}
+Live recognition is implemented in the app (\texttt{useLiveRecognition.ts}) and uses
+the existing recognition endpoint with the YOLOv8 engine. The loop is: capture a
+frame at quality 0.3, upload it, show the answer, wait 300~ms and repeat.
+In a test over the public server address from a laptop, one request took about
+0.77~s, which gives roughly one result per second. A test with a full 1~MB photo
+from another computer took about 2.2~s, still inside the 3-second target.
+The server does not yet run YOLOv8 and MiDaS at the same time in a thread pool
+as described in the design of Section~5.5.4. Only the database calls are
+asynchronous, and the depth service is a separate endpoint. Parallel execution is
+future work.
+
+
+% ----------------------------------------------------------------------------
+% REPLACES the P2 Mid rows of Table 6.3 "Model Evaluation Targets and Measured
+% Values" (keep the other rows).
+% ----------------------------------------------------------------------------
+\begin{tabular}{|p{5cm}|p{3.2cm}|p{5.2cm}|}
+\hline
+\textbf{Measure} & \textbf{Target} & \textbf{Measured} \\
+\hline
+Top-1 accuracy (217 classes, official evaluation) & At least 85\% (Chapter 1) & 58.5\% (top-5: 86.6\%), classification model; target not met \\
+\hline
+Accuracy change after INT8 quantisation (static) & Small loss only & $-3.7$ points top-1, $-0.2$ points top-5 (comparison set, Table~\ref{tab:quant}) \\
+\hline
+Model size, original vs.\ static INT8 & Smaller & 6.89~MB vs.\ 1.89~MB (3.6$\times$) \\
+\hline
+Inference time, original vs.\ static INT8 (CPU, one image) & Within the 3-second goal & 2.4~ms vs.\ 2.1~ms (model only) \\
+\hline
+\end{tabular}
+
+
+% ----------------------------------------------------------------------------
+% REPLACES the Status column for TC21 - TC24 in Table 6.2
+% ----------------------------------------------------------------------------
+% TC21 (FR20, FR23)  Passed in part: the adjusted goal and explanation are shown
+%                    on an iPhone simulator; the carry-over across two real days
+%                    was checked by calculation only.
+% TC22 (FR21)        Passed: static INT8 gives top-1 0.663 against 0.700 and the
+%                    same speed (Table~\ref{tab:quant}); FP16 not built; the model
+%                    is not yet running on the phone.
+% TC23 (FR22)        Passed in part on a simulator: the Macro Split card matched
+%                    the saved meal (27/34/39\%) and showed its empty state; the
+%                    existing calorie, weight and water charts were not part of
+%                    this test run.
+% TC24 (FR24)        Partly met: live frames are sent one at a time and the app
+%                    stays responsive; two simultaneous server requests were not
+%                    tested. Live mode on a real camera is not yet tested.
+
+
+% ----------------------------------------------------------------------------
+% ADD to 6.11 "Future Work"
+% ----------------------------------------------------------------------------
+\begin{itemize}
+  \item Run the static INT8 model on the phone for live recognition without the server.
+  \item Run YOLOv8 and MiDaS in parallel on the server, as in the original design.
+  \item Replace the manual activity entry with automatic data from Google Fit and
+        Apple Health (Health Data Sync).
+  \item Retrain the classifier to reach the 85\% target, and rebuild the test split
+        so the accuracy of the quantised model can be reported on unseen images.
+\end{itemize}
