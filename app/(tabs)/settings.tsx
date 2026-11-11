@@ -40,7 +40,7 @@ const ENGINE_OPTIONS: {
 }[] = [
   {
     value: 'gemini',
-    title: 'Gemini (recommended)',
+    title: 'Claude (recommended)',
     subtitle: 'Best accuracy. Identifies most dishes server-side.',
     icon: 'auto-awesome',
   },

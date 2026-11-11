@@ -160,7 +160,7 @@ async def test_calories_local_grounded_fallback(engine):
     # Deterministic, no Gemini key needed: drive the engine directly against the
     # live DB with an empty key so it must use the grounded fallback path.
     session_factory = async_sessionmaker(engine, expire_on_commit=False)
-    calorie_engine = CalorieEngine(Settings(GEMINI_API_KEY=""))
+    calorie_engine = CalorieEngine(Settings(ANTHROPIC_API_KEY=""))
     async with session_factory() as session:
         result = await calorie_engine.calculate(
             session,

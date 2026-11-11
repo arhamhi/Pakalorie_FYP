@@ -1275,13 +1275,13 @@ function dataSourceLabel(source: string | null): string {
 }
 
 function modelLabel(model: string): string {
-  if (model === 'gemini_grounded') return 'AI grounded in DB';
+  if (model === 'claude_grounded' || model === 'gemini_grounded') return 'AI grounded in DB';
   if (model === 'local_grounded_fallback') return 'DB lookup';
   return model;
 }
 
 const ENGINE_LABELS: Record<GroundedMeta['engine'], string> = {
-  gemini: 'Recognized by Gemini',
+  gemini: 'Recognized by Claude',
   yolo: 'Recognized by our YOLOv8 model',
 };
 

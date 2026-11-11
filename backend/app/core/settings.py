@@ -11,13 +11,10 @@ class Settings(BaseSettings):
         default="postgresql+asyncpg://pakalorie:pakalorie@localhost:5432/pakalorie",
         alias="DATABASE_URL",
     )
-    gemini_api_key: str | None = Field(default=None, alias="GEMINI_API_KEY")
-    gemini_model: str = Field(default="gemini-3-flash-preview", alias="GEMINI_MODEL")
-    gemini_api_url: str = Field(
-        default="https://generativelanguage.googleapis.com/v1beta",
-        alias="GEMINI_API_URL",
-    )
-    gemini_timeout_seconds: float = Field(default=20.0, alias="GEMINI_TIMEOUT_SECONDS")
+    anthropic_api_key: str | None = Field(default=None, alias="ANTHROPIC_API_KEY")
+    claude_model: str = Field(default="claude-opus-5-5", alias="CLAUDE_MODEL")
+    claude_effort: str = Field(default="low", alias="CLAUDE_EFFORT")
+    claude_timeout_seconds: float = Field(default=45.0, alias="CLAUDE_TIMEOUT_SECONDS")
     midas_model_path: str = Field(default="models/midas_small_256.onnx", alias="MIDAS_MODEL_PATH")
     yolo_model_path: str = Field(
         default="models/yolo/best.onnx", alias="YOLO_MODEL_PATH"

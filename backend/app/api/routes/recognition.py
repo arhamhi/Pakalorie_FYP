@@ -12,10 +12,10 @@ router = APIRouter(tags=["recognition"])
 @router.post("/recognize", response_model=ApiResponse[RecognitionResponse])
 async def recognize(
     image: UploadFile = File(...),
-    engine: Engine = Form("gemini"),
+    engine: Engine = Form("claude"),
 ):
-    """Identify the dish. `engine=gemini` (default, recommended) uses the
-    server-side Gemini vision model; `engine=yolo` runs our own trained
+    """Identify the dish. `engine=claude` (default, recommended; `gemini` is
+    accepted as an old alias) uses Claude vision on the server; `engine=yolo` runs our own trained
     YOLOv8-cls model (demo of our model — 217 classes, lower accuracy). Both
     return the same RecognitionResponse shape."""
     image_bytes = await image.read()

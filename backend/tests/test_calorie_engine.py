@@ -17,7 +17,7 @@ async def test_calorie_engine_uses_local_grounded_fallback(monkeypatch) -> None:
 
     monkeypatch.setattr("app.services.calorie_engine.retrieve_foods", fake_retrieve_foods)
 
-    engine = CalorieEngine(Settings(GEMINI_API_KEY=""))
+    engine = CalorieEngine(Settings(ANTHROPIC_API_KEY=""))
     result = await engine.calculate(
         session=None,  # type: ignore[arg-type]
         request=CalorieRequest(

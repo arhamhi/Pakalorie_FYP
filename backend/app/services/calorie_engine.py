@@ -7,13 +7,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.settings import Settings
 from app.db.models import Food, ModifierConstant, PortionSize
 from app.schemas.calorie import CalorieBreakdown, CalorieRequest, RetrievedSourceRow
-from app.services.gemini import GeminiClient
+from app.services.claude import ClaudeClient
 from app.services.retrieval import retrieve_foods
 
 
 class CalorieEngine:
     def __init__(self, settings: Settings) -> None:
-        self.gemini = GeminiClient(settings)
+        self.claude = ClaudeClient(settings)
 
     async def calculate(self, session: AsyncSession, request: CalorieRequest) -> CalorieBreakdown:
         retrieved = await retrieve_foods(session, request.recognized_dish, request.top_k)
@@ -41,8 +41,8 @@ class CalorieEngine:
         modifier_kcal = sum((modifier.kcal_delta for modifier in applied), Decimal("0"))
         calories = nutrition.calories_kcal + modifier_kcal
 
-        if self.gemini.configured:
-            breakdown = await self._gemini_breakdown(
+        if self.claude.configured:
+            breakdown = await self._claude_breakdown(
                 request=request,
                 food=primary_food,
                 portion=primary_portion,
@@ -62,7 +62,7 @@ class CalorieEngine:
             )
         return _apply_portion_multiplier(breakdown, request.portion_multiplier)
 
-    async def _gemini_breakdown(
+    async def _claude_breakdown(
         self,
         *,
         request: CalorieRequest,
@@ -105,7 +105,7 @@ Selected calculation:
 Retrieved source rows:
 {json.dumps(facts, ensure_ascii=False)}
 """
-        result = await self.gemini.generate_json(prompt, temperature=0.1, max_output_tokens=768)
+        result = await self.claude.generate_json(prompt)
         return CalorieBreakdown(
             food_id=food.id,
             food_label=str(result.get("food_label") or food.name_en),
@@ -118,7 +118,7 @@ Retrieved source rows:
             applied_modifiers=[modifier.name for modifier in applied],
             ignored_modifiers=ignored,
             why=str(result.get("why") or _why(food, portion, applied, ignored)),
-            model_used="gemini_grounded",
+            model_used="claude_grounded",
             source_rows=source_rows,
         )
 

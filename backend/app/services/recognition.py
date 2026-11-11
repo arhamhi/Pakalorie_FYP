@@ -4,10 +4,11 @@ from starlette.concurrency import run_in_threadpool
 
 from app.core.settings import Settings
 from app.schemas.recognition import RecognitionAlternative, RecognitionResponse
-from app.services.gemini import GeminiClient
+from app.services.claude import ClaudeClient
 from app.services.yolo_recognition import YoloRecognizer
 
-Engine = Literal["gemini", "yolo"]
+# "gemini" is kept as an alias so older app builds keep working; both use Claude.
+Engine = Literal["claude", "gemini", "yolo"]
 
 FOOD_IDENTIFICATION_PROMPT = """
 You are an expert Pakistani and South Asian food nutritionist.
@@ -42,30 +43,28 @@ If the image is not food, return:
 class RecognitionService:
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
-        self.gemini = GeminiClient(settings)
+        self.claude = ClaudeClient(settings)
 
     async def recognize(
         self,
         image_bytes: bytes,
         mime_type: str | None,
-        engine: Engine = "gemini",
+        engine: Engine = "claude",
     ) -> RecognitionResponse:
         if engine == "yolo":
             # Our trained model runs synchronous CPU ONNX inference; keep the
-            # event loop free. Same RecognitionResponse shape as the Gemini path.
+            # event loop free. Same RecognitionResponse shape as the Claude path.
             recognizer = YoloRecognizer(self.settings)
             return await run_in_threadpool(recognizer.recognize, image_bytes)
-        return await self._recognize_gemini(image_bytes, mime_type)
+        return await self._recognize_claude(image_bytes, mime_type)
 
-    async def _recognize_gemini(
+    async def _recognize_claude(
         self, image_bytes: bytes, mime_type: str | None
     ) -> RecognitionResponse:
-        result = await self.gemini.generate_json(
+        result = await self.claude.generate_json(
             FOOD_IDENTIFICATION_PROMPT,
             image_bytes=image_bytes,
             mime_type=mime_type or "image/jpeg",
-            temperature=0.2,
-            max_output_tokens=512,
         )
         alternatives = [
             RecognitionAlternative(

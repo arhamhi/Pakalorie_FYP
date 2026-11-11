@@ -22,12 +22,12 @@ def test_root_returns_service_landing() -> None:
     assert body["docs"] == "/docs"
 
 
-def test_recognize_returns_error_envelope_when_gemini_key_missing(monkeypatch) -> None:
+def test_recognize_returns_error_envelope_when_claude_key_missing(monkeypatch) -> None:
     # Force the no-key condition regardless of the ambient .env, so this stays
-    # deterministic on machines that do have a real GEMINI_API_KEY configured.
+    # deterministic on machines that do have a real ANTHROPIC_API_KEY configured.
     monkeypatch.setattr(
         "app.api.routes.recognition.get_settings",
-        lambda: Settings(GEMINI_API_KEY=""),
+        lambda: Settings(ANTHROPIC_API_KEY=""),
     )
     client = TestClient(create_app())
 
@@ -40,5 +40,5 @@ def test_recognize_returns_error_envelope_when_gemini_key_missing(monkeypatch) -
     assert response.json() == {
         "success": False,
         "data": None,
-        "error": "GEMINI_API_KEY is not configured",
+        "error": "ANTHROPIC_API_KEY is not configured",
     }
