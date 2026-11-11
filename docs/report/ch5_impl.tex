@@ -1,0 +1,308 @@
+% Chapter 5 - Implementation (rebuilt for the P2 Mid report)
+\chapter{Implementation}
+
+This chapter explains how the design in Chapter 4 was turned into a working system. It covers the tools
+used, how the project is organised, how the food recognition model was prepared, how each module was
+built, and how the system is deployed. It also states plainly which modules are built and which are still
+planned. Short code samples are included to show the main ideas; they are simplified for clarity.
+
+\section{Introduction}
+The implementation followed the Agile Incremental model from Chapter 2. The twelve modules are built in
+four milestones (Table~3.2). The first two milestones delivered Modules 1 to 6. The third milestone (P2 Mid)
+delivered Modules 7, 8 and 9. Modules 10 to 12 belong to the final milestone. After each milestone, the team
+tested the new modules together with the earlier ones. The mobile app, the backend and the model work were
+developed in parallel, because they meet only at the API.
+
+\subsection{Implementation Status}
+Table~\ref{tab:status} shows what is built at the time of writing, with the evidence for each module.
+
+\begin{table}[H]
+\centering
+\caption{Implementation Status of the Twelve Modules}
+\label{tab:status}
+\small
+\begin{tabularx}{\textwidth}{|c|>{\raggedright\arraybackslash}p{4.2cm}|>{\raggedright\arraybackslash}p{2.2cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{No.} & \textbf{Module} & \textbf{Status} & \textbf{Evidence and limits} \\ \hline
+1 & Authentication and User Management & Built & Email and password sign-up tested on a simulator; Google sign-in needs a development build \\ \hline
+2 & Core Mobile UI & Built & Scan from the gallery, result screen and meal logging tested on a simulator \\ \hline
+3 & Food Recognition & Built & YOLOv8 classifier, 217 classes, top-1 58.5\%; target of 85\% not met \\ \hline
+4 & Food Database API & Built & 160 foods, five tables, search and detail endpoints live \\ \hline
+5 & Volume and Depth Estimation & Built & MiDaS gives a relative portion bucket, not grams \\ \hline
+6 & Calorie Engine with RAG & Built & Database-grounded answers; tested over the public URL \\ \hline
+7 & Model Optimisation and Quantisation & Built & Static INT8 measured; FP16 not built; not yet running on the phone \\ \hline
+8 & Data Visualisation and Calorie Compensation & Built & Budget card, activity log and Macro Split tested on a simulator; carry-over across days not tested \\ \hline
+9 & Real-Time Inference Pipeline & Built & Live scan streams frames to the server; camera behaviour not yet tested on a phone \\ \hline
+10 & Urdu Localisation & Partial & Roman-Urdu text in greetings and notifications only; no Urdu script or right-to-left layout \\ \hline
+11 & Health Data Sync & Not built & Planned for the final milestone \\ \hline
+12 & AI Chat Coach & Partial & Chat screen calls Gemini from the app; needs an API key; server-side retrieval not built \\ \hline
+\end{tabularx}
+\end{table}
+
+\section{Development Environment}
+The work was done on Windows and macOS laptops with Node.js, Python 3.11 and Docker. The mobile app was
+tested in Expo Go (SDK 54) on an iPhone simulator. The model was trained on a free GPU notebook.
+
+\section{Project Organisation}
+The code is split into parts so that team members do not block each other.
+\begin{verbatim}
+Pakalorie_FYP/
+  app/          Expo Router screens (auth, tabs, onboarding)
+  src/          components, contexts, hooks, lib (api, db, compensation)
+  backend/      FastAPI server
+    app/api/routes/   recognition, foods, calories, depth
+    app/services/     yolo_recognition, depth, calorie_engine,
+                      retrieval, food_service, claude
+    app/db/           models, session; data/ (seed JSON)
+  ml/           dataset preparation, training, evaluation, quantisation
+  docs/         PRD, SDS, report text
+\end{verbatim}
+
+\begin{table}[H]
+\centering
+\caption{Tools and Technologies Used}
+\label{tab:tools}
+\small
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.4cm}|>{\raggedright\arraybackslash}p{4.8cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Area} & \textbf{Tool} & \textbf{Use in Pakalorie} \\ \hline
+Mobile app & React Native, Expo SDK 54, TypeScript & Android and iOS app from one code base~\cite{expo} \\ \hline
+Backend & Python, FastAPI & REST API and model serving~\cite{fastapi} \\ \hline
+Food recognition & YOLOv8n-cls (Ultralytics), ONNX Runtime & Dish classification~\cite{yolo_ult} \\ \hline
+Depth estimation & MiDaS small (ONNX) & Relative depth for portion bucket~\cite{midas} \\ \hline
+Nutrition database & PostgreSQL, SQLAlchemy, Alembic & USDA and Pakistani nutrition data~\cite{usda} \\ \hline
+User data and login & Firebase Authentication, Cloud Firestore & Accounts, profiles, meals, activity~\cite{firebase} \\ \hline
+Language models & Anthropic Claude API, Google Gemini API & Grounded calorie answers; chat coach~\cite{anthropic,gemini} \\ \hline
+Deployment & Docker, Caddy & Containers and HTTPS~\cite{docker,caddy} \\ \hline
+Version control & Git and GitHub & Team collaboration \\ \hline
+Model training & Python, Google Colab (T4 GPU) & Training and evaluation \\ \hline
+\end{tabularx}
+\end{table}
+
+\section{Dataset Preparation and Model Training}
+\subsection{Data Collection and Labelling}
+The recognition model needs images of the foods Pakistani users actually eat. Two public datasets were
+merged: a food image set of Indian and Pakistani dishes and a Pakistani dishes set. After removing
+duplicates and merging classes with the same name, the data has 217 classes and 8{,}660 images, with
+between 12 and 175 images per class. The images are arranged in one folder per dish, which is the format
+used for classification training. A script in the repository (\texttt{ml/scripts/prepare\_dataset.py})
+builds the merged set and writes an audit of the class counts.
+
+\subsection{Augmentation}
+The default augmentation of the training library was used: colour changes, small rotations, flips and
+scaling. These changes copy real conditions such as dim light and different camera angles.
+
+\subsection{Training}
+The model was trained by transfer learning~\cite{yolo_ult}. The team started from YOLOv8n classification
+weights pretrained on a general image set and fine-tuned them on the merged dataset at $224\times224$ pixels
+for 50 epochs. The images were split 80/20 into training and validation sets with a fixed random seed. The
+trained model reaches 58.5\% top-1 and 86.6\% top-5 accuracy on the validation set, below the 85\% top-1 target.
+A larger model (YOLOv8s) was planned but not trained. Accuracy is the main weakness of the current system;
+Chapter~6 discusses it.
+
+\subsection{Optimisation and Quantisation (Module 7)}
+The trained model was exported to ONNX and quantised to 8-bit integers with the ONNX Runtime quantisation
+tools, using a script kept in the repository (\texttt{ml/scripts/quantize.py}). Two variants were built:
+dynamic quantisation and static quantisation in QDQ format, calibrated on 200 images that were left out of the
+test set. All three models were then run on 1516 held-out images on a CPU. An FP16 version was not built.
+Table~\ref{tab:quant} shows the result.
+
+\begin{table}[H]
+\centering
+\caption{Quantisation results (CPU, 1516 held-out images)}
+\label{tab:quant}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Model} & \textbf{Size (MB)} & \textbf{Latency (ms)} & \textbf{Top-1} & \textbf{Top-5} \\
+\hline
+Original (FP32)   & 6.89 & 2.4 & 0.700 & 0.927 \\
+INT8 dynamic      & 1.79 & 6.6 & 0.592 & 0.885 \\
+INT8 static (QDQ) & 1.89 & 2.1 & 0.663 & 0.925 \\
+\hline
+\end{tabular}
+\end{table}
+
+Static INT8 quantisation is the version to use. It is 3.6 times smaller than the original, as fast on this CPU,
+and loses 3.7 points of top-1 accuracy and 0.2 points of top-5 accuracy. Dynamic quantisation gives the
+smallest file but loses 10.8 points of top-1 accuracy and is slower, because the CPU runtime has no fast
+integer convolution, so it is not recommended.
+
+\textit{Limitation.} The test images were rebuilt on a new computer from the two datasets with the same split
+settings. The trained model has 217 classes, while the earlier training notes list 218, so some of these images
+may have been seen during training. This is why the original model scores 0.700 here but 0.585 top-1 (0.866
+top-5) in the official evaluation of Section~\ref{sec:modeleval}. Use Table~\ref{tab:quant} to compare the three
+versions with each other, and cite the official figures for the accuracy of the model.
+
+\section{Backend Implementation}
+\subsection{Server Structure and Start-up}
+The FastAPI application creates one router for each area: recognition, foods, calories and depth. The
+trained model and the MiDaS model are loaded once, when first needed, and kept in memory, which avoids a
+slow model load on every request. A \texttt{/healthz} endpoint reports whether the server is up. Every reply
+uses the same envelope with \texttt{success}, \texttt{data} and \texttt{error}.
+
+\subsection{Authentication (Module 1)}
+Users sign in through the Firebase SDK in the app, so the backend never sees passwords. The app keeps the
+profile document in Firestore. A bug found in testing is worth noting: on sign-up the app read the profile
+before it existed, so the onboarding values (daily target, name, goal) were saved but not shown until a restart.
+The fix reloads the profile right after it is created. Checking the Firebase token on each API request is
+planned but not yet built.
+
+\subsection{Food Database API (Module 4)}
+The nutrition data is stored in PostgreSQL and accessed with SQLAlchemy. A seed script loads 160 foods: 30
+curated Pakistani dishes and 130 USDA items, which are labelled as raw ingredient references. Each food has
+English and Urdu names, aliases, labelled portions, nutrition facts and additive modifiers. The search
+endpoint uses trigram matching over the names and aliases, so a user can search in English or Roman Urdu.
+
+\subsection{Recognition Pipeline (Modules 3 and 9)}\label{sec:pipeline}
+The recognition endpoint receives the image and names the dish with the engine chosen in the app: the trained
+YOLOv8 classifier, or the Claude vision model. Both return the same structure: a label, a confidence and the
+next most likely labels. The app then calls the calorie endpoint with the dish. Figure~\ref{fig:pipe} shows the
+steps.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[node distance=0.5cm]
+  \node[box] (a) {Capture or\\choose image};
+  \node[box, right=of a] (b) {Compress,\\POST /recognize};
+  \node[box, right=of b] (c) {YOLOv8 or\\Claude vision};
+  \node[box, right=of c] (d) {Dish label,\\confidence};
+  \node[box, below=0.9cm of d] (e) {POST /calories\\(database rows)};
+  \node[box, left=of e] (f) {Scale for portion\\and modifiers};
+  \node[box, left=of f] (g) {Claude writes\\grounded answer};
+  \node[box, left=of g] (h) {Result screen,\\save to Firestore};
+  \draw[arr] (a)--(b); \draw[arr] (b)--(c); \draw[arr] (c)--(d); \draw[arr] (d)--(e);
+  \draw[arr] (e)--(f); \draw[arr] (f)--(g); \draw[arr] (g)--(h);
+\end{tikzpicture}}
+\caption{Inference Pipeline from Photo to Result}
+\label{fig:pipe}
+\end{figure}
+
+\paragraph{Design versus build.} The design in Chapter 4 ran detection and depth estimation at the same time in
+a thread pool, with asynchronous code joining the two results, so that the waiting time would be close to the
+slower model alone. This parallel execution is \emph{not} built. In the built system the depth estimator is a
+separate endpoint, and only the database calls are asynchronous. It is listed as future work.
+
+\subsubsection{Live Recognition (Module 9)}
+Live recognition is implemented in the app (\texttt{useLiveRecognition.ts}) and uses the same recognition
+endpoint with the YOLOv8 engine. The loop is: capture a frame at quality 0.3, upload it, show the answer, wait
+300~ms and repeat. Only one frame is in flight at a time. Because the trained model's confidence values are low
+(a correct haleem photo scored 10\%), the top guess is always shown, and a guess under 35\% confidence is
+labelled ``Maybe'' and ``Low confidence''. In a test over the public server address from a laptop, one request
+took about 0.77~s, which gives roughly one result per second. A test with a full 1~MB photo from another
+computer took about 2.2~s, inside the 3-second target. Live mode on a real camera has not been tested yet,
+because the test device was a simulator without a camera.
+
+\subsection{Portion Estimation (Module 5)}
+MiDaS gives a relative depth map, not real distances. Pakalorie uses it to compare portions: a heuristic
+combines the depth values with the plate area and maps the result to a bucket (small, medium or large) with a
+multiplier that the calorie engine can use. The estimate is relative; no calibrated grams are produced from a
+single uncalibrated photo, and this limit is stated in the documentation of the endpoint.
+
+\subsection{Calorie Calculation (Module 6)}
+For each dish, the engine retrieves the matching nutrition rows from PostgreSQL for the chosen portion. It then
+applies the number of servings and any modifiers, which add a fixed number of calories (for example extra oil).
+The language model is given only these rows and is asked to return the calories, macros and a short
+explanation. If the model is not available, the engine returns a local calculation from the same rows and marks
+it as such. In a test, a haleem photo returned 300~kcal with protein 22~g, carbohydrate 28~g and fat 14~g,
+labelled as grounded in the database.
+
+\textit{MET conversion.} Energy used per minute is found from the MET value and the body weight~\cite{met}:
+\[
+\text{kcal} = \text{MET} \times \text{weight (kg)} \times \text{hours}
+\]
+The app uses this formula for logged activity. The original design also converted a meal into minutes of walking
+or jogging on the result screen; that display is not built.
+
+\subsection{Calorie Compensation (Module 8)}
+The rule is kept in one function in the app (\texttt{compensation.ts}):
+\[
+\text{target} = \text{base} + \text{carry-over} + \text{burned today}
+\]
+The carry-over is minus the total surplus of the last three logged days divided by three. The surplus of one day
+is the calories eaten minus (base goal plus calories burned that day). Days with no saved meals are ignored. The
+carry-over is limited to $\pm 15\%$ of the base goal, and the final target is never below 1200~kcal or the user's
+own base goal if that is lower. Example: with a base goal of 2000~kcal, a day with 2600~kcal gives a surplus of
+600~kcal and lowers the next day's goal by 200~kcal. The core of the function is shown below.
+\begin{verbatim}
+const surplus = used.reduce((s, d) => s + (d.eaten - (base + d.burned)), 0);
+let carryOver = used.length ? -surplus / COMPENSATION_DAYS : 0;      // 3
+const cap = base * CAP_FRACTION;                                     // 0.15
+carryOver = Math.round(Math.max(-cap, Math.min(cap, carryOver)));
+const floor = Math.min(base, MIN_TARGET_KCAL);                       // 1200
+const target = Math.max(Math.round(base + carryOver + burnedToday), floor);
+\end{verbatim}
+Calories burned come from activities that the user logs by hand (walking, running, cycling, gym, swimming or
+sports) and a duration, so 30 minutes of walking (MET 3.5) for a 70~kg user adds 123~kcal. These values are
+estimates and are not measured by a sensor; automatic activity data is planned with the Health Data Sync module.
+The first design divided a weekly surplus over the remaining days of the week. The built version uses a rolling
+three-day window instead, because it reacts the next day and needs no week boundary.
+
+\subsection{AI Chat Coach (Module 12)}\label{sec:coach}
+The design calls for a coach on the server, with retrieved nutrition facts. In the built version the chat screen
+builds a short prompt in the app from fixed rules, the user's remaining calories, macros and goal, and the
+question, and calls the Gemini API directly. It needs an API key in the app configuration, and without one the
+chat shows an error. Retrieval on the server and keeping the key on the server are future work.
+
+\section{Mobile App Implementation}
+\subsection{Authentication Screens (Module 1)}
+The sign-up and login screens use the Firebase SDK for email and password. After sign-in, the app loads the
+user's profile from Firestore and opens the home screen or the onboarding. Form fields show clear error messages
+for wrong passwords, weak passwords or existing accounts.
+
+\subsection{Capture and Result Screens (Module 2)}
+The scan screen shows the camera preview with a capture button, a gallery button and the Live toggle. After the
+recognition and calorie calls, the result screen shows the dish, the confidence, the calories and macros, a label
+that says the numbers come from the database, a meal type selector and the disclaimer. The user can log the meal
+to Firestore.
+
+\subsection{History and Dashboard (Modules 2 and 8)}
+Saved meals are read from Firestore. The home screen shows the calories left, the macro bars and the
+\emph{Today's budget} card, which shows the adjusted goal, the reason for it and the activity log form. The Trends
+screen draws charts for the chosen range of 7, 30 or 90 days: calorie intake, weight and water intake. It also shows
+a \textbf{Macro Split} card that adds up protein, carbohydrate and fat and shows each as a share of the total
+calories (4, 4 and 9~kcal per gram), with the average grams per logged day. When no meals are saved in the range
+the card says so and shows no numbers.
+
+\subsection{Urdu Localisation (Module 10)}
+Only part of this module exists. Greetings and notifications use Roman-Urdu text. A full Urdu translation, Urdu
+script and right-to-left layout are planned for the final milestone.
+
+\subsection{Health Data Sync (Module 11)}
+Not built. It will need native libraries that are not part of Expo Go, so a development build is required.
+
+\subsection{Offline Support}
+Not built. When the server cannot be reached, the scan falls back to an on-device Gemini call if a key is
+configured; there is no offline logging yet.
+
+\section{Deployment Implementation}
+The backend is packaged with Docker. A Compose file starts the FastAPI container and PostgreSQL. Caddy receives
+HTTPS requests on the public domain and forwards them to the API. Secrets are read from an environment file on the
+server, which is not stored in the code repository. The backend first ran on a rented server and was moved to a new
+server and domain during the project; the app only needs the base address in its configuration.
+
+\section{Implementation Challenges and Solutions}
+\begin{table}[H]
+\centering
+\caption{Challenges and Solutions}
+\label{tab:challenges}
+\small
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4.4cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Challenge} & \textbf{Solution} \\ \hline
+Similar-looking dishes and low model confidence & Showed the top guess with a ``low confidence'' label and alternatives; retraining with more images is future work \\ \hline
+Data store deleted during the project & Moved all user data from the old hosted database to Firestore with one data-access file \\ \hline
+Backend server and domain changed & Kept the base address in one setting; the app falls back to its default address \\ \hline
+Portion size from one photo & Used relative depth and a small bucket with a multiplier, with the limit stated plainly \\ \hline
+Profile not shown after sign-up & Reload the profile after creating it, so onboarding values appear at once \\ \hline
+Quantised model slower on CPU & Chose static INT8 (as fast as the original, much smaller) instead of dynamic INT8 \\ \hline
+Expo Go and SDK versions & Pinned the project to SDK 54 and tested with the matching Expo Go version \\ \hline
+Keeping API keys safe & Claude key stays on the server; the Gemini key for the chat coach is still in the app (future work) \\ \hline
+\end{tabularx}
+\end{table}
+
+\section{Summary}
+Modules 1 to 9 are built and joined through one REST API and one mobile app. Module 10 is partly built, Module 12
+is partly built, and Module 11 is planned. The mobile app handles capture, display and activity. The backend handles
+recognition, portion estimation, nutrition lookup and grounded calorie answers. Chapter 6 tests the system against
+the requirements and the objectives set in Chapter 1.
