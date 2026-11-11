@@ -44,6 +44,7 @@ import {
   type GroundedMeta,
 } from '../../src/lib/api';
 import { getRecognitionEngine } from '../../src/lib/preferences';
+import { useLiveRecognition } from '../../src/hooks/useLiveRecognition';
 import { PillButton } from '../../src/components/ui';
 import { FOOD_MODIFIERS } from '../../src/constants/nutrition';
 import { Colors, Elevation } from '../../src/constants/colors';
@@ -90,6 +91,9 @@ export default function ScanScreen() {
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [scanError, setScanError] = useState<ScanError | null>(null);
   const [logged, setLogged] = useState(false);
+  const [liveMode, setLiveMode] = useState(false);
+  // Frames only stream while the camera view is showing and ready.
+  const live = useLiveRecognition(cameraRef, liveMode && state === 'camera' && isCameraReady);
 
   const isMountedRef = useRef(true);
   const analysisTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -358,11 +362,30 @@ export default function ScanScreen() {
           <View
             style={{
               flexDirection: 'row',
-              justifyContent: 'flex-end',
+              justifyContent: 'space-between',
+              alignItems: 'center',
               paddingHorizontal: Spacing.lg,
               paddingTop: Platform.OS === 'ios' ? 60 : Spacing['2xl'],
             }}
           >
+            <Pressable
+              onPress={() => setLiveMode((v) => !v)}
+              hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel={liveMode ? 'Turn live mode off' : 'Turn live mode on'}
+              style={({ pressed }) => ({
+                paddingHorizontal: 14,
+                height: 40,
+                borderRadius: Radius.pill,
+                backgroundColor: liveMode ? accent : 'rgba(0,0,0,0.5)',
+                justifyContent: 'center',
+                opacity: pressed ? 0.7 : 1,
+              })}
+            >
+              <Text style={{ color: '#FFFFFF', fontFamily: FontFamily.geistSemiBold, fontSize: 14 }}>
+                {liveMode ? 'Live: on' : 'Live'}
+              </Text>
+            </Pressable>
             <Pressable
               onPress={() => router.back()}
               hitSlop={8}
@@ -403,6 +426,33 @@ export default function ScanScreen() {
             >
               {isCameraReady ? 'Point at your food' : 'Loading camera…'}
             </Text>
+
+            {liveMode && (
+              <View
+                style={{
+                  marginBottom: Spacing.lg,
+                  paddingHorizontal: 16,
+                  paddingVertical: 10,
+                  borderRadius: Radius.button,
+                  backgroundColor: 'rgba(0,0,0,0.6)',
+                  alignItems: 'center',
+                  maxWidth: '90%',
+                }}
+              >
+                <Text style={{ color: '#FFFFFF', fontFamily: FontFamily.geistSemiBold, fontSize: 18 }}>
+                  {live.label
+                    ? `${live.lowConfidence ? 'Maybe: ' : ''}${live.label} · ${Math.round(live.confidence * 100)}%`
+                    : live.error
+                      ? 'No match (check connection)'
+                      : 'Looking…'}
+                </Text>
+                <Text style={{ color: 'rgba(255,255,255,0.75)', fontSize: 12, marginTop: 2 }}>
+                  {live.latencyMs != null
+                    ? `${live.lowConfidence ? 'Low confidence · ' : ''}${live.latencyMs} ms${live.fps != null ? ` · ${live.fps.toFixed(1)} fps` : ''} · YOLOv8 on server`
+                    : 'YOLOv8 on server'}
+                </Text>
+              </View>
+            )}
 
             <View
               style={{

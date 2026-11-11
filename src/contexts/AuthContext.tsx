@@ -116,8 +116,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
         updated_at: new Date().toISOString(),
       };
       await setDoc(ref, seed, { merge: true });
+      // On sign-up the auth listener reads the profile BEFORE this doc exists and
+      // stores null; updateProfile's optimistic update then never applies to a
+      // null profile, so onboarding values (target, name, goal) never reached the
+      // UI until an app restart. Reload now that the doc exists.
+      await fetchProfile(fbUser.uid);
     },
-    []
+    [fetchProfile]
   );
 
   const signInWithEmail = useCallback(async (email: string, password: string) => {

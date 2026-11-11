@@ -1,0 +1,273 @@
+% Chapter 6 - Testing, Evaluation and Conclusion (rebuilt for the P2 Mid report)
+\chapter{Testing, Evaluation and Conclusion}
+
+This chapter describes how Pakalorie is tested and evaluated against the requirements in Chapter 3 and the
+objectives in Chapter 1. It first explains the testing strategy and the test cases, with the result of each test
+that has been run. It then reports how model quality, speed and usability are measured, and ends with the
+limitations of the system, the conclusion and future work. Where a test has not been run, the table says so.
+
+\section{Testing Strategy}
+Testing follows the usual levels of software testing~\cite{test_plan_1,system_test}. Because the project uses the
+Agile Incremental model, tests are run at the end of every milestone and repeated on earlier modules to catch
+broken features early~\cite{unit_testing}.
+\begin{itemize}[noitemsep]
+  \item \textbf{Unit testing:} single functions are tested alone, for example the calorie compensation rule, the
+        burn estimate and the food service. The backend has a unit test suite for the calorie engine, the depth
+        service, the food service and the seed data.
+  \item \textbf{Integration testing:} modules are tested together, for example app to API to database. The backend
+        has a live-database integration suite.
+  \item \textbf{System testing:} the full flow is tested on a device, from sign-up to a saved meal.
+        Black-box test cases are written from the functional requirements~\cite{integrate_test}.
+  \item \textbf{Performance testing:} response time of the recognition endpoint.
+  \item \textbf{Usability testing:} planned, not yet carried out.
+  \item \textbf{Model evaluation:} the model is tested on images it has not seen during training.
+\end{itemize}
+
+\section{Test Environment}
+\begin{itemize}[noitemsep]
+  \item \textbf{Mobile devices:} an iPhone 17 Pro simulator running Expo Go 54. A real Android phone and a real
+        iPhone have not yet been used, so camera tests are pending.
+  \item \textbf{Backend:} the Docker setup described in Chapter 5, reached over its public HTTPS address.
+  \item \textbf{Data:} gallery photos of dishes, test accounts, and a validation set of food images.
+  \item \textbf{Languages:} English only at present.
+\end{itemize}
+
+\section{Functional Test Cases}
+Table~\ref{tab:tc} lists the main test cases. Each case is linked to a functional requirement (FR) from
+Table~3.1. The Status column uses these words: \emph{Pass}, \emph{Partial} (part of the case was checked),
+\emph{Not run}, \emph{Not built} (the feature does not exist yet) and \emph{Not met}. The results come from one test
+session on 11 November 2026 on the simulator unless a note says otherwise.
+
+\begin{longtable}{|l|l|>{\raggedright\arraybackslash}p{3.7cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{2.6cm}|}
+\caption{Functional Test Cases}\label{tab:tc}\\
+\hline
+\textbf{ID} & \textbf{FR} & \textbf{Test Case} & \textbf{Expected Result} & \textbf{Status} \\ \hline
+\endfirsthead
+\multicolumn{5}{c}{\tablename\ \thetable{} -- Continued from previous page}\\ \hline
+\textbf{ID} & \textbf{FR} & \textbf{Test Case} & \textbf{Expected Result} & \textbf{Status} \\ \hline
+\endhead
+\hline \multicolumn{5}{r}{Continued on next page}\\
+\endfoot
+\hline
+\endlastfoot
+TC01 & FR1 & Register with a valid email and password & Account is created and a profile document is stored & Pass \\ \hline
+TC02 & FR1 & Register with an invalid email or weak password & Clear error message; no account is created & Not run \\ \hline
+TC03 & FR2 & Log in with correct email and password & Home screen opens & Not run \\ \hline
+TC04 & FR2 & Sign in with Google & Home screen opens & Not run (needs a development build) \\ \hline
+TC05 & FR3 & Change weight and calorie goal & New values are saved and shown after restart & Not run \\ \hline
+TC06 & FR4 & Open the app after 24 hours of inactivity & Login screen is shown & Not run \\ \hline
+TC07 & FR5 & Save a meal after recognition & Meal appears under the user's ID in Firestore & Pass \\ \hline
+TC08 & FR6 & Capture a food photo with the camera & Image is sent and a result is shown & Not run (simulator has no camera) \\ \hline
+TC09 & FR7 & Choose a food photo from the gallery & Image is sent and a result is shown & Pass (haleem, 90--93\%) \\ \hline
+TC10 & FR8 & Submit a photo on 4G or WiFi & Result screen appears within 3 seconds & Not met on the Claude path (about 6 s); met on the YOLOv8 path (0.8--2.2 s) \\ \hline
+TC11 & FR9 & Open the result screen & Calories, protein, fat and carbohydrates are shown & Pass \\ \hline
+TC12 & FR10 & Open History and the weekly trend view & Meals are listed newest first; trends match the saved data & Partial (Macro Split matched; history list not run) \\ \hline
+TC13 & FR11 & Photo of a single known dish & Correct label is returned & Pass (one dish tested) \\ \hline
+TC14 & FR11 & Photo with several dishes & Each dish is detected as a separate item & Not built (classifier names one dish) \\ \hline
+TC15 & FR12 & Open the result of any recognition & A confidence score is shown & Pass \\ \hline
+TC16 & FR13 & Photo that gives confidence below 70\% & Alternative food names are suggested & Not run \\ \hline
+TC17 & FR14 & Log a known item while offline & Item is logged from cache and synced when online & Not built \\ \hline
+TC18 & FR15, FR16 & Call POST /recognize and a food endpoint; call with an unknown identifier & Valid JSON for known items; 404 for unknown & Partial (recognise and calories tested; unknown identifier not run) \\ \hline
+TC19 & FR17, FR18 & Photos of the same dish in a small and a large portion & Larger portion gives a higher portion factor and more calories & Not run \\ \hline
+TC20 & FR19 & Ask for calories of a dish through the RAG engine & Answer uses the retrieved nutrition values & Pass (database-grounded, 300 kcal for haleem) \\ \hline
+TC21 & FR20, FR23 & Daily calories above the goal on earlier days & Adjusted goal is shown with a safe minimum & Partial (goal and activity credit shown; carry-over across days checked by calculation only) \\ \hline
+TC22 & FR21 & Run the quantised model on the test set & Labels match the original model closely; speed improves & Pass for size and accuracy (Table~\ref{tab:quant}); not yet on a phone \\ \hline
+TC23 & FR22 & Open the dashboard with meals & Charts load and match the saved data & Partial (Macro Split matched 27/34/39\%; empty state shown; other charts not in this run) \\ \hline
+TC24 & FR24 & Run live recognition with the camera & Labels update without pressing a button & Partial (toggle and overlay shown; camera not tested; concurrent requests not tested) \\ \hline
+TC25 & FR25, FR26 & Switch the language to Urdu & Text and layout become right-to-left; Urdu food names appear & Not built \\ \hline
+TC26 & FR27, FR28 & Save a meal with health sync turned on & Nutrition entry appears in Google Fit or HealthKit & Not built \\ \hline
+TC27 & FR29 & Open the health dashboard & Nutrition and activity data are shown together & Not built \\ \hline
+TC28 & FR30--FR32 & Chat with the coach about the user's day & Personal, simple reply with a disclaimer & Not met (error 400 without an API key) \\ \hline
+\end{longtable}
+
+\subsection{Non-Functional Test Cases}
+\begin{table}[H]
+\centering
+\caption{Non-Functional Test Cases}
+\label{tab:nf}
+\small
+\begin{tabularx}{\textwidth}{|l|>{\raggedright\arraybackslash}p{4.3cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{2.6cm}|}
+\hline
+\textbf{ID} & \textbf{Test Case} & \textbf{Expected Result} & \textbf{Status} \\ \hline
+NF01 & Call an endpoint with no token or a wrong token & Server answers 401 and does no work & Not built (token check planned) \\ \hline
+NF02 & Check the server storage after several recognitions & No food images are stored & Not run \\ \hline
+NF03 & Try to reach the API over plain HTTP & Request is refused or redirected to HTTPS & Not run \\ \hline
+NF04 & Read another user's documents with a test account & Firestore rules deny access & Not run \\ \hline
+NF05 & Send an image larger than the limit & App compresses it before upload; server rejects oversize files & Not run \\ \hline
+NF06 & Look at the result screen & Disclaimer is visible & Pass \\ \hline
+\end{tabularx}
+\end{table}
+
+\section{Model Evaluation}\label{sec:modeleval}
+\subsection{Metrics}
+The recognition model is a classifier and is evaluated on a validation set that it did not train on. The
+following measures are used.
+\begin{itemize}[noitemsep]
+  \item \textbf{Top-1 accuracy} = correct first predictions / total predictions.
+  \item \textbf{Top-5 accuracy} = the share of images where the true class is among the five best guesses.
+  \item \textbf{Confusion matrix} shows which classes are mixed up, which guides new data collection.
+\end{itemize}
+Precision, recall and mAP are measures for detection models with bounding boxes; they do not apply to this
+classifier and are not reported.
+
+\subsection{Targets and Results}
+\begin{table}[H]
+\centering
+\caption{Model Evaluation Targets and Measured Values}
+\label{tab:modeleval}
+\small
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{5.2cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Measure} & \textbf{Target} & \textbf{Measured} \\ \hline
+Top-1 accuracy (217 classes, official evaluation) & At least 85\% (Chapter 1) & 58.5\% (top-5 86.6\%); target not met \\ \hline
+Multi-item images: items found / items present & Reported & Not applicable (one dish per image) \\ \hline
+Accuracy change after INT8 quantisation (static) & Small loss only & $-3.7$ points top-1 and $-0.2$ points top-5 (Table~\ref{tab:quant}) \\ \hline
+Model size, original vs.\ static INT8 & Smaller & 6.89~MB vs.\ 1.89~MB (3.6$\times$) \\ \hline
+Inference time, original vs.\ static INT8 (CPU, one image) & Within the 3-second goal & 2.4~ms vs.\ 2.1~ms (model only) \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Portion and Calorie Check}
+To check portion estimation, a small set of meals should be weighed on a kitchen scale, photographed, and compared
+with the estimate. This check has not been done. The portion estimate is relative and is not expected to give
+grams. The calories of one tested dish (haleem, 300~kcal) came from database rows and were not compared with a scale.
+
+\section{Performance Evaluation}
+\begin{table}[H]
+\centering
+\caption{Performance Targets and Measurement Method}
+\label{tab:perf}
+\small
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.3cm}|>{\raggedright\arraybackslash}p{2.6cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{3.1cm}|}
+\hline
+\textbf{Measure} & \textbf{Target} & \textbf{How It Is Measured} & \textbf{Measured} \\ \hline
+Time from upload to result & 3 seconds or less & Timed over many runs on 4G and WiFi & YOLOv8 path: about 0.77 s (laptop) and 2.2 s (1~MB photo, another computer). Claude path: about 6 s (one run) \\ \hline
+Home screen start-up & 2 seconds or less & Timed from launch on a mid-range phone & Not measured \\ \hline
+Concurrent users & At least 50 without slowdown & Load test that simulates 50 users & Not measured \\ \hline
+Upload size & 1 MB or less & Size checked after compression & Not measured \\ \hline
+Workflow length & 3 interactions or less & Count of taps: open, capture, view result & Met in the tested flow (open Scan, choose a photo, view the result) \\ \hline
+Server uptime & At least 99\% & Health check during the evaluation period & Not measured \\ \hline
+\end{tabularx}
+\end{table}
+
+\section{Usability Evaluation}
+Usability is to be tested with a group of users that includes health-conscious people, fitness users and a nutrition
+student, like the interview group in Chapter 3. Each person is asked to do five tasks without help: (1) register and
+log in, (2) capture a meal and read the calories, (3) save the meal, (4) switch to Urdu, and (5) ask the coach one
+question. For each task the team records whether it was completed and how long it took. After the tasks, each person
+fills in the System Usability Scale (SUS) questionnaire~\cite{sus}. This study has \emph{not} been carried out yet, so
+Table~\ref{tab:usab} reports no results.
+
+\begin{table}[H]
+\centering
+\caption{Usability Measures}
+\label{tab:usab}
+\small
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{5cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Measure} & \textbf{Target} & \textbf{Measured} \\ \hline
+Task completion rate & All five tasks & Not yet carried out \\ \hline
+Time to capture and read result & Within 3 interactions & Met in the tested flow \\ \hline
+SUS score & Reported & Not yet carried out \\ \hline
+\end{tabularx}
+\end{table}
+
+\section{Requirement Traceability}
+Table~\ref{tab:trace} links each module to its requirements, to the test cases that check them, and to the section where
+it is built.
+
+\begin{table}[H]
+\centering
+\caption{Requirement Traceability Matrix}
+\label{tab:trace}
+\small
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4.6cm}|l|l|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Module} & \textbf{FRs} & \textbf{Test Cases} & \textbf{Built In} \\ \hline
+1. Authentication & FR1--FR5 & TC01--TC07, NF01, NF04 & Sections 5.5.2, 5.6.1 \\ \hline
+2. Core Mobile UI & FR6--FR10 & TC08--TC12 & Section 5.6.2 \\ \hline
+3. Food Recognition & FR11--FR14 & TC13--TC17 & Sections 5.4, 5.5.4 \\ \hline
+4. Food Database API & FR15, FR16 & TC18 & Section 5.5.3 \\ \hline
+5. Volume and Depth & FR17, FR18 & TC19 & Section 5.5.5 \\ \hline
+6. Calorie Engine and RAG & FR19 & TC20 & Section 5.5.6 \\ \hline
+7. Model Optimisation & FR21 & TC22 & Section 5.4.4 \\ \hline
+8. Visualisation and Compensation & FR20, FR22, FR23 & TC21, TC23 & Sections 5.5.7, 5.6.3 \\ \hline
+9. Real-Time Pipeline & FR24 & TC24 & Section 5.5.4 \\ \hline
+10. Urdu Localisation & FR25, FR26 & TC25 & Section 5.6.4 (partial) \\ \hline
+11. Health Data Sync & FR27--FR29 & TC26, TC27 & Section 5.6.5 (not built) \\ \hline
+12. AI Chat Coach & FR30--FR32 & TC28 & Section 5.5.8 (partial) \\ \hline
+\end{tabularx}
+\end{table}
+
+\section{Evaluation Against Project Objectives}
+\begin{table}[H]
+\centering
+\caption{Objectives and Results}
+\label{tab:objectives}
+\small
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{5.2cm}|>{\raggedright\arraybackslash}p{2.6cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Objective (Section 1.6)} & \textbf{Result} & \textbf{Evidence} \\ \hline
+Recognise 80+ foods with at least 85\% top-1 accuracy & Partly met & 217 classes (more than 80), but 58.5\% top-1 (Table~\ref{tab:modeleval}) \\ \hline
+Detect several items in one image & Not met & The built model is a classifier (TC14) \\ \hline
+Return nutrition data within 3 seconds & Partly met & Met on the YOLOv8 path, not on the Claude path (TC10) \\ \hline
+Estimate portions from one image with no reference object & Partly met & Relative bucket only; no calibrated grams \\ \hline
+Convert calories into activity minutes (MET) & Partly met & Used for logged activity; the meal-to-minutes display is not built \\ \hline
+English and Urdu interface with right-to-left layout & Not met & Only Roman-Urdu greetings (TC25) \\ \hline
+Complete app with camera, results, history and dashboard & Met on the simulator & TC09, TC11, TC12, TC23; camera pending a phone test \\ \hline
+AI coach with personal advice using RAG & Not met & The chat needs a key and has no server-side retrieval (TC28) \\ \hline
+Two-way sync with Google Fit and Apple HealthKit & Not met & Not built (TC26, TC27) \\ \hline
+Quantised model with fast inference & Met & Static INT8: 3.6 times smaller, as fast, $-3.7$ points top-1 (Table~\ref{tab:quant}) \\ \hline
+\end{tabularx}
+\end{table}
+
+\section{Limitations}
+\begin{itemize}[noitemsep]
+  \item The system names one dish per photo. The live mode sends one frame at a time and is not continuous
+        video analysis.
+  \item The model knows only the 217 classes it was trained on, and its top-1 accuracy is 58.5\%. Dishes outside this
+        list, and similar-looking dishes, may be named wrongly, so the user must then choose the right item.
+  \item Portion size is a relative estimate from one image. Camera angle, light, and very deep or heaped dishes can
+        reduce its accuracy.
+  \item Mixed dishes and hidden ingredients (oil, ghee, sugar) are hard to see, so calories can differ from the
+        real value.
+  \item Recognition needs an internet connection; offline logging is not built.
+  \item Burned calories are entered by hand and estimated from a MET value; they are not measured.
+  \item The quantised model is not yet running on the phone, and its accuracy was measured on a rebuilt split that may
+        overlap the training data.
+  \item The API does not yet verify Firebase tokens, and the chat coach key is held in the app.
+  \item The system tracks calories and macronutrients only. Vitamins and minerals are not included.
+  \item The coach depends on an external service and cannot replace a doctor or dietitian.
+\end{itemize}
+
+\section{Conclusion}
+Pakalorie was created to solve a clear problem: most calorie tracking apps do not understand Pakistani food, and
+typing every meal makes people stop using them. The project responds with a mobile app that turns one photo into
+calories and macronutrients in a few seconds.
+
+Nine of the twelve modules are built. A YOLOv8 classifier (or a Claude vision option) names the dish, MiDaS gives a
+relative portion bucket, a Pakistani and USDA nutrition database supplies the values, and a calorie engine turns these
+into results grounded in real database rows. Meal history, trends, a macro split and a calorie compensation card with
+an activity log help users follow their goals over time. The recognition model was quantised to a file 3.6 times
+smaller with a small loss of accuracy, and a live mode shows predictions from the camera through the server.
+
+The work also shows its limits. The recognition accuracy of 58.5\% is well below the 85\% target, so the accuracy
+objective is only partly met. Urdu localisation, health sync and a server-side AI coach are not complete, and several
+tests are still to be run on a real phone. These are reported openly in the tables above, so that the next milestone
+can start from a clear picture of what works.
+
+\section{Future Work}
+\begin{itemize}[noitemsep]
+  \item Add more Pakistani and regional dishes and more images per class, and train a larger model, to raise accuracy
+        on mixed and similar-looking dishes.
+  \item Rebuild the test split so the accuracy of the quantised model can be reported on unseen images.
+  \item Run the static INT8 model on the phone for live recognition without the server.
+  \item Run the recognition and depth models in parallel on the server, as in the original design.
+  \item Replace the manual activity entry with automatic data from Google Fit and Apple Health (Health Data Sync).
+  \item Complete Urdu localisation with Urdu script and right-to-left layout.
+  \item Move the AI chat coach to the server with retrieval, and verify Firebase tokens on every request.
+  \item Separate foods on a mixed plate more finely (multi-dish plate decomposition).
+  \item Improve portion estimation, for example with better depth models or the phone's depth sensor where it exists.
+  \item Track micronutrients such as vitamins and minerals, and add barcode scanning for packaged products.
+  \item Run the usability study with the SUS questionnaire and report the results.
+\end{itemize}

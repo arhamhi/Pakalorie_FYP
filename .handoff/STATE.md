@@ -233,3 +233,17 @@ If recognition returns "Unknown" on a clear food photo, note the dish + photo so
 ## Plan reference
 
 Full plan at `C:\Users\Arham\.claude\plans\and-they-actually-need-shimmering-volcano.md`.
+
+## 2026-11-11 (Claude, P2 Mid takeover by Hussnain) — three P2 Mid modules added
+
+Details and honest limits: `docs/P2_MID.md`. Not committed yet. Verified: `npx tsc --noEmit` clean, Metro Android bundle builds, compensation math spot-checked. NOT verified: on-device behaviour of the Budget card and Live scan, quantized-model accuracy (needs the Kaggle datasets).
+
+- Quantization: `ml/scripts/quantize.py` + `ml/reports/quantization.md` (dynamic INT8 1.79 MB vs 6.89 MB).
+- Compensation: `src/lib/compensation.ts` (only place the adjusted target is computed), `src/components/home/BudgetCard.tsx`, Firestore `activity_logs` via `src/lib/db.ts`, wired in `app/(tabs)/index.tsx`.
+- Live scan: `src/hooks/useLiveRecognition.ts` + Live toggle in `app/(tabs)/scan.tsx` (server-streamed YOLO, ~0.8 s/frame).
+- Backend moved to https://pakalorie-api.theredolanse.com (Claude replaced Gemini server-side); owner Arham, no SSH.
+- Next owner: Hussnain. Next: run quantize.py with the dataset for accuracy, device smoke test, record demo, write report.
+- Trends: added a Macro Split card (`app/(tabs)/trends.tsx`). Typecheck + Android bundle pass; not viewed on a device. Web preview was tried and abandoned (Metro runs out of memory on web); do not add react-native-web.
+- Fix (2026-11-11): `AuthContext.ensureProfileDocument` now reloads the profile after seeding it. Root cause of "Home shows 2000 kcal / no name / default macros" after sign-up: the auth listener fetched the profile before the doc existed (profile = null), and `updateProfile`'s optimistic update is a no-op on a null profile. Not re-tested on a device yet.
+- Known, not fixed: Ustad chat and Create Custom Meal call Gemini from the app and need `EXPO_PUBLIC_GEMINI_API_KEY` (no backend chat endpoint exists). Back arrow overlaps the title on the photo-explainer onboarding screen.
+- 2026-11-11 iOS-simulator test of the P2 Mid build (friend): sign-up fix, activity log, scan+log, Macro Split all PASS; Live scan only partly testable (no camera); carry-over untested. Follow-ups applied: Live overlay shows the top guess as "Maybe: ..." under 35% (YOLO gave 10% on a correct haleem photo); back arrow no longer overlaps content on the photo-explainer and height/weight onboarding screens (paddingTop 108; other onboarding screens use the same absolute arrow, check if they collide); carry-over comment now matches the /3 math. Details in docs/P2_MID.md.

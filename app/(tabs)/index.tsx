@@ -25,7 +25,9 @@ import { Colors, Elevation } from '../../src/constants/colors';
 import { Type, FontFamily } from '../../src/constants/fonts';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useLanguage } from '../../src/contexts/LanguageContext';
-import { changeHydration, getFoodLogsInRange, getHydration } from '../../src/lib/db';
+import { addActivityLog, changeHydration, getActivityInRange, getFoodLogsInRange, getHydration } from '../../src/lib/db';
+import { BudgetCard } from '../../src/components/home/BudgetCard';
+import { computeCompensation, estimateBurn, type ActivityKey } from '../../src/lib/compensation';
 import { getUstadAdvice } from '../../src/lib/ai';
 import { Card, ProgressRing, MacroBar, FadeInView, AnimatedPressable } from '../../src/components/ui';
 import { calculateMacros } from '../../src/constants/nutrition';
@@ -120,8 +122,33 @@ export default function HomeScreen() {
   const totalCarbs = foodLogs?.reduce((sum, log) => sum + (log.carbs || 0), 0) || 0;
   const totalFat = foodLogs?.reduce((sum, log) => sum + (log.fat || 0), 0) || 0;
 
-  const targetCalories = profile?.daily_target_kcal || 2000;
+  // Calorie compensation: base target + carry-over from recent days + logged activity.
+  const { data: activityLogs } = useQuery({
+    queryKey: ['activity', user?.id, trendStart, trendEnd],
+    queryFn: async () => (user ? getActivityInRange(user.id, trendStart, trendEnd) : []),
+    enabled: !!user,
+  });
+  const baseTarget = profile?.daily_target_kcal || 2000;
+  const burnedByDay = (activityLogs || []).reduce<Record<string, number>>((acc, a) => {
+    acc[a.log_date] = (acc[a.log_date] || 0) + a.kcal;
+    return acc;
+  }, {});
+  const comp = computeCompensation(
+    baseTarget,
+    trendCalories
+      .filter((c) => c.date !== today)
+      .map((c) => ({ date: c.date, eaten: c.calories, logged: c.meals > 0, burned: burnedByDay[c.date] || 0 })),
+    burnedByDay[today] || 0,
+  );
+  const targetCalories = comp.target;
   const remainingCalories = targetCalories - totalCalories;
+
+  const addActivity = async (key: ActivityKey, minutes: number) => {
+    if (!user) return;
+    const kcal = estimateBurn(key, minutes, profile?.current_weight_kg);
+    await addActivityLog(user.id, today, { activity: key, minutes, kcal });
+    queryClient.invalidateQueries({ queryKey: ['activity', user.id] });
+  };
   const calorieProgress = (totalCalories / targetCalories) * 100;
 
   const targetMacros = profile?.goal_type
@@ -333,6 +360,8 @@ export default function HomeScreen() {
             <BellIcon size={24} color={colors.text.primary} weight="regular" />
           </TouchableOpacity>
         </View>
+
+        <BudgetCard comp={comp} onAddActivity={addActivity} />
 
         {/* Swipable Cards Carousel */}
         <FadeInView direction="up" delay={60}>
