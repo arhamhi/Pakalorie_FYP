@@ -20,7 +20,7 @@ since the rest of it was written:
 - **The AI is Claude now, not Gemini.** Dish recognition and the calorie
   write-up both call the Claude API on the server. The key lives on the server
   only, so you don't need it for the app. In the report, wherever it says
-  Gemini on the server side, it's Claude (`claude-opus-5-5`).
+  Gemini on the server side, it's Claude (`claude-sonnet-5-5`).
 - **Firebase:** Hussnain is an Editor on the `pakalorie-fyp` project. Get the
   `EXPO_PUBLIC_FIREBASE_*` values from Firebase console, Project settings,
   General, Your apps (web app config), and put them in `.env`.

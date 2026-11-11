@@ -12,7 +12,7 @@ class Settings(BaseSettings):
         alias="DATABASE_URL",
     )
     anthropic_api_key: str | None = Field(default=None, alias="ANTHROPIC_API_KEY")
-    claude_model: str = Field(default="claude-opus-5-5", alias="CLAUDE_MODEL")
+    claude_model: str = Field(default="claude-sonnet-5-5", alias="CLAUDE_MODEL")
     claude_effort: str = Field(default="low", alias="CLAUDE_EFFORT")
     claude_timeout_seconds: float = Field(default=45.0, alias="CLAUDE_TIMEOUT_SECONDS")
     midas_model_path: str = Field(default="models/midas_small_256.onnx", alias="MIDAS_MODEL_PATH")

@@ -61,7 +61,7 @@ class ClaudeClient:
         )
 
         try:
-            # Opus 5.5 at low effort: fast enough for a scan, still accurate.
+            # Sonnet 5.5 at low effort: fast and cheap enough for a scan.
             # Server-side fallback re-runs a refused request on another model.
             response = await self._get_client().beta.messages.create(
                 model=self.settings.claude_model,
