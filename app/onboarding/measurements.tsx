@@ -274,7 +274,7 @@ export default function MeasurementsScreen() {
         </TouchableOpacity>
 
         {/* Content */}
-        <View style={{ flex: 1, justifyContent: 'center' }}>
+        <View style={{ flex: 1, justifyContent: 'center', paddingTop: 108 }}>
 
           <FadeInView delay={100} duration={600}>
             <Text

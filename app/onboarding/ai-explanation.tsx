@@ -48,7 +48,7 @@ export default function AIExplanationScreen() {
       </TouchableOpacity>
 
       {/* Content */}
-      <View style={{ flex: 1, justifyContent: 'center' }}>
+      <View style={{ flex: 1, justifyContent: 'center', paddingTop: 108 }}>
         {/* Header */}
         <FadeInView delay={100} duration={600}>
           <Text

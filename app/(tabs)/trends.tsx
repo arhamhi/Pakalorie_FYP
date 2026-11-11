@@ -103,6 +103,16 @@ export default function TrendsScreen() {
   const avgCalories =
     calories.reduce((sum, c) => sum + c.calories, 0) / Math.max(1, calories.length);
 
+  // Macro split over the selected range (days without meals are left out of the averages).
+  const loggedDays = Math.max(1, calories.filter((c) => c.meals > 0).length);
+  const gramsOf = (key: 'protein' | 'carbs' | 'fat') => calories.reduce((s, c) => s + (c[key] || 0), 0);
+  const macroShares = [
+    { label: 'Protein', color: accent, grams: gramsOf('protein'), kcal: gramsOf('protein') * 4 },
+    { label: 'Carbs', color: '#F5A524', grams: gramsOf('carbs'), kcal: gramsOf('carbs') * 4 },
+    { label: 'Fat', color: '#4FC3F7', grams: gramsOf('fat'), kcal: gramsOf('fat') * 9 },
+  ];
+  const macroTotalKcal = macroShares.reduce((s, m) => s + m.kcal, 0);
+
   return (
     <View style={{ flex: 1, backgroundColor: colors.surface.primary }}>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 60, paddingBottom: 120 }}>
@@ -187,6 +197,56 @@ export default function TrendsScreen() {
               maxCal
             )}
           </Svg>
+          </Card>
+        </FadeInView>
+
+        {/* Macro split: share of calories from protein / carbs / fat over the range */}
+        <FadeInView delay={25}>
+          <Card style={{ marginBottom: 12, padding: 16 }}>
+            <Text
+              style={{
+                fontFamily: 'PlusJakartaSans_600SemiBold',
+                fontSize: 16,
+                color: colors.text.primary,
+                marginBottom: 12,
+              }}
+            >
+              Macro Split
+            </Text>
+            {macroTotalKcal > 0 ? (
+              <>
+                <View style={{ flexDirection: 'row', height: 14, borderRadius: 7, overflow: 'hidden' }}>
+                  {macroShares.map((m) => (
+                    <View key={m.label} style={{ flex: m.kcal, backgroundColor: m.color }} />
+                  ))}
+                </View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12 }}>
+                  {macroShares.map((m) => (
+                    <View key={m.label} style={{ flex: 1 }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                        <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: m.color }} />
+                        <Text style={{ fontFamily: 'PlusJakartaSans_600SemiBold', fontSize: 13, color: colors.text.primary }}>
+                          {m.label}
+                        </Text>
+                      </View>
+                      <Text style={{ fontFamily: 'PlusJakartaSans_600SemiBold', fontSize: 18, color: colors.text.primary, marginTop: 4 }}>
+                        {Math.round((m.kcal / macroTotalKcal) * 100)}%
+                      </Text>
+                      <Text style={{ fontSize: 12, color: colors.text.secondary }}>
+                        avg {Math.round(m.grams / loggedDays)} g/day
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+                <Text style={{ fontSize: 11, color: colors.text.tertiary, marginTop: 10 }}>
+                  Based on {loggedDays} day{loggedDays === 1 ? '' : 's'} with logged meals. Calories from macros use 4/4/9 kcal per gram.
+                </Text>
+              </>
+            ) : (
+              <Text style={{ fontSize: 13, color: colors.text.secondary }}>
+                No macro data logged in this range yet.
+              </Text>
+            )}
           </Card>
         </FadeInView>
 

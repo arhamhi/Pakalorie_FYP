@@ -86,6 +86,47 @@ export async function hasFoodLogsOnDay(uid: string, day: string): Promise<boolea
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Activity logs (P2 Mid calorie compensation) — filtered on `log_date` only, so
+// no composite index is needed.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface ActivityLog {
+  id: string;
+  log_date: string;
+  activity: string;
+  minutes: number;
+  kcal: number;
+}
+
+export async function addActivityLog(
+  uid: string,
+  day: string,
+  entry: Pick<ActivityLog, 'activity' | 'minutes' | 'kcal'>,
+): Promise<void> {
+  await addDoc(userCollection(uid, 'activity_logs'), {
+    ...entry,
+    log_date: day,
+    user_id: uid,
+    created_at: new Date().toISOString(),
+  });
+}
+
+export async function getActivityInRange(
+  uid: string,
+  startDay: string,
+  endDay: string = startDay,
+): Promise<ActivityLog[]> {
+  const snap = await getDocs(
+    query(
+      userCollection(uid, 'activity_logs'),
+      where('log_date', '>=', startDay),
+      where('log_date', '<=', endDay),
+    ),
+  );
+  return snap.docs.map((d) => ({ ...(d.data() as Omit<ActivityLog, 'id'>), id: d.id }));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Hydration — one doc per local day, doc id = YYYY-MM-DD
 // ─────────────────────────────────────────────────────────────────────────────
 
