@@ -8,7 +8,7 @@ import { OnboardingBackground } from '../../src/components/onboarding/Onboarding
 
 const STEPS = [
   { icon: 'photo-camera', title: 'Photo lo', description: 'Apne khane ki' },
-  { icon: 'smart-toy', title: 'AI pehchan legi', description: '500+ desi dishes' },
+  { icon: 'smart-toy', title: 'AI pehchan legi', description: '217 desi dishes' },
   { icon: 'edit', title: 'Aap verify karo', description: 'Agar zaroorat ho' },
 ];
 
@@ -142,7 +142,7 @@ export default function AIExplanationScreen() {
                 marginBottom: 12,
               }}
             >
-              Accuracy: 75% Pakistani food pe. Baaki 25% mein aap thora adjust karoge.
+              Accuracy: pehli guess ~59% sahi, top 5 guesses mein 87%. Galat ho to aap ek tap mein adjust kar lo.
             </Text>
             <View style={{ gap: 8 }}>
               {EXAMPLES.map((example, index) => (

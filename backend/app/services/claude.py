@@ -17,6 +17,8 @@ class ClaudeClient:
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
         self._client: anthropic.AsyncAnthropic | None = None
+        # stop_reason of the last call ("end_turn", "max_tokens", ...)
+        self.last_stop_reason: str | None = None
 
     @property
     def configured(self) -> bool:
@@ -115,6 +117,7 @@ class ClaudeClient:
                 detail="Claude request failed: could not reach the API",
             ) from exc
 
+        self.last_stop_reason = response.stop_reason
         if response.stop_reason == "refusal":
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,

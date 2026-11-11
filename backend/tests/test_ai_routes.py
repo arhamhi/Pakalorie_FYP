@@ -83,3 +83,13 @@ def test_split_bubbles_caps_at_three() -> None:
 
     assert split_bubbles("one") == ["one"]
     assert split_bubbles("a\n---\nb\n---\nc\n---\nd") == ["a", "b", "c\nd"]
+
+
+def test_cut_off_reply_is_trimmed(monkeypatch) -> None:
+    async def fake_generate_text(self, system, messages, *, max_output_tokens=1024):
+        self.last_stop_reason = "max_tokens"
+        return "Daal lo, 300 kcal.\n---\nChicken karahi with 2 roti is about 650 kcal, perfect for a"
+
+    monkeypatch.setattr("app.services.claude.ClaudeClient.generate_text", fake_generate_text)
+    response = client.post("/ai/chat", json={"message": "Lunch ideas for today?"})
+    assert response.json()["data"]["replies"] == ["Daal lo, 300 kcal."]

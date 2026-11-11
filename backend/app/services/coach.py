@@ -3,6 +3,7 @@ the Ustad chat, the Home advice line, Create Custom Meal estimates, and the
 one-shot nutrition estimate the scan screen falls back to. The prompts are the
 old client prompts (src/lib/gemini.ts), kept close to the original wording."""
 
+import logging
 import re
 from typing import Any
 
@@ -117,6 +118,8 @@ Dinner mein light rakhna, on track ho"""
 
 FALLBACK_ADVICE = "Lage raho, consistency is key!"
 
+logger = logging.getLogger(__name__)
+
 
 class CoachService:
     def __init__(self, settings: Settings) -> None:
@@ -130,7 +133,10 @@ class CoachService:
             messages[-1]["content"] += "\n\n" + request.message
         else:
             messages.append({"role": "user", "content": request.message})
-        text = await self.claude.generate_text(system, messages, max_output_tokens=400)
+        text = await self.claude.generate_text(system, messages, max_output_tokens=1000)
+        if self.claude.last_stop_reason == "max_tokens":
+            logger.warning("Ustad reply hit max_tokens; trimming to last full sentence")
+            text = _trim_to_sentence(text)
         return split_bubbles(text)
 
     async def advice(self, request: AdviceRequest) -> str:
@@ -165,6 +171,15 @@ class CoachService:
             max_output_tokens=800,
         )
         return _to_estimate(result, default_name="Unknown")
+
+
+def _trim_to_sentence(text: str) -> str:
+    """Drop a half-written last sentence (or bubble) from a cut-off reply."""
+    text = text.rstrip()
+    cut = max(text.rfind(ch) for ch in ".!?")
+    if cut == -1:
+        return text
+    return re.sub(r"\n\s*-{1,}\s*$", "", text[: cut + 1]).rstrip()
 
 
 def split_bubbles(text: str) -> list[str]:
