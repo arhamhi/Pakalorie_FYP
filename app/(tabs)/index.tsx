@@ -26,7 +26,7 @@ import { Type, FontFamily } from '../../src/constants/fonts';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useLanguage } from '../../src/contexts/LanguageContext';
 import { changeHydration, getFoodLogsInRange, getHydration } from '../../src/lib/db';
-import { getUstadAdvice } from '../../src/lib/gemini';
+import { getUstadAdvice } from '../../src/lib/ai';
 import { Card, ProgressRing, MacroBar, FadeInView, AnimatedPressable } from '../../src/components/ui';
 import { calculateMacros } from '../../src/constants/nutrition';
 import { FoodLog } from '../../src/types/database';

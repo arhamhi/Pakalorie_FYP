@@ -27,7 +27,7 @@ import {
   getLatestChatSession,
   updateChatSessionMessages,
 } from '../../src/lib/db';
-import { chatWithUstad, ChatMessage } from '../../src/lib/gemini';
+import { chatWithUstad, ChatMessage } from '../../src/lib/ai';
 import { todayKey } from '../../src/lib/analytics';
 import type { Json } from '../../src/types/database';
 

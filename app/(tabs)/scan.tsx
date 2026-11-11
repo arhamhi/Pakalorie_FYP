@@ -36,7 +36,7 @@ import {
 import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { addFoodLog } from '../../src/lib/db';
-import { identifyFood } from '../../src/lib/gemini';
+import { identifyFood } from '../../src/lib/ai';
 import {
   ApiError,
   recognizeAndGroundFood,

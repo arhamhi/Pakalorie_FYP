@@ -18,7 +18,7 @@ import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { addFavorite, addFoodLog } from '../../src/lib/db';
 import { Card, Button } from '../../src/components/ui';
-import { generateMealFromDescription } from '../../src/lib/gemini';
+import { generateMealFromDescription } from '../../src/lib/ai';
 
 type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
 

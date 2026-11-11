@@ -3,11 +3,11 @@
 // Live base URL (verified over public HTTPS): https://pakalorie-api.theredolanse.com
 // Endpoint contract: backend/docs/API_CONTRACT.md
 //
-// This is the real recognition -> grounded-calorie pipeline. The existing
-// client-side Gemini path (src/lib/gemini.ts) stays as a fallback until the
-// device smoke test passes; the scan screen decides which path to use.
+// This is the real recognition -> grounded-calorie pipeline. If it fails, the
+// scan screen falls back to `/ai/identify` (src/lib/ai.ts), also on the backend.
+// No AI key lives in the app.
 
-import type { FoodIdentificationResult } from './gemini';
+import type { FoodIdentificationResult } from './ai';
 import { DEFAULT_RECOGNITION_ENGINE, type RecognitionEngine } from './preferences';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -29,6 +29,8 @@ export const API_BASE_URL = (
 const DEFAULT_TIMEOUT_MS = 20_000;
 // Recognition runs a server-side vision model, so it needs a longer ceiling.
 const RECOGNIZE_TIMEOUT_MS = 30_000;
+// /calories also calls Claude (the grounded write-up), so it gets the same ceiling.
+const CALORIES_TIMEOUT_MS = 30_000;
 // Below this top-1 confidence, a YOLO result is treated as "not food" (the
 // classifier has no abstain class). Calibrated on the live API: non-food
 // probes score 0.015–0.199; a real dish photo scores 0.57.
@@ -191,7 +193,7 @@ function buildUrl(path: string): string {
   return path.startsWith('/') ? `${API_BASE_URL}${path}` : `${API_BASE_URL}/${path}`;
 }
 
-async function fetchWithTimeout(
+export async function fetchWithTimeout(
   path: string,
   init: RequestInit,
   timeoutMs: number,
@@ -213,7 +215,7 @@ async function fetchWithTimeout(
 }
 
 /** Unwraps the standard `{success,data,error}` envelope and throws on failure. */
-async function unwrapEnvelope<T>(response: Response, path: string): Promise<T> {
+export async function unwrapEnvelope<T>(response: Response, path: string): Promise<T> {
   let body: ApiEnvelope<T> | null = null;
   try {
     body = (await response.json()) as ApiEnvelope<T>;
@@ -243,7 +245,7 @@ export async function checkHealth(): Promise<boolean> {
   }
 }
 
-function inferMimeType(uri: string): string {
+export function inferMimeType(uri: string): string {
   const lower = uri.toLowerCase();
   if (lower.endsWith('.png')) return 'image/png';
   if (lower.endsWith('.webp')) return 'image/webp';
@@ -332,7 +334,7 @@ export async function groundCalories(params: GroundCaloriesParams): Promise<Calo
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(params),
     },
-    DEFAULT_TIMEOUT_MS,
+    CALORIES_TIMEOUT_MS,
   );
   return unwrapEnvelope<CalorieData>(response, '/calories');
 }
